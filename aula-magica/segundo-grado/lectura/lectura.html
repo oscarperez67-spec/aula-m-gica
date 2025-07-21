@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>📖 Comprensión Lectora para 2do Año</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>📖 Comprensión Lectora para 2do Año</h1>
+  <h2>El león y el ratón. Fábula sobre valores</h2>
+
+  <div class="imagen-cuento">
+    <img src="img/leon-raton-cuento.png" alt="León y ratón platicando">
+  </div>
+
+  <div class="cuento">
+    <p>Después de un largo día de caza, un león se echó a descansar debajo de un árbol. Cuando se estaba quedando dormido, unos ratones se atrevieron a salir de su madriguera y se pusieron a jugar a su alrededor. De pronto, el más travieso tuvo la ocurrencia de esconderse entre la melena del león, con tan mala suerte que lo despertó.</p>
+    <p>Muy malhumorado por ver su siesta interrumpida, el león atrapó al ratón entre sus garras y dijo dando un rugido:<br>
+    —¿Cómo te atreves a perturbar mi sueño, insignificante ratón? ¡Voy a comerte para que aprendáis la lección!</p>
+    <p>El ratón, que estaba tan asustado que no podía moverse, le dijo temblando:<br>
+    —Por favor no me mates, león. Yo no quería molestarte. Si me dejas te estaré eternamente agradecido. Déjame marchar, porque puede que algún día me necesites.</p>
+    <p>—¡Ja, ja, ja! —se rió el león mirándole—. Un ser tan diminuto como tú, ¿de qué forma va a ayudarme? ¡No me hagas reír!</p>
+    <p>Pero el ratón insistió una y otra vez, hasta que el león, conmovido por su tamaño y su valentía, le dejó marchar.</p>
+    <p>Unos días después, mientras el ratón paseaba por el bosque, oyó unos terribles rugidos que hacían temblar las hojas de los árboles. Rápidamente corrió hacia el lugar de dónde provenía el sonido, y se encontró allí al león, que había quedado atrapado en una robusta red.</p>
+    <p>El ratón, decidido a pagar su deuda, le dijo:<br>
+    —No te preocupes, yo te salvaré.</p>
+    <p>Y el león, sin pensarlo, le contestó:<br>
+    —Pero cómo, si eres tan pequeño para tanto esfuerzo.</p>
+    <p>El ratón empezó entonces a roer la cuerda de la red donde estaba atrapado el león, y el león pudo salvarse. El ratón le dijo:<br>
+    —Días atrás, te burlaste de mí pensando que nada podría hacer por ti en agradecimiento. Ahora es bueno que sepas que los pequeños ratones somos agradecidos y cumplidos.</p>
+    <p>El león no tuvo palabras para agradecer al pequeño ratón. Desde ese día, los dos fueron amigos para siempre.</p>
+    <p><strong>Moraleja:</strong></p>
+    <ul>
+      <li>Ningún acto de bondad queda sin recompensa.</li>
+      <li>No rechacemos la amistad de los más pequeños.</li>
+      <li>Los pequeños siempre podemos ayudar a los mayores.</li>
+    </ul>
+  </div>
+
+  <div class="preguntas">
+    <h2>Preguntas de Comprensión</h2>
+    <form id="quizForm"></form>
+    <button onclick="evaluar()">🎯 Enviar respuestas</button>
+    <div id="resultado" class="resultado" style="display:none;"></div>
+  </div>
+
+  <script src="preguntas.js"></script>
+  <audio id="sonidoCorrecto" src="sounds/correcto.mp3"></audio>
+  <audio id="sonidoIncorrecto" src="sounds/incorrecto.mp3"></audio>
+<!-- Botón para regresar al menú principal -->
+  <div style="margin-top: 2em;">
+    <a href="../../index.html" style="
+      background-color: #4A148C;
+      color: white;
+      padding: 0.7em 1.5em;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.1em;
+      display: inline-block;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+    " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+      ⬅️ Regresar a Menú Principal
+    </a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,80 @@
+body {
+  font-family: 'Fredoka', sans-serif;
+  background: #a6d8f0;
+  color: #333;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+header {
+  background-color: #fdd835;
+  padding: 2em 1em;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  position: relative;
+}
+h1 {
+  font-size: 3em;
+  margin: 0;
+  color: #e65100;
+}
+.descripcion {
+  font-size: 1.2em;
+  margin-top: 0.5em;
+  color: #333;
+}
+.mascota {
+  width: 80px;
+  position: absolute;
+  top: 10px;
+}
+.grados {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 2em;
+  gap: 2em;
+}
+.grado-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.grado {
+  background-color: #fff59d;
+  padding: 1em 2em;
+  border-radius: 12px;
+  font-size: 1.4em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.grado:hover {
+  transform: scale(1.05);
+}
+.submenu {
+  margin-top: 0.5em;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 10px;
+  padding: 0.5em 1em;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  width: 200px;
+}
+.submenu a {
+  text-decoration: none;
+  color: #4a148c;
+  font-weight: bold;
+  padding: 0.4em 0;
+}
+.submenu a:hover {
+  color: #00796b;
+}
+footer {
+  margin-top: 3em;
+  padding: 1em;
+  font-size: 0.9em;
+  background-color: #eceff1;
+  color: #555;
+}
