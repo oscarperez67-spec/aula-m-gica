@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tablas de Multiplicar para alumnos de Primaria</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(to right, #89f7fe, #66a6ff);
+      font-family: 'Fredoka', sans-serif;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+      padding: 2em;
+    }
+    h1 {
+      font-size: 3em;
+      margin-bottom: 1em;
+    }
+    label {
+      font-size: 1.5em;
+      margin: 0.5em;
+      display: block;
+    }
+    input[type=number] {
+      font-size: 1.5em;
+      padding: 0.3em 0.5em;
+      border-radius: 10px;
+      border: none;
+      width: 80px;
+      text-align: center;
+      margin: 0.5em;
+    }
+    button {
+      font-size: 1.8em;
+      margin-top: 1em;
+      padding: 0.5em 1em;
+      border-radius: 12px;
+      border: none;
+      background-color: #fff;
+      color: #007BFF;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      width: 250px;
+    }
+    button:hover {
+      background-color: #e0f0ff;
+    }
+  </style>
+</head>
+<body>
+  <h1>📚 Tablas de Multiplicar para alumnos de Primaria</h1>
+  <form id="formRange">
+    <label for="inicio">Quiero practicar desde la tabla:</label>
+    <input type="number" id="inicio" name="inicio" min="1" max="10" value="1" required />
+    <label for="fin">Hasta la tabla:</label>
+    <input type="number" id="fin" name="fin" min="1" max="10" value="3" required />
+    <br />
+    <button type="submit">Comenzar</button>
+  </form>
+
+  <script>
+    document.getElementById("formRange").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const inicio = parseInt(document.getElementById("inicio").value);
+      const fin = parseInt(document.getElementById("fin").value);
+      if (inicio < 1 || fin > 10 || inicio > fin) {
+        alert("Por favor, ingresa un rango válido (1 ≤ inicio ≤ fin ≤ 10).");
+        return;
+      }
+      localStorage.setItem("inicio", inicio);
+      localStorage.setItem("fin", fin);
+      localStorage.removeItem("ejercicios");
+      localStorage.removeItem("respuestas");
+      localStorage.removeItem("paginaActual");
+      localStorage.setItem("diseñoColumna", JSON.stringify({
+        pagina1: 3,
+        pagina2: 2
+      }));
+      window.location.href = "ejercicios.html";
+    });
+  </script>
+<!-- Botón para regresar al menú principal -->
+  <div style="margin-top: 2em;">
+    <a href="../../index.html" style="
+      background-color: #4A148C;
+      color: white;
+      padding: 0.7em 1.5em;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.1em;
+      display: inline-block;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+    " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+      ⬅️ Regresar a Menú Principal
+    </a>
+  </div>
+</body>
+</html>

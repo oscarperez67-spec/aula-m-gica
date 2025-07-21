@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>📚 Ejercicios de Tablas de Multiplicar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(to right, #89f7fe, #66a6ff);
+      font-family: 'Fredoka', sans-serif;
+      color: #fff;
+      padding: 2em;
+      text-align: center;
+    }
+    h1 {
+      font-size: 3em;
+      margin-bottom: 0.5em;
+    }
+    .ejercicios-grid {
+      display: grid;
+      gap: 1em;
+      justify-content: center;
+      margin-top: 2em;
+    }
+    .ejercicio {
+      font-size: 1.5em;
+      background-color: rgba(255, 255, 255, 0.25);
+      padding: 1em;
+      border-radius: 16px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s;
+    }
+    .ejercicio:hover {
+      transform: scale(1.03);
+    }
+    input[type="number"] {
+      font-size: 1.2em;
+      padding: 0.3em 0.5em;
+      border-radius: 10px;
+      border: none;
+      width: 80px;
+      text-align: center;
+      margin-left: 10px;
+    }
+    button {
+      font-size: 1.5em;
+      margin-top: 2em;
+      padding: 0.5em 1.5em;
+      border-radius: 12px;
+      border: none;
+      background-color: #fff;
+      color: #007BFF;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    button:hover {
+      background-color: #e0f0ff;
+    }
+    #pagina {
+      margin-top: 2em;
+      font-size: 1.3em;
+    }
+  </style>
+</head>
+<body>
+  <h1>📚 Practica tus Tablas de Multiplicar</h1>
+  <form id="formEjercicios">
+    <div id="ejerciciosContainer" class="ejercicios-grid"></div>
+    <button type="submit">✅ Enviar respuestas</button>
+  </form>
+  <div id="pagina"></div>
+
+  <script>
+    const inicio = parseInt(localStorage.getItem("inicio")) || 1;
+    const fin = parseInt(localStorage.getItem("fin")) || 3;
+    const totalEjercicios = 50;
+    const ejerciciosPorPagina = 25;
+    const diseñoColumna = JSON.parse(localStorage.getItem("diseñoColumna")) || { pagina1: 3, pagina2: 2 };
+
+    let ejercicios = [];
+    let paginaActual = parseInt(localStorage.getItem("paginaActual")) || 1;
+
+    function generarEjercicios() {
+      ejercicios = [];
+      for (let i = 0; i < totalEjercicios; i++) {
+        let a = Math.floor(Math.random() * (fin - inicio + 1)) + inicio;
+        let b = Math.floor(Math.random() * 10) + 1;
+        ejercicios.push({ a, b });
+      }
+      localStorage.setItem("ejercicios", JSON.stringify(ejercicios));
+    }
+
+    function mostrarEjercicios() {
+      if (!localStorage.getItem("ejercicios")) {
+        generarEjercicios();
+      } else {
+        ejercicios = JSON.parse(localStorage.getItem("ejercicios"));
+      }
+
+      const start = (paginaActual - 1) * ejerciciosPorPagina;
+      const end = start + ejerciciosPorPagina;
+      const ejerciciosPagina = ejercicios.slice(start, end);
+
+      const container = document.getElementById("ejerciciosContainer");
+      container.innerHTML = "";
+      const columnas = paginaActual === 1 ? diseñoColumna.pagina1 : diseñoColumna.pagina2;
+      container.style.gridTemplateColumns = `repeat(${columnas}, 1fr)`;
+
+      ejerciciosPagina.forEach((ej, i) => {
+        const index = start + i;
+        const div = document.createElement("div");
+        div.className = "ejercicio";
+        div.innerHTML = `
+          <span>🔢 ${index + 1}. ¿Cuánto es <strong>${ej.a} × ${ej.b}</strong>?</span><br/>
+          <input type="number" name="respuesta${index}" required />
+        `;
+        container.appendChild(div);
+      });
+
+      document.getElementById("pagina").textContent = `📄 Página ${paginaActual} de 2`;
+    }
+
+    document.getElementById("formEjercicios").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      // Guardar el tiempo usado real
+      const inicio = parseInt(localStorage.getItem("inicioTiempo"));
+      const tiempoUsado = Math.floor((Date.now() - inicio) / 1000);
+      localStorage.setItem("tiempoUsado", tiempoUsado);
+      localStorage.setItem("terminoTiempo", "false");
+
+      const formData = new FormData(event.target);
+      let respuestasUsuario = JSON.parse(localStorage.getItem("respuestas") || "[]");
+
+      for (let i = 0; i < ejerciciosPorPagina; i++) {
+        const indexGlobal = (paginaActual - 1) * ejerciciosPorPagina + i;
+        const resp = parseInt(formData.get(`respuesta${indexGlobal}`));
+        respuestasUsuario[indexGlobal] = resp;
+      }
+
+      localStorage.setItem("respuestas", JSON.stringify(respuestasUsuario));
+
+      if (paginaActual === 1) {
+        paginaActual = 2;
+        localStorage.setItem("paginaActual", paginaActual);
+        window.location.reload();
+      } else {
+        localStorage.removeItem("paginaActual");
+        window.location.href = "resultado.html";
+      }
+    });
+
+    // TEMPORIZADOR PRECISO
+    const tiempoMinutos = parseInt(localStorage.getItem("tiempo")) || 1;
+    const tiempoTotalSegundos = tiempoMinutos * 60;
+
+    // Guardar timestamp inicial una sola vez
+    if (!localStorage.getItem("inicioTiempo")) {
+      localStorage.setItem("inicioTiempo", Date.now());
+    }
+
+    function iniciarTemporizador() {
+      const timerDiv = document.createElement("div");
+      timerDiv.id = "temporizador";
+      timerDiv.style.fontSize = "1.5em";
+      timerDiv.style.marginTop = "1em";
+      document.body.insertBefore(timerDiv, document.getElementById("pagina"));
+
+      function actualizar() {
+        const inicio = parseInt(localStorage.getItem("inicioTiempo"));
+        const ahora = Date.now();
+        const transcurrido = Math.floor((ahora - inicio) / 1000);
+        const restante = tiempoTotalSegundos - transcurrido;
+
+        if (restante <= 0) {
+  // Guardar respuestas parciales antes de salir
+  const inputs = document.querySelectorAll("input[type='number']");
+  let respuestasUsuario = JSON.parse(localStorage.getItem("respuestas") || "[]");
+
+  inputs.forEach((input, idx) => {
+    const globalIndex = ((paginaActual - 1) * ejerciciosPorPagina) + idx;
+    const valor = parseInt(input.value);
+    respuestasUsuario[globalIndex] = isNaN(valor) ? "" : valor;
+  });
+
+  localStorage.setItem("respuestas", JSON.stringify(respuestasUsuario));
+  localStorage.setItem("tiempoUsado", tiempoTotalSegundos);
+  localStorage.setItem("terminoTiempo", "true");
+  window.location.href = "resultado.html";
+  return;
+}
+
+        const minutos = Math.floor(restante / 60);
+        const segundos = restante % 60;
+        timerDiv.textContent = `⏱️ Tiempo restante: ${minutos}:${segundos.toString().padStart(2, '0')}`;
+      }
+
+      actualizar();
+      setInterval(actualizar, 1000);
+    }
+
+    window.onload = function() {
+      mostrarEjercicios();
+      iniciarTemporizador();
+    };
+  </script>
+</body>
+</html>
