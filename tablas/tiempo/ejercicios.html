@@ -8,7 +8,7 @@
     body {
       background: linear-gradient(to right, #89f7fe, #66a6ff);
       font-family: 'Fredoka', sans-serif;
-      color: #fff;
+      color: #000;
       padding: 2em;
       text-align: center;
     }
@@ -111,7 +111,7 @@
         const div = document.createElement("div");
         div.className = "ejercicio";
         div.innerHTML = `
-          <span>🔢 ${index + 1}. ¿Cuánto es <strong>${ej.a} × ${ej.b}</strong>?</span><br/>
+          <span> ${index + 1}. ¿Cuánto es <strong>${ej.a} × ${ej.b}</strong>?</span><br/>
           <input type="number" name="respuesta${index}" required />
         `;
         container.appendChild(div);
