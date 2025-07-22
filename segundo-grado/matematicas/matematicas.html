@@ -92,37 +92,56 @@
     }
 
     function calificar() {
-      const inputs = document.querySelectorAll(".exercise input");
-      let correctas = 0;
+  const inputs = document.querySelectorAll(".exercise input");
+  const operaciones = document.querySelectorAll(".exercise .operacion");
+  let correctas = 0;
+  let errores = [];
 
-      inputs.forEach((input, index) => {
-        const respuesta = parseInt(input.value);
-        if (respuesta === ejerciciosGenerados[index]) {
-          correctas++;
-          input.style.borderColor = "green";
-        } else {
-          input.style.borderColor = "red";
-        }
-      });
+  inputs.forEach((input, index) => {
+    const respuesta = parseInt(input.value);
+    const correcto = ejerciciosGenerados[index];
 
-      const calificacion = (correctas / ejerciciosGenerados.length) * 10;
-      let mensaje = `
-        Respuestas correctas: ${correctas}/${ejerciciosGenerados.length}<br />
-        Calificación: ${calificacion.toFixed(1)} / 10
-      `;
+    const textoOperacion = operaciones[index].innerText
+      .replace(/\n/g, " ")
+      .replace(/\s+/g, " ")
+      .trim(); // ejemplo: "24 + 3"
 
-      if (calificacion === 10) {
-        mensaje += `<div class="mensaje-final oro">🥇 ¡Medalla de Oro!</div>`;
-      } else if (calificacion >= 9) {
-        mensaje += `<div class="mensaje-final plata">🥈 ¡Medalla de Plata!</div>`;
-      } else if (calificacion >= 8) {
-        mensaje += `<div class="mensaje-final bronce">🥉 ¡Medalla de Bronce!</div>`;
-      } else {
-        mensaje += `<div class="mensaje-final intentalo">💪 Vuelve a intentarlo, ¡tú puedes!</div>`;
-      }
-
-      document.getElementById("resultado").innerHTML = mensaje;
+    if (respuesta === correcto) {
+      correctas++;
+      input.style.borderColor = "green";
+    } else {
+      input.style.borderColor = "red";
+      errores.push(
+        `❌ <strong>Ejercicio ${index + 1}</strong>: <code>${textoOperacion} = ?</code><br />
+         Tu respuesta: <strong>${isNaN(respuesta) ? 'vacía' : respuesta}</strong> – Correcta: <strong>${correcto}</strong>`
+      );
     }
+  });
+
+  const calificacion = (correctas / ejerciciosGenerados.length) * 10;
+  let mensaje = `
+    Respuestas correctas: ${correctas}/${ejerciciosGenerados.length}<br />
+    Calificación: ${calificacion.toFixed(1)} / 10
+  `;
+
+  if (calificacion === 10) {
+    mensaje += `<div class="mensaje-final oro">🥇 ¡Medalla de Oro!</div>`;
+  } else if (calificacion >= 9) {
+    mensaje += `<div class="mensaje-final plata">🥈 ¡Medalla de Plata!</div>`;
+  } else if (calificacion >= 8) {
+    mensaje += `<div class="mensaje-final bronce">🥉 ¡Medalla de Bronce!</div>`;
+  } else {
+    mensaje += `<div class="mensaje-final intentalo">💪 Vuelve a intentarlo, ¡tú puedes!</div>`;
+  }
+
+  if (errores.length > 0) {
+    mensaje += `<div style="margin-top: 15px; text-align: left;"><strong>Errores:</strong><ul>`;
+    errores.forEach(e => mensaje += `<li style="margin-bottom: 8px;">${e}</li>`);
+    mensaje += `</ul></div>`;
+  }
+
+  document.getElementById("resultado").innerHTML = mensaje;
+}
 
     function reiniciarTodo() {
       document.getElementById("suma").checked = false;
