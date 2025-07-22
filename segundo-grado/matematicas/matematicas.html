@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ejercicios de Matemáticas - 2° Grado</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <h1>Ejercicios de Matemáticas</h1>
+
+  <div class="box-opciones">
+    <label><input type="checkbox" id="suma" /> Suma</label>
+    <label><input type="checkbox" id="resta" /> Resta</label>
+    <label><input type="checkbox" id="multiplicacion" /> Multiplicación</label><br /><br />
+
+    <label for="cantidad">Cantidad de ejercicios (10 a 50):</label>
+    <input type="number" id="cantidad" min="10" max="50" value="10" /><br /><br />
+
+    <button onclick="generarEjercicios()">Generar Ejercicios</button>
+  </div>
+
+  <div id="container"></div>
+
+  <button id="botonCalificar" onclick="calificar()">Calificar</button>
+  <button id="botonReiniciar" onclick="reiniciarTodo()">🔄 Reiniciar</button>
+
+  <div id="resultado"></div>
+
+  <script>
+    let ejerciciosGenerados = [];
+
+    function generarNumero(digitos) {
+      return digitos === 2
+        ? Math.floor(Math.random() * 90) + 10
+        : Math.floor(Math.random() * 9) + 1;
+    }
+
+    function generarEjercicios() {
+      const tipos = [];
+      if (document.getElementById("suma").checked) tipos.push("+");
+      if (document.getElementById("resta").checked) tipos.push("−");
+      if (document.getElementById("multiplicacion").checked) tipos.push("×");
+
+      const cantidad = parseInt(document.getElementById("cantidad").value);
+      if (tipos.length === 0) {
+        alert("Selecciona al menos un tipo de operación.");
+        return;
+      }
+      if (isNaN(cantidad) || cantidad < 10 || cantidad > 50) {
+        alert("Ingresa una cantidad válida entre 10 y 50.");
+        return;
+      }
+
+      const contenedor = document.getElementById("container");
+      const resultado = document.getElementById("resultado");
+      contenedor.innerHTML = "";
+      resultado.innerHTML = "";
+      ejerciciosGenerados = [];
+
+      for (let i = 0; i < cantidad; i++) {
+        const num1 = generarNumero(2);
+        const num2 = generarNumero(1);
+        const op = tipos[Math.floor(Math.random() * tipos.length)];
+        let resultadoCorrecto;
+
+        switch (op) {
+          case "+":
+            resultadoCorrecto = num1 + num2;
+            break;
+          case "−":
+            resultadoCorrecto = num1 - num2;
+            break;
+          case "×":
+            resultadoCorrecto = num1 * num2;
+            break;
+        }
+
+        ejerciciosGenerados.push(resultadoCorrecto);
+
+        const ejercicio = document.createElement("div");
+        ejercicio.className = "exercise";
+        ejercicio.innerHTML = `
+          <div class="operacion">
+            <div><span class="simbolo">&nbsp;</span>${num1}</div>
+            <div><span class="simbolo">${op}</span>${num2}</div>
+          </div>
+          <input type="number" class="respuesta" />
+        `;
+        contenedor.appendChild(ejercicio);
+      }
+    }
+
+    function calificar() {
+      const inputs = document.querySelectorAll(".exercise input");
+      let correctas = 0;
+
+      inputs.forEach((input, index) => {
+        const respuesta = parseInt(input.value);
+        if (respuesta === ejerciciosGenerados[index]) {
+          correctas++;
+          input.style.borderColor = "green";
+        } else {
+          input.style.borderColor = "red";
+        }
+      });
+
+      const calificacion = (correctas / ejerciciosGenerados.length) * 10;
+      let mensaje = `
+        Respuestas correctas: ${correctas}/${ejerciciosGenerados.length}<br />
+        Calificación: ${calificacion.toFixed(1)} / 10
+      `;
+
+      if (calificacion === 10) {
+        mensaje += `<div class="mensaje-final oro">🥇 ¡Medalla de Oro!</div>`;
+      } else if (calificacion >= 9) {
+        mensaje += `<div class="mensaje-final plata">🥈 ¡Medalla de Plata!</div>`;
+      } else if (calificacion >= 8) {
+        mensaje += `<div class="mensaje-final bronce">🥉 ¡Medalla de Bronce!</div>`;
+      } else {
+        mensaje += `<div class="mensaje-final intentalo">💪 Vuelve a intentarlo, ¡tú puedes!</div>`;
+      }
+
+      document.getElementById("resultado").innerHTML = mensaje;
+    }
+
+    function reiniciarTodo() {
+      document.getElementById("suma").checked = false;
+      document.getElementById("resta").checked = false;
+      document.getElementById("multiplicacion").checked = false;
+      document.getElementById("cantidad").value = 10;
+      document.getElementById("container").innerHTML = "";
+      document.getElementById("resultado").innerHTML = "";
+      ejerciciosGenerados = [];
+      window.scrollTo(0, 0);
+    }
+  </script>
+
+</body>
+</html>
