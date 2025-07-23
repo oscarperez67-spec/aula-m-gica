@@ -20,28 +20,27 @@ h1 {
   margin: 20px auto;
   max-width: 600px;
   box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
-
-  /* centrado texto */
   text-align: center;
 }
 
 .box-opciones label {
-  font-size: 22px; /* letra más grande */
+  font-size: 26px;
   margin-right: 15px;
   display: inline-block;
   margin-bottom: 10px;
 }
 
-.box-opciones input[type="number"] {
+.box-opciones input[type="number"],
+.box-opciones select {
   font-size: 22px;
-  width: 70px;
-  padding: 6px;
-  border-radius: 5px;
+  padding: 6px 12px;
+  border-radius: 8px;
   border: 1px solid #aaa;
+  margin: 5px;
 }
 
 .box-opciones button {
-  font-size: 24px; /* botón más grande */
+  font-size: 24px;
   padding: 10px 25px;
   margin-top: 10px;
   cursor: pointer;
@@ -75,31 +74,50 @@ h1 {
 }
 
 .operacion {
-  line-height: 1.3;
   margin-bottom: 10px;
+}
+
+.fila {
+  display: flex;
+  justify-content: flex-end;
   padding-right: 15px;
-}
-
-.simbolo {
-  float: left;
-  margin-right: 5px;
-}
-
-.respuesta {
-  font-size: 24px;
-  height: 50px;
-  line-height: 50px;
-  width: 100%;
-  max-width: 100%;
-  text-align: right;
   font-family: monospace;
-  border: none;
-  border-top: 4px solid black;
-  background-color: #f5f5f5;
-  box-sizing: border-box;
+  font-size: 24px;
+  margin-bottom: 2px;
 }
 
-input.respuesta:focus {
+.celda {
+  width: 30px;
+  text-align: center;
+  position: relative;
+}
+
+.simbolo-operacion {
+  margin-right: 5px;
+  font-weight: bold;
+}
+
+.celda-linea {
+  border-top: 2px solid black;
+  height: 0;
+  margin-bottom: 2px;
+  margin-top: 5px;
+}
+
+.celda-input input {
+  font-size: 24px;
+  font-family: monospace;
+  text-align: right;
+  background-color: white;
+  border: 1px solid #ccc;
+  width: 30px;
+  height: 30px;
+  margin-top: -16px;
+  padding: 0;
+}
+
+input.respuesta:focus,
+.celda-input input:focus {
   outline: none;
 }
 
@@ -118,6 +136,23 @@ input.respuesta:focus {
 
 #botonCalificar:hover {
   background-color: #45a049;
+}
+
+#botonReiniciar {
+  display: block;
+  margin: 10px auto 20px;
+  padding: 12px 30px;
+  font-size: 20px;
+  background-color: #ff9800;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#botonReiniciar:hover {
+  background-color: #e68900;
 }
 
 #resultado {
@@ -152,23 +187,6 @@ input.respuesta:focus {
 .intentalo {
   background-color: #f8d7da;
   color: #c62828;
-}
-
-#botonReiniciar {
-  display: block;
-  margin: 10px auto 20px;
-  padding: 12px 30px;
-  font-size: 20px;
-  background-color: #ff9800;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-#botonReiniciar:hover {
-  background-color: #e68900;
 }
 
 #botonMenu {
