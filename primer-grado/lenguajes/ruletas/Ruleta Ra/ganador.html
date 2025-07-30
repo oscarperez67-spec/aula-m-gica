@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ganador - La Ruleta de las Sílabas</title>
+  <link rel="stylesheet" href="estilos.css" />
+  <style>
+    h2, h3 {
+      color: #222; /* Texto más oscuro para contraste */
+      text-shadow: 1px 1px 2px #fff; /* Contraste adicional si hay fondo claro */
+    }
+
+    #imagen-numero {
+    max-width: 225px; /* tamaño de la sílaba ganadora */
+    cursor: pointer;
+    margin: 10px 0;
+    transition: transform 0.2s;
+  }
+
+  #imagen-numero:hover {
+    transform: scale(1.1);
+  }
+    #imagenes-animales img {
+      max-width: 225px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    #imagenes-animales img:hover {
+      transform: scale(1.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="fondo-granja">
+    <h1>¡Ganaste!</h1>
+    <div id="resultado">
+      <h2>La Sílaba es:</h2>
+      <img id="imagen-numero" alt="Número" />
+
+      <h3 style="margin-top: 20px;">Mira estas palabras con la sílaba ganadora:</h3>
+      <div id="imagenes-animales" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;"></div>
+
+      <br><br>
+      <a href="ruleta.html" class="boton-volver">↩ Volver a girar</a>
+    </div>
+  </div>
+
+  <script>
+  const params = new URLSearchParams(window.location.search);
+  const vocal = params.get("vocal");
+
+  // Mostrar imagen de la vocal ganadora
+  const imagenNumero = document.getElementById("imagen-numero");
+  imagenNumero.src = `imagenes/vocal${vocal}.png`;
+  imagenNumero.alt = vocal.toUpperCase();
+  imagenNumero.addEventListener("click", () => {
+    new Audio(`Sonidos/vocal${vocal}.mp3`).play();
+  });
+
+  // Mostrar 3 imágenes asociadas a la vocal
+  const contenedorAnimales = document.getElementById("imagenes-animales");
+  for (let i = 1; i <= 3; i++) {
+    const img = document.createElement("img");
+    img.src = `imagenes/${vocal}${i}.png`;
+    img.alt = `${vocal}${i}`;
+    img.addEventListener("click", () => {
+      new Audio(`Sonidos/${vocal}${i}.mp3`).play();
+    });
+    contenedorAnimales.appendChild(img);
+  }
+</script>
+
+</body>
+</html>
