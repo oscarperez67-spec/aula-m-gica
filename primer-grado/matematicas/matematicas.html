@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Matemáticas 2do</title>
+  <style>
+    body {
+      background: linear-gradient(to right, #fefcea, #f1da36);
+      font-family: Comic Sans MS, cursive, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #ff6347;
+      font-size: 3em;
+      margin-bottom: 30px;
+      text-shadow: 2px 2px #fff;
+    }
+
+    .enlaces {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    .card {
+      background-color: #fff8dc;
+      border: 4px dashed #ffa500;
+      border-radius: 20px;
+      padding: 10px;
+      width: 220px;
+      transition: transform 0.3s ease;
+      box-shadow: 4px 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+      cursor: pointer;
+    }
+
+    .card img {
+      width: 200px;
+      height: auto;
+      border-radius: 15px;
+    }
+
+    .titulo {
+      margin-top: 10px;
+      font-size: 1.2em;
+      color: #333;
+    }
+
+    footer {
+      margin-top: 50px;
+      font-size: 0.9em;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Matemáticas 2do</h1>
+
+  <div class="enlaces">
+    
+    <!-- 🐷 Ruleta de la Granja -->
+    <a href="RuletaGranja/ruleta.html" class="card">
+      <img src="imagenes/ruleta.png" alt="Ruleta de la Granja">
+      <div class="titulo">Ruleta de la Granja</div>
+    </a>
+
+    <!-- 🍎 Identifica los Números -->
+    <a href="Identificar/identifica.html" class="card">
+      <img src="imagenes/identifica.png" alt="Identifica los Números">
+      <div class="titulo">Identifica los Números</div>
+    </a>
+
+    <!-- 🧩 INSTRUCCIÓN: Para agregar otra página, copia todo este bloque y cambia los valores -->
+    <!--
+    <a href="NOMBRE_DE_LA_PAGINA.html" class="card">
+      <img src="imagenes/NOMBRE_DE_LA_IMAGEN.png" alt="TÍTULO">
+      <div class="titulo">TÍTULO</div>
+    </a>
+    -->
+
+  </div>
+
+  <footer>
+    © 2025 Matemáticas 2do · Página de inicio
+  </footer>
+
+<!-- Botón para regresar al menú principal -->
+  <div style="margin-top: 2em;">
+    <a href="../../index.html" style="
+      background-color: #4A148C;
+      color: white;
+      padding: 0.7em 1.5em;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.1em;
+      display: inline-block;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+    " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+      ⬅️ Regresar a Menú Principal
+    </a>
+  </div>
+
+</body>
+</html>
