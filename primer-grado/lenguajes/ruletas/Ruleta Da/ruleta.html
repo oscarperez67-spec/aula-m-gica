@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>La Ruleta de la Granja</title>
+  <link rel="stylesheet" href="estilos.css?v=1.1" /> <!-- se fuerza recarga -->
+</head>
+<body>
+  <div class="fondo-granja">
+    <h1>La Ruleta de las Sílabas</h1>
+
+    <div class="contenedor-ruleta">
+      <img src="flecha.png" class="flecha" alt="Flecha" />
+      <div class="ruleta-wrapper" id="resplandor">
+        <img src="ruleta.png" id="ruleta" alt="Ruleta" />
+      </div>
+    </div>
+
+    <button id="girar">🎲 Girar la Ruleta</button>
+  </div>
+
+  <script>
+  const ruleta = document.getElementById("ruleta");
+  const botonGirar = document.getElementById("girar");
+
+  const vocales = ["da", "de", "di", "do", "du"]; // en orden horario desde las 9 en punto y sílabas
+  const anguloPorVocal = 72; // 360° / 5 = 72°
+
+  botonGirar.addEventListener("click", () => {
+    botonGirar.disabled = true;
+
+    const sonido = new Audio("Sonidos/ruleta.mp3");
+    sonido.loop = true;
+    sonido.play();
+
+    const indiceGanador = Math.floor(Math.random() * 5); // 0 a 4
+    const girosCompletos = 3 * 360;
+    const anguloFinal = girosCompletos + (360 - (indiceGanador * anguloPorVocal));
+
+    ruleta.style.transition = "transform 4s ease-out";
+    ruleta.style.transform = `rotate(${anguloFinal}deg)`;
+
+    setTimeout(() => {
+      sonido.pause();
+      sonido.currentTime = 0;
+    }, 4000);
+
+    setTimeout(() => {
+      window.location.href = `ganador.html?vocal=${vocales[indiceGanador]}`;
+    }, 6000);
+  });
+</script>
+
+<!-- Botón para regresar al menú principal -->
+  <div style="margin-top: 2em;">
+    <a href="../ruletas.html" style="
+       position: relative;
+       top: 100px;
+       background-color: #2196F3;
+       background-image: none;
+       backdrop-filter: none;
+       color: white;
+       opacity: 1;
+       padding: 0.8em 1.5em;
+       border-radius: 10px;
+       text-decoration: none;
+       font-weight: bold;
+       font-size: 1.1em;
+       display: inline-block;
+       box-shadow: 0 0 15px rgba(0,0,0,0.5); /* sombra para resaltar */
+       transition: transform 0.2s;
+      " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+       ⬅️ Regresar a Menú
+</a>
+  </div> 
+
+</body>
+</html>
