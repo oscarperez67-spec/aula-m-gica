@@ -1,16 +1,14 @@
-
-<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <title>Matemáticas 2do</title>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet"> <!-- Carga correcta de la fuente -->
+  <link rel="stylesheet" href="style.css"> <!-- Tu archivo CSS -->
 
   <style>
     body {
       background: linear-gradient(to right, #fefcea, #f1da36);
-      font-family: Comic Sans MS, cursive, sans-serif;
+      font-family: 'Fredoka', sans-serif; /* Asegurando que se use la fuente Fredoka */
       text-align: center;
       padding: 20px;
     }
@@ -61,12 +59,17 @@
       font-size: 0.9em;
       color: #666;
     }
-/* 👇 Fuente legible para celulares */
-@media (max-width: 600px) {
-  body {
-    font-family: 'Fredoka', sans-serif;
-  }
-} 
+
+    @media (max-width: 600px) {
+      body {
+        font-family: 'Fredoka', sans-serif;
+        font-size: 1.2em;
+      }
+      .card img {
+        width: 100%;
+        height: auto;
+      }
+    }
   </style>
 </head>
 <body>
@@ -74,7 +77,6 @@
   <h1>Matemáticas 2do</h1>
 
   <div class="enlaces">
-    
     <!-- 🐷 Ruleta de la Granja -->
     <a href="RuletaGranja/ruleta.html" class="card">
       <img src="imagenes/ruleta.png" alt="Ruleta de la Granja">
@@ -87,21 +89,12 @@
       <div class="titulo">Identifica los Números</div>
     </a>
 
-    <!-- 🧩 INSTRUCCIÓN: Para agregar otra página, copia todo este bloque y cambia los valores -->
-    <!--
-    <a href="NOMBRE_DE_LA_PAGINA.html" class="card">
-      <img src="imagenes/NOMBRE_DE_LA_IMAGEN.png" alt="TÍTULO">
-      <div class="titulo">TÍTULO</div>
-    </a>
-    -->
-
   </div>
 
   <footer>
     © 2025 Matemáticas 2do · Página de inicio
   </footer>
 
-<!-- Botón para regresar al menú principal -->
   <div style="margin-top: 2em;">
     <a href="../../index.html" style="
       background-color: #4A148C;
