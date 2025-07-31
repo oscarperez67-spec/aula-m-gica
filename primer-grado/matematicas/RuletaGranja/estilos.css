@@ -33,7 +33,7 @@ h1 {
   width: 100px;
   height: auto;
   position: absolute;
-  left: 27%; /* Mover la flecha más a la derecha */
+  left: 30%; /* Mover la flecha más a la derecha */
   top: 50%; /* Centra la flecha verticalmente */
   transform: translateY(-50%); /* Corrige la posición vertical */
   max-width: 100%;
