@@ -32,8 +32,9 @@ h1 {
 .flecha {
   width: 100px;
   height: auto;
-  margin-right: -50px; /* mover flecha horizontal */
+  margin-right: 10px; /* mover flecha horizontal */
   margin-top: 0px;
+  max-width: 100%; /* Ajuste para que la flecha se ajuste en pantallas pequeñas */
 }
 
 .ruleta-wrapper {
@@ -45,10 +46,11 @@ h1 {
   align-items: center;
   justify-content: center;
   position: relative;
+  max-width: 100%; /* Asegura que la ruleta se ajuste al tamaño del contenedor */
 }
 
 #ruleta {
-  width: -100%;
+  width: 100%;
   height: auto;
   border-radius: 50%;
   transform-origin: center center;
@@ -105,9 +107,11 @@ button#girar:hover {
   }
   .flecha {
     margin-top: 20px;
+    max-width: 80%; /* Ajusta el tamaño de la flecha en pantallas pequeñas */
   }
   .ruleta-wrapper {
     width: 80%; /* Ajusta el tamaño de la ruleta en pantallas pequeñas */
+    max-width: 90%; /* Limita el tamaño máximo de la ruleta */
   }
   button#girar {
     padding: 12px 20px; /* Ajusta el tamaño del botón */
