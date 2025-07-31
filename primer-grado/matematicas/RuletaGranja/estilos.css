@@ -1,13 +1,17 @@
+
+/* Para asegurarnos de que la fuente Fredoka esté cargada */
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap');
+
 body {
   font-family: 'Fredoka', sans-serif;
   margin: 0;
-  font-family: 'Comic Sans MS', cursive;
   text-align: center;
   background: url('granja-fondo.jpg') no-repeat center center fixed;
   background-size: cover;
   color: #fff;
 }
 
+/* Ajustes para elementos principales */
 h1 {
   font-size: 3rem;
   margin-top: 10px;
@@ -28,7 +32,7 @@ h1 {
 .flecha {
   width: 100px;
   height: auto;
-  margin-right: 10px; /* mover flecha horizontal */
+  margin-right: -50px; /* mover flecha horizontal */
   margin-top: 0px;
 }
 
@@ -85,4 +89,28 @@ button#girar:hover {
 .boton-volver:hover {
   background-color: #e68900;
   transform: scale(1.05);
+}
+
+/* Agregar ajustes responsivos */
+@media screen and (max-width: 768px) {
+  body {
+    font-size: 16px; /* Ajusta el tamaño de fuente para pantallas pequeñas */
+  }
+  h1 {
+    font-size: 2.5rem;
+  }
+  .contenedor-ruleta {
+    flex-direction: column; /* Asegura que los elementos se alineen correctamente en pantallas pequeñas */
+    gap: 20px;
+  }
+  .flecha {
+    margin-top: 20px;
+  }
+  .ruleta-wrapper {
+    width: 80%; /* Ajusta el tamaño de la ruleta en pantallas pequeñas */
+  }
+  button#girar {
+    padding: 12px 20px; /* Ajusta el tamaño del botón */
+    font-size: 1.2rem;
+  }
 }
