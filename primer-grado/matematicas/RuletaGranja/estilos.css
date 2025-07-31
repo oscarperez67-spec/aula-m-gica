@@ -24,17 +24,21 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
   position: relative;
-  top: 10px; /* 🔼 Este es el cambio que forzará que se suba */
+  top: 10px;
+  width: 100%; /* Aseguramos que el contenedor ocupe todo el espacio disponible */
 }
 
 .flecha {
   width: 100px;
   height: auto;
-  margin-right: 10px; /* mover flecha horizontal */
-  margin-top: 0px;
-  max-width: 100%; /* Ajuste para que la flecha se ajuste en pantallas pequeñas */
+  position: absolute;
+  left: 27%; /* Mover la flecha más a la derecha */
+  top: 50%; /* Centra la flecha verticalmente */
+  transform: translateY(-50%); /* Corrige la posición vertical */
+  max-width: 100%;
+  z-index: 10; /* Asegura que la flecha esté encima de la ruleta */
+  display: block;
 }
 
 .ruleta-wrapper {
@@ -46,7 +50,7 @@ h1 {
   align-items: center;
   justify-content: center;
   position: relative;
-  max-width: 100%; /* Asegura que la ruleta se ajuste al tamaño del contenedor */
+  max-width: 100%;
 }
 
 #ruleta {
@@ -60,7 +64,7 @@ h1 {
 
 button#girar {
   position: relative;
-  top: 45px; /* 🔼 Ajusta este valor a tu gusto */
+  top: 45px;
   padding: 15px 30px;
   font-size: 1.5rem;
   background-color: #ff5722;
@@ -96,25 +100,28 @@ button#girar:hover {
 /* Agregar ajustes responsivos */
 @media screen and (max-width: 768px) {
   body {
-    font-size: 16px; /* Ajusta el tamaño de fuente para pantallas pequeñas */
+    font-size: 16px;
   }
   h1 {
     font-size: 2.5rem;
   }
   .contenedor-ruleta {
-    flex-direction: column; /* Asegura que los elementos se alineen correctamente en pantallas pequeñas */
+    flex-direction: column;
     gap: 20px;
   }
   .flecha {
-    margin-top: 20px;
-    max-width: 80%; /* Ajusta el tamaño de la flecha en pantallas pequeñas */
+    position: absolute;
+    left: 10%; /* Mover la flecha más a la derecha en dispositivos móviles */
+    top: 50%;
+    transform: translateY(-50%);
+    max-width: 70%;
   }
   .ruleta-wrapper {
-    width: 80%; /* Ajusta el tamaño de la ruleta en pantallas pequeñas */
-    max-width: 90%; /* Limita el tamaño máximo de la ruleta */
+    width: 80%;
+    max-width: 90%;
   }
   button#girar {
-    padding: 12px 20px; /* Ajusta el tamaño del botón */
+    padding: 12px 20px;
     font-size: 1.2rem;
   }
 }
