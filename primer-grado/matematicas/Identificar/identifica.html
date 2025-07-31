@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Identificar los Números</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="container">
+  <h1 onclick="document.getElementById('audio-instruccion').play()" style="cursor: pointer; color: #1565c0;">
+    🔊 Escucha el nombre e identiﬁca el número que representa la cantidad de elementos
+  </h1>
+
+  <audio id="audio-instruccion" src="audio/instruccion.mp3"></audio>
+
+  <img id="imagen" src="img/uno.png" alt="Fruta" onclick="reproducirAudio()" />
+  <div class="opciones" id="opciones"></div>
+</div>
+  <div id="resultadoFinal" style="display:none; text-align:center;">
+    <h2 id="mensajeFinal"></h2>
+    <img id="medalla" src="" alt="Medalla" style="max-width: 150px;" />
+    <br />
+    <button onclick="iniciarJuego()">Volver a Empezar</button>
+
+<!-- Botón para regresar al menú principal -->
+  <div style="margin-top: 2em;">
+    <a href="../matematicas.html" style="
+      background-color: #4A148C;
+      color: white;
+      padding: 0.7em 1.5em;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.1em;
+      display: inline-block;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+    " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+      ⬅️ Regresar a Menú
+    </a>
+  </div>
+  <audio id="audioNumero"></audio>
+  <audio id="audioAcierto" src="audio/aplauso.mp3"></audio>
+  <audio id="audioError" src="audio/error.mp3"></audio>
+  <script src="script.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,73 @@
+body {
+  font-family: 'Fredoka', sans-serif;
+  font-family: 'Comic Sans MS', sans-serif;
+  background: linear-gradient(to bottom right, #ffecd2, #fcb69f);
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  color: #333;
+}
+
+.container {
+  padding: 20px;
+  max-width: 600px;
+  margin: auto;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  margin-top: 50px;
+}
+
+h1 {
+  font-size: 2em;
+  color: #4a148c;
+}
+
+img {
+  width: 200px;
+  cursor: pointer;
+  border: 5px solid #fdd835;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+
+.opciones button {
+  margin: 5px;
+  padding: 10px 20px;
+  font-size: 1.2em;
+  background-color: #81d4fa;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.opciones button:hover {
+  background-color: #4fc3f7;
+}
+
+#resultadoFinal h2 {
+  color: #2e7d32;
+  font-size: 1.8em;
+}
+
+#resultadoFinal img {
+  margin-top: 10px;
+  width: 100px;
+  height: auto;
+}
+
+button {
+  font-family: inherit;
+  margin-top: 20px;
+  background-color: #ffd54f;
+  padding: 10px 20px;
+  font-size: 1em;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #ffca28;
+}
