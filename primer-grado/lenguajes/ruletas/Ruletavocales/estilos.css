@@ -105,7 +105,7 @@ button#girar:hover {
   }
 
   .ruleta-wrapper {
-    width: 90%; /* Hacer la ruleta más pequeña en dispositivos móviles */
+    width: 70%; /* Hacer la ruleta más pequeña en dispositivos móviles */
   }
 
   #ruleta {
