@@ -90,23 +90,18 @@ button#girar:hover {
 
 /* Estilos para dispositivos móviles */
 @media screen and (max-width: 768px) {
-  h1 {
-    font-size: 2rem; /* Ajusta el tamaño del título en dispositivos móviles */
-  }
-
-  button#girar {
-    font-size: 1.2rem; /* Ajusta el tamaño del botón en dispositivos móviles */
-    padding: 12px 24px;
-  }
-
   .contenedor-ruleta {
     flex-direction: column; /* Apilar los elementos en móviles */
     gap: 5px;
+    position: relative; /* Aseguramos que la flecha esté en relación con la ruleta */
   }
 
   .flecha {
     width: 80px; /* Ajustar el tamaño de la flecha en pantallas pequeñas */
-    margin-top: 10px;
+    position: absolute; /* Posición absoluta para poder moverla sin afectar otros elementos */
+    left: 10px; /* Mover la flecha hacia la izquierda de la ruleta */
+    top: 50%; /* Centrar la flecha verticalmente */
+    transform: translateY(-50%); /* Ajuste fino para centrar la flecha */
   }
 
   .ruleta-wrapper {
