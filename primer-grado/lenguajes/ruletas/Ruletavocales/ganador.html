@@ -55,7 +55,7 @@
   imagenNumero.src = `imagenes/vocal${vocal}.png`;
   imagenNumero.alt = vocal.toUpperCase();
   imagenNumero.addEventListener("click", () => {
-    new Audio(`Sonidos/vocal${vocal}.mp3`).play();
+    new Audio(`sonidos/vocal${vocal}.mp3`).play();
   });
 
   // Mostrar 3 imágenes asociadas a la vocal
@@ -65,7 +65,7 @@
     img.src = `imagenes/${vocal}${i}.png`;
     img.alt = `${vocal}${i}`;
     img.addEventListener("click", () => {
-      new Audio(`Sonidos/${vocal}${i}.mp3`).play();
+      new Audio(`sonidos/${vocal}${i}.mp3`).play();
     });
     contenedorAnimales.appendChild(img);
   }
