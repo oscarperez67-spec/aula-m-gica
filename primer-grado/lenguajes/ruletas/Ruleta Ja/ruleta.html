@@ -1,0 +1,57 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Ruleta de las Sílabas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>La Ruleta de las Sílabas</h1>
+
+    <!-- Sección de selección de avatar -->
+    <h2>Selecciona tu avatar:</h2>
+    <div id="avatar-selection">
+        <img src="imagenes/avatars/avatar1.png" alt="Avatar 1" class="avatar" onclick="selectAvatar('avatar1')">
+        <img src="imagenes/avatars/avatar2.png" alt="Avatar 2" class="avatar" onclick="selectAvatar('avatar2')">
+        <img src="imagenes/avatars/avatar3.png" alt="Avatar 3" class="avatar" onclick="selectAvatar('avatar3')">
+        <img src="imagenes/avatars/avatar4.png" alt="Avatar 4" class="avatar" onclick="selectAvatar('avatar4')">
+        <img src="imagenes/avatars/avatar5.png" alt="Avatar 5" class="avatar" onclick="selectAvatar('avatar5')">
+        <img src="imagenes/avatars/avatar6.png" alt="Avatar 6" class="avatar" onclick="selectAvatar('avatar6')">
+    </div>
+
+    <div class="ruleta-container">
+        <img src="imagenes/ruleta.png" id="ruleta" class="ruleta">
+        <img src="imagenes/flecha.png" id="flecha" class="flecha">
+        <button onclick="girarRuleta()">Girar Ruleta</button>
+    </div>
+    <audio id="sonidoRuleta" src="sonidos/ruleta.mp3"></audio>
+    <script src="script.js"></script>
+
+<!-- Botón para regresar al menú principal -->
+  <div style="margin-top: 2em;">
+    <a href="../ruletas.html" style="
+       position: relative;
+       top: 100px;
+       background-color: #2196F3;
+       background-image: none;
+       backdrop-filter: none;
+       color: white;
+       opacity: 1;
+       padding: 0.8em 1.5em;
+       border-radius: 10px;
+       text-decoration: none;
+       font-weight: bold;
+       font-size: 1.1em;
+       display: inline-block;
+       box-shadow: 0 0 15px rgba(0,0,0,0.5); /* sombra para resaltar */
+       transition: transform 0.2s;
+      " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+       ⬅️ Regresar a Menú
+</a>
+</div> 
+
+</body>
+</html>
