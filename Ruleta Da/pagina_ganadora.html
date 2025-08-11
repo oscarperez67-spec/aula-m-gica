@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultado de la Ruleta</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="resultado-container">
+        <h1>¡Ganaste la sílaba <span id="silabaGanadora"></span>!</h1>
+        <img id="silabaImagen" src="" alt="Silaba Ganadora">
+        <audio id="sonidoSilaba"></audio>
+        <div id="avatarContainer">
+            <h3>Jugué con:</h3>
+            <img id="avatarGanador" src="" alt="Avatar del jugador">
+        </div>
+        <div class="palabras-container">
+            <h3>Aquí tienes tres palabras que contienen la sílaba ganadora:</h3>
+            <div id="palabras" class="palabras">
+                <!-- Aquí se llenarán las imágenes de las palabras -->
+            </div>
+        </div>
+        <button id="regresarBtn" onclick="regresar()">Regresar</button>
+    </div>
+    <script src="script.js"></script> <!-- Asegúrate de que esta línea esté aquí al final del body -->
+</body>
+</html>
