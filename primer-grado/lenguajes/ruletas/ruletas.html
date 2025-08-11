@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Lenguajes 2do</title>
+  <style>
+    body {
+      background: linear-gradient(to right, #fefcea, #f1da36);
+      font-family: 'Fredoka', sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #ff6347;
+      font-size: 3em;
+      margin-bottom: 30px;
+      text-shadow: 2px 2px #fff;
+    }
+
+    .enlaces {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    .card {
+      background-color: #fff8dc;
+      border: 4px dashed #ffa500;
+      border-radius: 20px;
+      padding: 10px;
+      width: 220px;
+      transition: transform 0.3s ease;
+      box-shadow: 4px 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+      cursor: pointer;
+    }
+
+    .card img {
+      width: 200px;
+      height: auto;
+      border-radius: 15px;
+    }
+
+    .titulo {
+      margin-top: 10px;
+      font-size: 1.2em;
+      color: #333;
+    }
+
+    footer {
+      margin-top: 50px;
+      font-size: 0.9em;
+      color: #666;
+    }
+
+    /* Ajustes para móviles */
+    @media (max-width: 768px) {
+      body {
+        font-family: 'Fredoka', cursive, sans-serif;
+        font-size: 1.2em;
+      }
+
+      .card {
+        width: 100%;
+        max-width: 300px;
+      }
+
+      h1 {
+        font-size: 2.5em;
+      }
+    }
+
+    /* Add Google Fonts for Fredoka */
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500&display=swap');
+  </style>
+</head>
+<body>
+
+  <h1>Lenguajes 2do</h1>
+
+  <div class="enlaces">
+
+    <!-- La Ruleta de las Vocales -->
+    <a href="Ruletavocales/ruleta.html" class="card">
+      <img src="imagenes/ruletavocales.png" alt="La Ruleta de las Vocales">
+      <div class="titulo">La Ruleta de las Vocales</div>
+    </a>
+
+    <!-- La Ruleta de Sílabas Fa Fe Fi Fo Fu -->
+    <a href="Ruleta Fa/ruleta.html" class="card">
+      <img src="imagenes/ruletafafefifofu.png" alt="La Ruleta Sílabas Fa Fe Fi Fo Fu">
+      <div class="titulo">La Ruleta Sílabas Fa Fe Fi Fo Fu</div>
+    </a>
+
+    <!-- La Ruleta de Sílabas Da De Di Do Du -->
+    <a href="Ruleta Da/ruleta.html" class="card">
+      <img src="imagenes/ruletadadedidodu.png" alt="La Ruleta Sílabas Da De Di Do Du">
+      <div class="titulo">La Ruleta Sílabas Da De Di Do Du</div>
+    </a>
+
+    <!-- La Ruleta de Sílabas Ja Je Ji Jo Ju -->
+    <a href="Ruleta Ja/ruleta.html" class="card">
+      <img src="imagenes/ruletajajejijoju.png" alt="La Ruleta Sílabas Ja Je Ji Jo Ju">
+      <div class="titulo">La Ruleta Sílabas Ja Je Ji Jo Ju</div>
+    </a>
+
+    <!-- La Ruleta de Sílabas Ra Re Ri Ro Ru -->
+    <a href="Ruleta Ra/ruleta.html" class="card">
+      <img src="imagenes/ruletarareriroru.png" alt="La Ruleta Sílabas Ra Re Ri Ro Ru">
+      <div class="titulo">La Ruleta Sílabas Ra Re Ri Ro Ru</div>
+    </a>
+
+  </div>
+
+  <footer>
+    © 2025 Lenguajes 2do · Página de inicio
+  </footer>
+
+  <!-- Botón para regresar al menú principal -->
+  <div style="margin-top: 2em;">
+    <a href="../lenguaje.html" style="
+      background-color: #4A148C;
+      color: white;
+      padding: 0.7em 1.5em;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.1em;
+      display: inline-block;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+    " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+      ⬅️ Regresar a Menú Principal
+    </a>
+  </div>
+
+</body>
+</html>
