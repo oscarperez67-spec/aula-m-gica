@@ -1,0 +1,332 @@
+const problems = [
+    {
+    "pregunta": "Juanita tenía 250 manzanas. Compró 150 más y dio 120 a su hermana. ¿Cuántas manzanas le quedan?",
+    "opciones": ["280", "270", "250", "300"],
+    "respuesta": "280"
+  },
+  {
+    "pregunta": "Carlos tenía 500 chocolates. Comió 100 y luego compró 200 más. ¿Cuántos chocolates tiene ahora?",
+    "opciones": ["600", "500", "450", "550"],
+    "respuesta": "600"
+  },
+  {
+    "pregunta": "Marta tenía 300 boletos para el cine. Vendió 120 y luego compró 50 más. ¿Cuántos boletos tiene ahora?",
+    "opciones": ["230", "200", "250", "220"],
+    "respuesta": "230"
+  },
+  {
+    "pregunta": "Si un libro tiene 400 páginas y ya leíste 100, ¿cuántas páginas te faltan si lees 50 más al día durante 6 días?",
+    "opciones": ["150", "200", "175", "180"],
+    "respuesta": "150"
+  },
+  {
+    "pregunta": "Un grupo de estudiantes tiene 60 alumnos. 20 se fueron y luego llegaron 10 más. ¿Cuántos estudiantes hay ahora?",
+    "opciones": ["50", "40", "45", "55"],
+    "respuesta": "50"
+  },
+  {
+    "pregunta": "María tenía 250 naranjas. Compró 100 más y le dio 50 a su amiga. ¿Cuántas naranjas le quedan?",
+    "opciones": ["300", "280", "240", "350"],
+    "respuesta": "300"
+  },
+  {
+    "pregunta": "Si tienes 400 pesos, compras una barra de chocolate por 100 pesos y una bebida por 50 pesos, ¿cuánto dinero te queda?",
+    "opciones": ["250", "200", "150", "220"],
+    "respuesta": "250"
+  },
+  {
+    "pregunta": "Si un paquete contiene 100 cartas y un niño compra 4 paquetes, pero pierde 10 cartas, ¿cuántas cartas tiene ahora?",
+    "opciones": ["390", "370", "400", "380"],
+    "respuesta": "390"
+  },
+  {
+    "pregunta": "En una tienda hay 200 camisetas. Se vendieron 50 y luego llegaron 30 más. ¿Cuántas camisetas hay ahora en la tienda?",
+    "opciones": ["180", "190", "220", "200"],
+    "respuesta": "180"
+  },
+  {
+    "pregunta": "En una granja hay 300 vacas. Si venden 100 vacas y luego nacen 20 terneros, ¿cuántas vacas hay en total ahora?",
+    "opciones": ["220", "210", "250", "230"],
+    "respuesta": "220"
+  },
+  {
+    "pregunta": "Un hombre tenía 200 monedas. Compró 50 boletos para un sorteo y luego gastó 30 monedas más en una tienda. ¿Cuántas monedas le quedan?",
+    "opciones": ["120", "140", "130", "100"],
+    "respuesta": "120"
+  },
+  {
+    "pregunta": "Si un supermercado tiene 500 manzanas y vende 150, luego compra 100 más, ¿cuántas manzanas tiene ahora?",
+    "opciones": ["450", "500", "600", "550"],
+    "respuesta": "450"
+  },
+  {
+    "pregunta": "En un torneo, Juan ganó 30 puntos en la primera ronda y 20 en la segunda. Luego perdió 10 puntos. ¿Cuántos puntos tiene ahora?",
+    "opciones": ["40", "45", "50", "35"],
+    "respuesta": "40"
+  },
+  {
+    "pregunta": "Una tienda vendió 100 camisetas en la mañana y 80 en la tarde. Si en total tenía 300 camisetas, ¿cuántas camisetas le quedan?",
+    "opciones": ["120", "100", "90", "110"],
+    "respuesta": "120"
+  },
+  {
+    "pregunta": "Si en un jardín hay 500 flores y se plantan 200 más, pero 50 se marchitaron, ¿cuántas flores quedan?",
+    "opciones": ["650", "550", "600", "500"],
+    "respuesta": "650"
+  },
+  {
+    "pregunta": "Si en una caja hay 300 pelotas, 120 son rojas y el resto son azules, ¿cuántas pelotas azules hay en la caja?",
+    "opciones": ["180", "200", "250", "220"],
+    "respuesta": "180"
+  },
+  {
+    "pregunta": "Pedro tenía 150 monedas. Si gastó 50 en un juego y luego ahorró 30, ¿cuánto dinero tiene ahora?",
+    "opciones": ["130", "100", "120", "110"],
+    "respuesta": "130"
+  },
+  {
+    "pregunta": "María tenía 200 boletos para una rifa. Vendió 70 y luego compró 30 más. ¿Cuántos boletos tiene ahora?",
+    "opciones": ["160", "170", "180", "150"],
+    "respuesta": "160"
+  },
+  {
+    "pregunta": "Un camión tenía 100 paquetes. Si descargaron 40 y luego llegaron 20 más, ¿cuántos paquetes hay en el camión?",
+    "opciones": ["80", "60", "70", "75"],
+    "respuesta": "80"
+  },
+  {
+    "pregunta": "Un grupo de 150 niños fue al parque. 50 de ellos se fueron antes de la hora y luego llegaron 20 más. ¿Cuántos niños quedaron en el parque?",
+    "opciones": ["120", "110", "100", "130"],
+    "respuesta": "120"
+  },
+  {
+    "pregunta": "En una tienda de ropa había 250 prendas. Se vendieron 80 y luego llegaron 30 más. ¿Cuántas prendas hay ahora en la tienda?",
+    "opciones": ["200", "190", "180", "210"],
+    "respuesta": "200"
+  },
+  {
+    "pregunta": "Un grupo de 500 personas viajó en un autobús. 150 se bajaron en la primera parada y luego 50 más se bajaron en la siguiente. ¿Cuántas personas quedan en el autobús?",
+    "opciones": ["300", "400", "350", "250"],
+    "respuesta": "300"
+  },
+  {
+    "pregunta": "Si una granja tiene 200 gallinas y compran 50 más, pero 30 de ellas se escapan, ¿cuántas gallinas quedan?",
+    "opciones": ["220", "230", "200", "250"],
+    "respuesta": "220"
+  },
+  {
+    "pregunta": "Si tienes 1000 pesos y compras un artículo que cuesta 400 y otro que cuesta 250, ¿cuánto dinero te queda?",
+    "opciones": ["350", "400", "300", "250"],
+    "respuesta": "350"
+  },
+  {
+    "pregunta": "En una fábrica de juguetes, se produjeron 600 juguetes. Se vendieron 200, pero luego llegaron 50 más. ¿Cuántos juguetes hay ahora en la fábrica?",
+    "opciones": ["450", "400", "500", "550"],
+    "respuesta": "450"
+  },
+{
+    "pregunta": "En una caja hay 400 bolas rojas. Compraron 200 más y regalaron 100. ¿Cuántas bolas rojas hay ahora?",
+    "opciones": ["500", "600", "400", "300"],
+    "respuesta": "500"
+},
+{
+    "pregunta": "María tenía 320 lápices. Compró 150 más y perdió 50. ¿Cuántos lápices le quedan?",
+    "opciones": ["420", "400", "350", "300"],
+    "respuesta": "420"
+},
+{
+    "pregunta": "Un agricultor tenía 500 manzanas. Vendió 200 y luego compró 150 más. ¿Cuántas manzanas tiene ahora?",
+    "opciones": ["450", "400", "300", "350"],
+    "respuesta": "450"
+},
+{
+    "pregunta": "Juan tiene 360 galletas. Le dio 120 a su amiga y compró 200 más. ¿Cuántas galletas tiene ahora?",
+    "opciones": ["440", "460", "420", "480"],
+    "respuesta": "440"
+},
+{
+    "pregunta": "Un caracol subió 30 metros cada día durante 10 días. ¿Cuántos metros subió en total?",
+    "opciones": ["300", "400", "350", "500"],
+    "respuesta": "300"
+},
+{
+    "pregunta": "Sofía compró 120 entradas para el cine. Vendió 70 y luego compró 150 más. ¿Cuántas entradas tiene ahora?",
+    "opciones": ["200", "250", "300", "220"],
+    "respuesta": "200"
+},
+{
+    "pregunta": "En una escuela hay 450 alumnos. Se inscribieron 250 más y se dieron de baja 100. ¿Cuántos alumnos hay ahora?",
+    "opciones": ["600", "550", "500", "450"],
+    "respuesta": "600"
+},
+{
+    "pregunta": "Pedro tenía 600 monedas. Compró 200 más y gastó 150. ¿Cuántas monedas tiene ahora?",
+    "opciones": ["650", "700", "550", "500"],
+    "respuesta": "650"
+},
+{
+    "pregunta": "Un jardín tiene 200 plantas. Plantaron 100 más y regalaron 50. ¿Cuántas plantas quedan?",
+    "opciones": ["250", "300", "270", "280"],
+    "respuesta": "250"
+},
+{
+    "pregunta": "Un paquete tiene 150 cajas. Cada caja contiene 20 productos. ¿Cuántos productos hay en total?",
+    "opciones": ["3000", "2500", "4000", "3500"],
+    "respuesta": "3000"
+},
+{
+    "pregunta": "En una biblioteca hay 400 libros. Se compraron 300 más y se vendieron 200. ¿Cuántos libros hay ahora?",
+    "opciones": ["500", "550", "450", "600"],
+    "respuesta": "500"
+},
+{
+    "pregunta": "Un tren tiene 50 vagones. Cada vagón tiene 30 pasajeros. ¿Cuántos pasajeros viajan en total?",
+    "opciones": ["1500", "1400", "1600", "1800"],
+    "respuesta": "1500"
+},
+{
+    "pregunta": "Pedro tenía 500 pesos. Compró 200 más y gastó 150. ¿Cuántos pesos tiene ahora?",
+    "opciones": ["550", "400", "600", "500"],
+    "respuesta": "550"
+},
+{
+    "pregunta": "En una tienda hay 300 camisetas. Vendieron 150 y luego llegaron 100 más. ¿Cuántas camisetas hay ahora?",
+    "opciones": ["250", "300", "350", "400"],
+    "respuesta": "250"
+},
+{
+    "pregunta": "Un agricultor cultivó 80 hectáreas de maíz. En cada hectárea cultivó 40 plantas. ¿Cuántas plantas cultivó en total?",
+    "opciones": ["3200", "3000", "3500", "4000"],
+    "respuesta": "3200"
+},
+{
+    "pregunta": "En una clase hay 150 estudiantes. Se inscribieron 200 más y luego salieron 50. ¿Cuántos estudiantes hay ahora?",
+    "opciones": ["300", "250", "200", "400"],
+    "respuesta": "300"
+},
+{
+    "pregunta": "En un supermercado hay 300 productos. Se compraron 400 más y se vendieron 150. ¿Cuántos productos hay ahora?",
+    "opciones": ["550", "450", "500", "600"],
+    "respuesta": "550"
+},
+{
+    "pregunta": "José tenía 500 pesos. Compró 150 más y gastó 100. ¿Cuántos pesos tiene ahora?",
+    "opciones": ["550", "500", "600", "450"],
+    "respuesta": "550"
+},
+{
+    "pregunta": "Un autobús transporta 40 personas. Si viajan en 12 autobuses, ¿cuántas personas viajan en total?",
+    "opciones": ["480", "500", "450", "400"],
+    "respuesta": "480"
+},
+{
+    "pregunta": "Una fábrica produce 1200 piezas al día. ¿Cuántas piezas produce en 10 días?",
+    "opciones": ["12000", "11000", "13000", "14000"],
+    "respuesta": "12000"
+},
+{
+    "pregunta": "Un colegio tiene 300 estudiantes. Se inscribieron 400 más y luego se graduaron 200. ¿Cuántos estudiantes hay ahora?",
+    "opciones": ["500", "400", "600", "450"],
+    "respuesta": "500"
+},
+{
+    "pregunta": "El gimnasio tiene 600 miembros. Se inscribieron 150 más y se dieron de baja 100. ¿Cuántos miembros hay ahora?",
+    "opciones": ["650", "700", "600", "500"],
+    "respuesta": "650"
+},
+{
+    "pregunta": "Juan tiene 150 estampillas. Compró 100 más y regaló 50. ¿Cuántas estampillas tiene ahora?",
+    "opciones": ["200", "250", "300", "150"],
+    "respuesta": "200"
+},
+{
+    "pregunta": "En una tienda se vendieron 300 pares de zapatos. Luego llegaron 200 más y se vendieron otros 150. ¿Cuántos zapatos vendieron en total?",
+    "opciones": ["650", "600", "500", "700"],
+    "respuesta": "650"
+},
+{
+    "pregunta": "El edificio tiene 15 pisos. Cada piso tiene 10 apartamentos. ¿Cuántos apartamentos hay en total?",
+    "opciones": ["150", "100", "200", "120"],
+    "respuesta": "150"
+}
+];
+
+let selectedAnswers = [];
+let currentProblemIndex = 0;
+let problemCount = 5;
+
+function shuffleArray(array) {
+    // Método para mezclar el array aleatoriamente
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]]; // Intercambiar elementos
+    }
+}
+
+function generateProblems() {
+    selectedAnswers = [];
+    currentProblemIndex = 0;
+
+    // Mezclamos aleatoriamente los problemas
+    shuffleArray(problems);
+
+    let problemHtml = '';
+    
+    // Seleccionamos el número adecuado de problemas (5 o 10)
+    for (let i = 0; i < problemCount; i++) {
+        const problem = problems[i];
+        problemHtml += `
+            <div class="problem">
+                <p>${problem.pregunta}</p>
+                ${problem.opciones.map((option, index) => `
+                    <input type="radio" name="question-${i}" value="${option}" id="q${i}a${index}">
+                    <label for="q${i}a${index}">${option}</label><br>
+                `).join('')}
+            </div>
+        `;
+    }
+    document.getElementById('problems').innerHTML = problemHtml;
+    document.getElementById('problem-count').style.display = 'none'; // Hide problem selection buttons
+    document.getElementById('generate-btn').style.display = 'none'; // Hide the "Generate Problems" button
+    document.getElementById('grade-btn').style.display = 'inline'; // Show the "Grade" button
+}
+
+function gradeProblems() {
+    let score = 0;
+    for (let i = 0; i < problemCount; i++) {
+        const selectedOption = document.querySelector(`input[name="question-${i}"]:checked`);
+        if (selectedOption && selectedOption.value === problems[i].respuesta) {
+            score++;
+        }
+    }
+
+    const resultElement = document.getElementById('result');
+    if (score === problemCount) {
+        resultElement.innerHTML = `<span class="congratulations">¡Felicidades! Obtuviste todas las respuestas correctas. 🏆</span>`;
+    } else {
+        resultElement.innerHTML = `<span class="error">Obtuviste ${score} de ${problemCount} correctas. Sigue practicando.</span>`;
+    }
+
+    document.getElementById('back-btn').style.display = 'inline'; // Show the "Back" button
+}
+
+document.getElementById('generate-btn').addEventListener('click', generateProblems);
+document.getElementById('grade-btn').addEventListener('click', gradeProblems);
+document.getElementById('back-btn').addEventListener('click', function () {
+    document.getElementById('problem-count').style.display = 'block'; // Show problem selection buttons again
+    document.getElementById('generate-btn').style.display = 'none'; // Hide "Generate" button when back
+    document.getElementById('back-btn').style.display = 'none'; // Hide "Back" button when back
+    document.getElementById('grade-btn').style.display = 'none'; // Hide "Grade" button when back
+    document.getElementById('result').innerHTML = ''; // Clear the result
+    document.getElementById('problems').innerHTML = ''; // Clear the problems
+});
+
+document.getElementById('five-problems').addEventListener('click', function() {
+    problemCount = 5;
+    generateProblems();
+});
+
+document.getElementById('ten-problems').addEventListener('click', function() {
+    problemCount = 10;
+    generateProblems();
+});
