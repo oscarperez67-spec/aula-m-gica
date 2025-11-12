@@ -48,13 +48,13 @@ h1 {
 .decoracion.mago-nino {
   width: 150px; / *aumenta tamaño */
   position: absolute;
-  top: 30px;
+  top: 25px;
   left: 10px;
 }
 .decoracion.maga-nina {
   width: 150px; / *aumenta tamaño */
   position: absolute;
-  top: 30px;
+  top: 25px;
   right: 10px;
 }
 .decoracion.lapiz {
