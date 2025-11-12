@@ -1,0 +1,97 @@
+/* Fondo de la página */
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #e8f4f8; /* Fondo suave y azul claro */
+    margin: 0;
+    padding: 0;
+}
+
+/* Fuente para móviles */
+@media only screen and (max-width: 600px) {
+    body {
+        font-family: 'Freedoka', sans-serif;
+    }
+}
+
+/* Contenedor de la página */
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Estilo del título */
+h1 {
+    font-size: 30px; /* Tamaño de letra más pequeño para el título */
+    color: #FF6347; /* Rojo tomate para resaltar */
+    margin-bottom: 20px; /* Reducido el margen */
+}
+
+/* Contenedor de los botones de selección */
+.button-container {
+    display: flex;
+    justify-content: center; /* Centra los botones */
+    gap: 15px; /* Reduje el espacio entre botones */
+    margin-bottom: 20px;
+}
+
+/* Estilo de los botones principales */
+button {
+    padding: 12px 25px; /* Ajusté el tamaño de los botones */
+    font-size: 16px; /* Reducí el tamaño de la fuente */
+    cursor: pointer;
+    border-radius: 8px;
+    border: none;
+    background-color: #FF4500; /* Naranja brillante para los botones */
+    color: white; /* Texto blanco */
+    transition: background-color 0.3s ease;
+    width: 200px; /* Tamaño fijo de los botones */
+}
+
+/* Efecto al pasar el cursor por encima */
+button:hover {
+    background-color: #FF6347; /* Rojo tomate al pasar el mouse */
+    color: white;
+}
+
+/* Estilo de los resultados */
+.result {
+    margin-top: 20px;
+    font-weight: bold;
+    font-size: 18px; /* Reducido el tamaño de la fuente */
+}
+
+/* Mensajes de felicitación o error */
+.congratulations {
+    color: #32CD32; /* Verde brillante para felicitaciones */
+}
+
+.error {
+    color: #DC143C; /* Rojo para error */
+}
+
+/* Ocultar el botón de "Generar Problemas" y "Calificar" al principio */
+#generate-btn, #grade-btn, #back-btn {
+    display: inline-block;
+    margin-top: 20px;
+    width: 200px; /* Tamaño fijo para los botones */
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #4CAF50; /* Color de fondo verde */
+    color: white;
+    font-size: 16px; /* Reducido el tamaño de la fuente */
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* Efecto de hover para botones "Generar", "Calificar", "Regresar" */
+#generate-btn:hover, #grade-btn:hover, #back-btn:hover {
+    background-color: #45a049; /* Efecto al pasar el mouse */
+}
+
+/* Fondo suave y colorido para la página */
+#problems {
+    margin-top: 30px;
+}
