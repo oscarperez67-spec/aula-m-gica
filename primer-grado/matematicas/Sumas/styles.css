@@ -1,0 +1,123 @@
+body {
+    font-family: 'Fredericka the Great', cursive;
+    background-color: #f8f9fa;
+    color: #333;
+    text-align: center;
+}
+
+header {
+    background-color: #ffcc00;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: 2.5em;
+    color: #fff;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 10px;
+    font-size: 1.2em;
+    background-color: #ff9900;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #e68a00;
+}
+
+#sum-container {
+    margin: 20px;
+}
+
+#sum {
+    font-size: 2em;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#sum img {
+    width: 20vw; /* Ajusta el tamaño de las imágenes de la operación al ancho de la ventana */
+    max-width: 160px; /* Limita el tamaño máximo */
+    margin: 0 5px;
+}
+
+#answers {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.answer-btn {
+    padding: 10px;
+    font-size: 1.2em;
+    background-color: #ffffff;
+    border: 2px solid #ff9900;
+    border-radius: 10px;
+    cursor: pointer;
+    width: 160px;
+    height: 160px; /* Ajustar el tamaño de los botones */
+}
+
+.answer-btn img {
+    width: 20vw;  /* Ajuste dinámico del tamaño de las imágenes de las respuestas */
+    max-width: 140px;  /* Limitar el tamaño máximo de las imágenes */
+    height: auto; /* Mantener la proporción */
+}
+
+.answer-btn:hover {
+    background-color: #f0f0f0;
+}
+
+#score {
+    margin-top: 20px;
+    font-size: 1.5em;
+}
+
+#final-score {
+    margin-top: 40px;
+}
+
+#final-message {
+    font-size: 1.8em;
+    font-weight: bold;
+}
+
+#medal {
+    width: 100px;
+    margin-top: 20px;
+}
+
+#restartBtn {
+    padding: 15px;
+    font-size: 1.5em;
+    background-color: #ff9900;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    width: 200px;  /* Definir un tamaño fijo para el botón */
+    display: block;
+    margin-left: auto;
+    margin-right: auto; /* Esto centra el botón */
+}
+
+@media (max-width: 600px) {
+    .answer-btn {
+        width: 100px;
+        height: 100px;
+    }
+
+    #sum img {
+        width: 15vw; /* Aumenta el tamaño de las imágenes de la operación en pantallas pequeñas */
+    }
+}
