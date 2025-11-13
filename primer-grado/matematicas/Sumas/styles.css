@@ -69,7 +69,7 @@ button:hover {
 }
 
 .answer-btn img {
-    width: 20vw;  /* Ajuste dinámico del tamaño de las imágenes de las respuestas */
+    width: 18vw;  /* Ajuste dinámico del tamaño de las imágenes de las respuestas */
     max-width: 140px;  /* Limitar el tamaño máximo de las imágenes */
     height: auto; /* Mantener la proporción */
 }
