@@ -1,0 +1,155 @@
+body {
+    font-family: 'Fredoka', sans-serif;
+    text-align: center;
+    background-image: url('imagenes/imagen-fondo.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+    color: #333;
+}
+
+/* Asegúrate de que la ruleta tenga una posición relativa */
+.ruleta-container {
+    position: relative;  /* Asegura que la flecha se posicione dentro de este contenedor */
+    display: inline-block; /* Mantiene la ruleta en su tamaño adecuado */
+}
+
+
+.ruleta {
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    transition: transform 3s cubic-bezier(0.42, 0, 0.58, 1);
+}
+
+/* Ajuste para la flecha, asegurando que se quede fija al lado de la ruleta */
+.flecha {
+    position: absolute;
+    top: 40%;  /* Centra la flecha verticalmente dentro de la ruleta */
+    left: -17%;  /* Ajusta la posición para que quede al lado de la ruleta */
+    transform: translateY(-50%);  /* Alinea la flecha en el centro verticalmente */
+    width: 50px;
+    height: 50px;
+}
+
+button {
+    margin-top: 20px;
+    font-size: 1.2em;
+    padding: 15px 30px;
+    background-color: #FFB066;
+    border: none;
+    cursor: pointer;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+button:hover {
+    background-color: #FF8C00;
+    transform: scale(1.1);
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+#imagenesContainer {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+/* Tamaño de las imágenes de los animales */
+.animales-container img {
+    width: 150px;  /* Asegura que todas las imágenes de los animales tengan el mismo tamaño */
+    height: 150px;  /* Asegura que todas las imágenes de los animales tengan la misma altura */
+    object-fit: cover; /* Ajusta la imagen para que no se deforme */
+    border: 3px solid #FF8C00;
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+/* Efecto de agrandamiento y sombra al hacer clic en la imagen */
+.animales-container img:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Mover las imágenes de los animales hacia abajo y separarlas */
+.animales-container {
+    margin-top: 30px;  /* Ajusta el valor para mover las imágenes hacia abajo */
+    display: flex;
+    flex-wrap: wrap;  /* Permite que las imágenes se acomoden en varias filas si es necesario */
+    justify-content: center;  /* Centra las imágenes */
+    gap: 20px;  /* Separa las imágenes un poco más entre sí */
+}
+
+#avatarContainer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+#avatarGanador {
+    width: 100px;  /* Asegurémonos de que tenga un tamaño adecuado */
+    height: 100px;
+    border-radius: 50%;  /* Hacerlo redondo */
+    margin-top: 20px;  /* Separarlo un poco de la parte superior */
+    display: block;  /* Asegurarnos de que esté visible */
+    margin-left: auto;
+    margin-right: auto;  /* Centrado horizontal */
+}
+
+
+#avatar-selection {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.avatar {
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+    border: 2px solid #FF8C00;
+    border-radius: 50%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.avatar:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.selected-avatar {
+    width: 80px;
+    height: 80px;
+    margin-top: -60px;
+    border-radius: 50%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#numeroImagen {
+    width: 150px;  /* Tamaño de la imagen del número ganador */
+    height: auto;
+    border: 4px solid #FF8C00;
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+#numeroImagen:hover {
+    transform: scale(1.1);  /* Aumento de tamaño al hacer clic */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+#numeroImagenContainer img:hover {
+    transform: scale(1.1);  /* Agrandar la imagen al pasar el ratón */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);  /* Sombra cuando se agranda */
+}
