@@ -152,7 +152,7 @@ const checkAnswer = (selectedAnswer, correctAnswer, btnClicked) => {
     setTimeout(() => {
         answerBtns.forEach(btn => btn.disabled = false); // Re-enable buttons for the next sum
         generateSum(); // Generate new sum
-    }, 100);
+    }, 500);
 };
 
 // Show final score and restart button
