@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ejercicios de Matemáticas</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<h1>Ejercicios de Matemáticas</h1>
+
+<div class="box-opciones">
+  <label><input type="checkbox" id="suma" onchange="mostrarOpciones()"> Suma</label>
+  <select id="nivelSuma" style="display:none;">
+    <option value="1">Unidades</option>
+    <option value="2">Decenas</option>
+    <option value="3">Centenas</option>
+    <option value="4">Millares</option>
+  </select>
+
+  <label><input type="checkbox" id="resta" onchange="mostrarOpciones()"> Resta</label>
+  <select id="nivelResta" style="display:none;">
+    <option value="1">Unidades</option>
+    <option value="2">Decenas</option>
+    <option value="3">Centenas</option>
+    <option value="4">Millares</option>
+  </select>
+
+  <label><input type="checkbox" id="multiplicacion" onchange="mostrarOpciones()"> Multiplicación</label>
+  <select id="nivelMultiplicacion" style="display:none;">
+    <option value="1">Unidades</option>
+    <option value="2">Decenas</option>
+    <option value="3">Centenas</option>
+  </select>
+
+  <br/><br/>
+  <label for="cantidad">Cantidad de ejercicios (10 a 50):</label>
+  <input type="number" id="cantidad" min="10" max="50" value="10" /><br/><br/>
+
+  <button onclick="generarEjercicios()">Generar Ejercicios</button>
+</div>
+
+<div id="container"></div>
+
+<button id="botonCalificar" onclick="calificar()">Calificar</button>
+<button id="botonReiniciar" onclick="reiniciarTodo()">🔄 Reiniciar</button>
+
+<div id="resultado"></div>
+
+<script>
+let ejerciciosGenerados = [];
+
+function mostrarOpciones() {
+  document.getElementById("nivelSuma").style.display = document.getElementById("suma").checked ? "inline-block" : "none";
+  document.getElementById("nivelResta").style.display = document.getElementById("resta").checked ? "inline-block" : "none";
+  document.getElementById("nivelMultiplicacion").style.display = document.getElementById("multiplicacion").checked ? "inline-block" : "none";
+}
+
+function generarNumero(digitos) {
+  const min = Math.pow(10, digitos - 1);
+  const max = Math.pow(10, digitos) - 1;
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function obtenerEtiquetasYNumero(numero) {
+  const etiquetas = ['M', 'C', 'D', 'U'];
+  const colores = {
+    'U': 'blue',
+    'D': 'red',
+    'C': 'green',
+    'M': 'purple'
+  };
+
+  const numStr = numero.toString();
+  const len = numStr.length;
+
+  let etiquetaHTML = '<div class="fila"><span class="celda">&nbsp;</span>';
+  let numeroHTML = '<div class="fila"><span class="celda">&nbsp;</span>';
+
+  for (let i = 0; i < len; i++) {
+    const letra = etiquetas[etiquetas.length - len + i];
+    etiquetaHTML += `<span class="celda" style="color:${colores[letra]}">${letra}</span>`;
+  }
+
+  for (let i = 0; i < len; i++) {
+    const digito = numStr[i];
+    numeroHTML += `<span class="celda">${digito}</span>`;
+  }
+
+  etiquetaHTML += '</div>';
+  numeroHTML += '</div>';
+
+  return etiquetaHTML + numeroHTML;
+}
+
+function generarEjercicios() {
+  const tipos = [];
+  if (document.getElementById("suma").checked) tipos.push("+");
+  if (document.getElementById("resta").checked) tipos.push("−");
+  if (document.getElementById("multiplicacion").checked) tipos.push("×");
+
+  const niveles = {
+    "+": parseInt(document.getElementById("nivelSuma").value),
+    "−": parseInt(document.getElementById("nivelResta").value),
+    "×": parseInt(document.getElementById("nivelMultiplicacion").value)
+  };
+
+  const cantidad = parseInt(document.getElementById("cantidad").value);
+  if (tipos.length === 0) {
+    alert("Selecciona al menos un tipo de operación.");
+    return;
+  }
+  if (isNaN(cantidad) || cantidad < 10 || cantidad > 50) {
+    alert("Ingresa una cantidad válida entre 10 y 50.");
+    return;
+  }
+
+  const contenedor = document.getElementById("container");
+  contenedor.innerHTML = "";
+  document.getElementById("resultado").innerHTML = "";
+  ejerciciosGenerados = [];
+
+  for (let i = 0; i < cantidad; i++) {
+    const op = tipos[Math.floor(Math.random() * tipos.length)];
+    const nivel = niveles[op];
+    let num1 = generarNumero(nivel);
+    let num2 = generarNumero(nivel > 1 ? nivel - 1 : 1);
+    if (op === "−" && num2 > num1) [num1, num2] = [num2, num1];
+
+    let resultadoCorrecto;
+    switch (op) {
+      case "+": resultadoCorrecto = num1 + num2; break;
+      case "−": resultadoCorrecto = num1 - num2; break;
+      case "×": resultadoCorrecto = num1 * num2; break;
+    }
+
+    ejerciciosGenerados.push(resultadoCorrecto);
+
+    const ejercicio = document.createElement("div");
+    ejercicio.className = "exercise";
+
+    const maxLen = Math.max(num1.toString().length, num2.toString().length, resultadoCorrecto.toString().length);
+    const etiquetas = obtenerEtiquetasYNumero(num1);
+    const simbolo = `<span class="celda simbolo-operacion">${op}</span>`;
+
+    const num2Str = num2.toString().padStart(maxLen, ' ');
+    let num2HTML = '';
+    for (let j = 0; j < num2Str.length; j++) {
+      const digito = num2Str[j] === ' ' ? '&nbsp;' : num2Str[j];
+      num2HTML += `<span class="celda">${digito}</span>`;
+    }
+
+    let lineaHTML = '<div class="fila"><span class="celda">&nbsp;</span>';
+    for (let j = 0; j < maxLen; j++) {
+      lineaHTML += `<span class="celda"><div class="celda-linea"></div></span>`;
+    }
+    lineaHTML += '</div>';
+
+    let inputHTML = '<div class="fila"><span class="celda">&nbsp;</span>';
+    for (let j = 0; j < maxLen; j++) {
+      inputHTML += `<span class="celda celda-input"><input type="text" inputmode="numeric" class="respuesta respuesta-unica" /></span>`;
+    }
+    inputHTML += '</div>';
+
+    const respuestaHTML = lineaHTML + inputHTML;
+
+    ejercicio.innerHTML = `
+      <div class="operacion">
+        ${etiquetas}
+        <div class="fila">${simbolo}${num2HTML}</div>
+        ${respuestaHTML}
+      </div>
+    `;
+
+    contenedor.appendChild(ejercicio);
+  }
+}
+
+function calificar() {
+  const respuestas = document.querySelectorAll(".operacion");
+  let correctas = 0;
+  let errores = [];
+
+  respuestas.forEach((op, index) => {
+    const inputs = op.querySelectorAll("input.respuesta-unica");
+    const respuestaStr = Array.from(inputs).map(i => i.value || "").join("");
+    const respuesta = parseInt(respuestaStr);
+    const correcto = ejerciciosGenerados[index];
+
+    if (respuesta === correcto) {
+      inputs.forEach(i => i.style.borderColor = "green");
+      correctas++;
+    } else {
+      inputs.forEach(i => i.style.borderColor = "red");
+      const filas = op.querySelectorAll(".fila");
+      const operacionTexto = filas.length >= 3 ? filas[1].innerText.trim() + " " + filas[2].innerText.trim() : '';
+      errores.push(
+        `❌ <strong>Ejercicio ${index + 1}</strong>: <code>${operacionTexto} = ?</code><br />
+         Tu respuesta: <strong>${isNaN(respuesta) ? 'vacía' : respuesta}</strong> – Correcta: <strong>${correcto}</strong>`
+      );
+    }
+  });
+
+  const calificacion = (correctas / ejerciciosGenerados.length) * 10;
+  let mensaje = `
+    Respuestas correctas: ${correctas}/${ejerciciosGenerados.length}<br />
+    Calificación: ${calificacion.toFixed(1)} / 10
+  `;
+
+  if (calificacion === 10) mensaje += `<div class="mensaje-final oro">🥇 ¡Medalla de Oro!</div>`;
+  else if (calificacion >= 9) mensaje += `<div class="mensaje-final plata">🥈 ¡Medalla de Plata!</div>`;
+  else if (calificacion >= 8) mensaje += `<div class="mensaje-final bronce">🥉 ¡Medalla de Bronce!</div>`;
+  else mensaje += `<div class="mensaje-final intentalo">💪 Vuelve a intentarlo, ¡tú puedes!</div>`;
+
+  if (errores.length > 0) {
+    mensaje += `<div style="margin-top: 15px; text-align: left;"><strong>Errores:</strong><ul>`;
+    errores.forEach(e => mensaje += `<li style="margin-bottom: 8px;">${e}</li>`);
+    mensaje += `</ul></div>`;
+  }
+
+  document.getElementById("resultado").innerHTML = mensaje;
+}
+
+function reiniciarTodo() {
+  document.getElementById("suma").checked = false;
+  document.getElementById("resta").checked = false;
+  document.getElementById("multiplicacion").checked = false;
+  document.getElementById("cantidad").value = 10;
+  document.getElementById("container").innerHTML = "";
+  document.getElementById("resultado").innerHTML = "";
+  ejerciciosGenerados = [];
+  mostrarOpciones();
+  window.scrollTo(0, 0);
+}
+</script>
+
+<footer>
+  <div style="margin-top: 1em; display: flex; justify-content: center;">
+    <a href="../matematicas.html" style="
+      background-color: #4A148C;
+      color: white;
+      padding: 0.7em 1.5em;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.1em;
+      display: inline-block;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+    " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+      ⬅️ Regresar a Menú Principal
+    </a>
+  </div>
+</footer>
+
+</body>
+</html>
