@@ -1,0 +1,208 @@
+/* --- CONFIGURACIÓN GENERAL --- */
+body {
+    font-family: 'Verdana', sans-serif;
+    background-color: #e0f7fa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    height: 100vh;
+    user-select: none;
+    overflow: hidden;
+    touch-action: none;
+}
+
+h1 {
+    color: #0097e6;
+    text-shadow: 2px 2px 0px #fff;
+    margin: 10px 0;
+    font-size: 1.5rem;
+}
+
+/* --- CONTENEDOR --- */
+#game-wrapper {
+    position: relative;
+    width: 95%; 
+    max-width: 450px; /* Un poco más ancho para que quepan las bolas grandes */
+    height: 65vh; 
+    min-height: 400px;
+}
+
+#game-container {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box; 
+    /* Bordes gruesos */
+    border-left: 15px solid #0097e6;
+    border-right: 15px solid #0097e6;
+    border-bottom: 15px solid #0097e6;
+    background: repeating-linear-gradient(
+        45deg, #ffffff, #ffffff 10px, #f0f8ff 10px, #f0f8ff 20px
+    );
+    border-radius: 0 0 30px 30px; /* Bordes más redondeados */
+    overflow: hidden;
+    position: relative;
+}
+
+#limit-line {
+    position: absolute;
+    top: 90px; /* Bajamos la línea porque las bolas son más grandes */
+    left: 0;
+    width: 100%;
+    height: 2px;
+    border-top: 3px dashed #ff4757;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* --- PELOTAS (GIGANTES) --- */
+.ball {
+    position: absolute;
+    /* El tamaño base se define en JS, pero ponemos un default aquí */
+    width: 70px; 
+    height: 70px;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: inset -10px -10px 20px rgba(0,0,0,0.2); /* Sombra más fuerte */
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 28px; /* Número más grande */
+    color: transparent;
+    background-size: cover;
+    background-position: center;
+    touch-action: manipulation;
+}
+
+.ball.fallback {
+    color: white !important;
+    text-shadow: 2px 2px 4px black;
+}
+
+.ball.selected {
+    border: 6px solid #fbc531; /* Borde de selección más grueso */
+    box-shadow: 0 0 20px #fbc531;
+    transform: scale(1.05);
+    z-index: 10;
+}
+
+/* --- HUD --- */
+#hud {
+    margin-top: 10px;
+    background: white;
+    padding: 10px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    width: 95%; 
+    max-width: 450px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.target-box { font-size: 1.1rem; color: #333; margin-bottom: 5px; }
+#target-number { font-size: 2rem; color: #e84118; font-weight: bold; }
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1rem;
+    color: #7f8fa6;
+    padding: 0 10px;
+}
+
+#current-sum-display { color: #273c75; font-weight: bold; font-size: 1.2rem; }
+
+/* Overlay y demás igual... */
+#overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.85); color: white;
+    border-radius: 0 0 30px 30px;
+    z-index: 100;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    text-align: center;
+}
+#overlay button {
+    background-color: #44bd32; border: none; padding: 15px 40px;
+    color: white; font-size: 1.5rem; border-radius: 50px; margin-top: 20px;
+}
+
+/* --- PODERES ESPECIALES --- */
+
+/* Pelota Bomba */
+.ball.bomb {
+    background-color: #2d3436 !important; /* Negro grisáceo */
+    color: white !important;
+    border: 3px solid #ff7675;
+    background-image: none !important; /* Ignora imagen si la hubiera */
+    box-shadow: 0 0 15px #d63031;
+}
+/* Emoji bomba pseudo-elemento */
+.ball.bomb::after {
+    content: "💣";
+    font-size: 40px;
+}
+
+/* Pelota Hielo */
+.ball.ice {
+    background-color: #74b9ff !important; /* Azul hielo */
+    color: white !important;
+    border: 3px solid #fff;
+    background-image: none !important;
+    box-shadow: 0 0 15px #81ecec;
+}
+/* Emoji hielo pseudo-elemento */
+.ball.ice::after {
+    content: "❄️";
+    font-size: 40px;
+}
+
+/* Efecto visual de congelado en el contenedor */
+.frozen-effect {
+    box-shadow: inset 0 0 50px #74b9ff;
+    transition: box-shadow 0.5s;
+}
+
+/* --- ESTILOS PARA CONFETI/PARTÍCULAS --- */
+.confetti {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    opacity: 0;
+    z-index: 1000;
+    pointer-events: none;
+    /* La animación se define con variables JS para el destino */
+    animation: fall-fade 0.8s forwards; 
+}
+
+@keyframes fall-fade {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        /* Los valores --confetti-x/y se inyectan con JavaScript */
+        transform: translate(var(--confetti-x), var(--confetti-y)) scale(0.1);
+        opacity: 0;
+    }
+}
+
+/* --- TEMAS DEL CONTENEDOR (#game-wrapper) --- */
+/* Tema 0: Default (se mantendrá el que tengas) */
+
+#game-wrapper.theme-1 {
+    background: linear-gradient(135deg, #5dade2, #1f618d); /* Tema Azul Océano */
+}
+#game-wrapper.theme-2 {
+    background: linear-gradient(135deg, #f1c40f, #e67e22); /* Tema Desierto */
+}
+#game-wrapper.theme-3 {
+    background: linear-gradient(135deg, #1abc9c, #16a085); /* Tema Esmeralda */
+}
+#game-wrapper.theme-4 {
+    background: linear-gradient(135deg, #f39c12, #e74c3c); /* Tema Fuego */
+}

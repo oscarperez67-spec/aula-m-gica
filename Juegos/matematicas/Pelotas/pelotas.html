@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sumando Pelotas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>Sumando Pelotas</h1>
+
+    <div id="game-wrapper">
+        <div id="game-container">
+            <div id="limit-line"></div>
+            </div>
+        
+        <div id="overlay" class="flex-center">
+            <h2 id="overlay-title">¡Bienvenido!</h2>
+            <p id="overlay-msg">Suma los números indicados.</p>
+            <button id="start-btn">Jugar</button>
+        </div>
+    </div>
+
+    <div id="hud">
+        <div class="target-box">
+            Objetivo: <span id="target-number">-</span>
+        </div>
+        <div class="info-row">
+            <div class="score-box">Aciertos: <span id="score">0</span></div>
+            <div class="current-sum">Suma: <span id="current-sum-display">0</span></div>
+        </div>
+    </div>
+
+<audio id="snd-click" src="click.mp3"></audio>
+<audio id="snd-match" src="match.mp3"></audio>
+<audio id="snd-lose" src="lose.mp3"></audio>
+<audio id="snd-explosion" src="explosion.mp3"></audio>
+<audio id="snd-ice" src="ice.mp3"></audio>
+
+    <script src="script.js"></script>
+
+  <div style="margin-top: 2em;">
+    <a href="../matematicas.html" style="
+      background-color: #4A148C;
+      color: white;
+      padding: 0.7em 1.5em;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.1em;
+      display: inline-block;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+    " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+      ⬅️ Regresar a Menú Principal
+    </a>
+  </div>
+
+</body>
+</html>
