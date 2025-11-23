@@ -1,0 +1,206 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  padding: 20px;
+  background: linear-gradient(135deg, #d0f0ff, #fce4ec);
+  color: #333;
+}
+
+h1 {
+  font-size: 34px;
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.box-opciones {
+  background: #ffffffdd;
+  border: 2px solid #ccc;
+  border-radius: 12px;
+  padding: 15px 20px;
+  margin: 20px auto;
+  max-width: 600px;
+  box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.box-opciones label {
+  font-size: 26px;
+  margin-right: 15px;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.box-opciones input[type="number"],
+.box-opciones select {
+  font-size: 22px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid #aaa;
+  margin: 5px;
+}
+
+.box-opciones button {
+  font-size: 24px;
+  padding: 10px 25px;
+  margin-top: 10px;
+  cursor: pointer;
+  border-radius: 10px;
+  border: none;
+  background-color: #2196F3;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.box-opciones button:hover {
+  background-color: #1976d2;
+}
+
+#container {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.exercise {
+  background: white;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  padding: 10px;
+  font-family: monospace;
+  font-size: 28px;
+  text-align: right;
+  box-shadow: 1px 1px 6px rgba(0,0,0,0.1);
+}
+
+.operacion {
+  margin-bottom: 10px;
+}
+
+.fila {
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 15px;
+  font-family: monospace;
+  font-size: 24px;
+  margin-bottom: 2px;
+}
+
+.celda {
+  width: 30px;
+  text-align: center;
+  position: relative;
+}
+
+.simbolo-operacion {
+  margin-right: 5px;
+  font-weight: bold;
+}
+
+.celda-linea {
+  border-top: 2px solid black;
+  height: 0;
+  margin-bottom: 2px;
+  margin-top: 5px;
+}
+
+.celda-input input {
+  font-size: 24px;
+  font-family: monospace;
+  text-align: right;
+  background-color: white;
+  border: 1px solid #ccc;
+  width: 30px;
+  height: 30px;
+  margin-top: -16px;
+  padding: 0;
+}
+
+input.respuesta:focus,
+.celda-input input:focus {
+  outline: none;
+}
+
+#botonCalificar {
+  display: block;
+  margin: 40px auto 10px;
+  padding: 12px 30px;
+  font-size: 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#botonCalificar:hover {
+  background-color: #45a049;
+}
+
+#botonReiniciar {
+  display: block;
+  margin: 10px auto 20px;
+  padding: 12px 30px;
+  font-size: 20px;
+  background-color: #ff9800;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#botonReiniciar:hover {
+  background-color: #e68900;
+}
+
+#resultado {
+  margin-top: 20px;
+  font-size: 22px;
+  text-align: center;
+}
+
+.mensaje-final {
+  padding: 20px;
+  border-radius: 12px;
+  font-size: 22px;
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+.oro {
+  background-color: #ffe066;
+  color: #b8860b;
+}
+
+.plata {
+  background-color: #d9e0f5;
+  color: #5c6bc0;
+}
+
+.bronce {
+  background-color: #f5cba7;
+  color: #a04000;
+}
+
+.intentalo {
+  background-color: #f8d7da;
+  color: #c62828;
+}
+
+#botonMenu {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 18px;
+  background-color: #9c27b0;
+  color: white;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: background-color 0.3s;
+  margin-bottom: 30px;
+}
+
+#botonMenu:hover {
+  background-color: #7b1fa2;
+}
