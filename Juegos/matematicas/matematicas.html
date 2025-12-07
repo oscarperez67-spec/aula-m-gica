@@ -1,0 +1,116 @@
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Juegos de Matemáticas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet"> <!-- Carga correcta de la fuente -->
+  <link rel="stylesheet" href="style.css"> <!-- Tu archivo CSS -->
+
+  <style>
+    body {
+      background: linear-gradient(to right, #fefcea, #f1da36);
+      font-family: 'Fredoka', sans-serif; /* Asegurando que se use la fuente Fredoka */
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #ff6347;
+      font-size: 3em;
+      margin-bottom: 30px;
+      text-shadow: 2px 2px #fff;
+    }
+
+    .enlaces {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    .card {
+      background-color: #fff8dc;
+      border: 4px dashed #ffa500;
+      border-radius: 20px;
+      padding: 10px;
+      width: 220px;
+      transition: transform 0.3s ease;
+      box-shadow: 4px 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+      cursor: pointer;
+    }
+
+    .card img {
+      width: 200px;
+      height: auto;
+      border-radius: 15px;
+    }
+
+    .titulo {
+      margin-top: 10px;
+      font-size: 1.2em;
+      color: #333;
+    }
+
+    footer {
+      margin-top: 50px;
+      font-size: 0.9em;
+      color: #666;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        font-family: 'Fredoka', sans-serif;
+        font-size: 1.2em;
+      }
+      .card img {
+        width: 100%;
+        height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Juegos de Matemáticas</h1>
+
+  <div class="enlaces">
+    <!-- ⚽️ Sumando Pelotas ⚽️ -->
+    <a href="Pelotas/pelotas.html" class="card">
+      <img src="imagenes/pelotas.png" alt="Sumando Pelotas">
+      <div class="titulo">Sumando Pelotas</div>
+    </a>
+
+    <!-- ❎ Plinko Matemático ❎ -->
+    <a href="Plinko/plinko.html" class="card">
+      <img src="imagenes/plinko.png" alt="Sumando Pelotas">
+      <div class="titulo">Plinko Matemático</div>
+    </a>
+
+  </div>
+
+  <footer>
+    © 2025 Juegos de Matemáticas · Página de inicio
+  </footer>
+
+  <div style="margin-top: 2em;">
+    <a href="../../index.html" style="
+      background-color: #4A148C;
+      color: white;
+      padding: 0.7em 1.5em;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.1em;
+      display: inline-block;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+    " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+      ⬅️ Regresar a Menú Principal
+    </a>
+  </div>
+
+</body>
+</html>
