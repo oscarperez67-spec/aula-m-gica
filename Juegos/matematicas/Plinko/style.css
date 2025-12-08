@@ -1,0 +1,303 @@
+/* Estilos Generales y Reseteo Básico */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f8ff; /* Azul claro muy suave */
+    color: #333; /* Texto oscuro */
+    margin: 0;
+    padding: 0;
+    /* CAMBIO CLAVE: Permite que el contenido se apile normalmente y NO use flexbox para alinear */
+    display: block; 
+    /* Cambiamos las propiedades de centrado vertical por un padding inferior */
+    /* justify-content: center; */
+    /* align-items: flex-start; */
+    min-height: 100vh;
+    padding-bottom: 50px; /* Espacio para el botón de abajo */
+}
+
+/* Agregamos una clase para centrar el botón de regresar horizontalmente */
+.center-footer {
+    text-align: center;
+    width: 100%;
+    margin-top: 2em; /* Espacio superior */
+}
+
+/* El .container se mantiene igual */
+.container {
+    width: 95%;
+    max-width: 600px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+/* ... (el resto del CSS se mantiene igual) ... */
+
+h1 {
+    color: #4682b4; /* Azul Acero */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    margin-bottom: 20px;
+    font-size: 2.2em;
+}
+
+.card {
+    background-color: #ffffff; 
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra limpia */
+    margin-bottom: 20px;
+    border: 3px solid #3cb371; /* Borde verde */
+}
+
+/* Estilos de Botones */
+button {
+    background-color: #ff6347; /* Rojo/Naranja estándar */
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1em;
+    margin-top: 10px;
+    transition: background-color 0.3s, transform 0.1s;
+    width: 100%;
+    max-width: 300px;
+    display: inline-block;
+    box-shadow: 0 4px 0 #cd5c5c; /* Efecto 3D suave */
+}
+
+button:hover {
+    background-color: #ff8c61;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #cd5c5c;
+}
+
+button:disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+/* ------------------------------------- */
+/* SECCIÓN DE CONFIGURACIÓN */
+/* ------------------------------------- */
+.setting-group {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-align: left;
+}
+
+.setting-group h3 {
+    margin-top: 0;
+    color: #3cb371;
+    text-shadow: none; /* Eliminado resplandor */
+    font-size: 1.2em;
+}
+
+.setting-group label {
+    display: block;
+    margin: 5px 0;
+    font-size: 1em;
+    color: #333;
+}
+
+/* Nuevos estilos para la selección de dificultad */
+.operation-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.difficulty-selector {
+    flex-grow: 1;
+    margin-left: 20px;
+}
+
+.difficulty-selector select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    color: #333;
+    font-size: 1em;
+}
+
+
+/* ------------------------------------- */
+/* SECCIÓN DEL JUEGO Y PLINKO */
+/* ------------------------------------- */
+.score-board {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #fffacd;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    font-weight: bold;
+    color: #a0522d;
+    text-shadow: none; /* Eliminado resplandor */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#plinko-area {
+    background-color: #add8e6; /* Vuelto al azul suave */
+    border: 5px solid #4682b4; /* Borde Azul Acero */
+    border-radius: 10px;
+    height: 350px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+/* Contenedor del Canvas de Matter.js */
+#plinko-canvas-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 50px); 
+    z-index: 1;
+}
+
+/* Ranuras de Aterrizaje (Elementos HTML) */
+.slot-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-around;
+    height: 50px;
+    z-index: 2;
+}
+
+.slot {
+    flex-grow: 1;
+    margin: 0 1px; 
+    background-color: #3cb371;
+    border: 2px solid #2e8b57;
+    border-top: none;
+    line-height: 50px;
+    color: white;
+    font-weight: bold;
+    font-size: 0.9em; 
+    transition: all 0.2s; 
+    text-shadow: none;
+}
+
+/* Ranura seleccionada: color visible y sin glow */
+.slot.selected {
+    background-color: #ffd700;
+    color: #000;
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.7); /* Sombra suave para destacar */
+    transform: scale(1.05);
+}
+
+/* ------------------------------------- */
+/* ÁREA DEL PROBLEMA Y RESPUESTA */
+/* ------------------------------------- */
+#problem-area {
+    padding: 25px;
+}
+
+#plinko-selection {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #ff6347;
+    text-shadow: none; /* Eliminado resplandor */
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.selected-num {
+    padding: 5px 15px;
+    background-color: #ffead8;
+    border-radius: 8px;
+    min-width: 50px;
+    text-align: center;
+    border: 2px solid #ff6347;
+    text-shadow: none;
+}
+
+#user-answer {
+    width: 80%;
+    padding: 20px;
+    font-size: 1.8em;
+    border: 3px solid #ccc;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 10px;
+    transition: border-color 0.3s;
+    background-color: #fff;
+    color: #333;
+}
+
+#user-answer:focus {
+    border-color: #4682b4;
+    box-shadow: 0 0 5px #4682b4;
+    outline: none;
+}
+
+/* Mensajes de Feedback */
+.message {
+    font-weight: bold;
+    font-size: 1.2em;
+    margin: 15px 0;
+    text-shadow: none; /* Eliminado resplandor */
+}
+
+.correct {
+    color: #3cb371; 
+}
+
+.incorrect {
+    color: #ff4500; 
+}
+
+.time-up {
+    color: #8a2be2; /* Azul Violeta */
+}
+
+/* Utilidades */
+.hidden {
+    display: none !important;
+}
+
+/* MEDIAS QUERIES (Ajuste para Móviles) */
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.8em;
+    }
+
+    .card {
+        padding: 15px;
+        border-radius: 10px;
+    }
+    
+    .score-board p {
+        font-size: 0.9em;
+        margin: 5px;
+    }
+
+    #plinko-selection {
+        font-size: 2em;
+    }
+
+    #user-answer {
+        font-size: 1.5em;
+        padding: 15px;
+    }
+
+    button {
+        padding: 10px;
+        font-size: 1em;
+    }
+}
