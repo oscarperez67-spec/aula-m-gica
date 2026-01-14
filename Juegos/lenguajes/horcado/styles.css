@@ -1,0 +1,303 @@
+/* Definición de variables de colores */
+:root{
+  --bg: #fff7fb;
+  --card: rgba(255,255,255,.88);
+  --text: #1f2937;
+  --muted: #6b7280;
+
+  --a: #4d96ff;
+  --b: #06d6a0;
+  --c: #ffd166;
+  --d: #ff6b6b;
+
+  --shadow: 0 12px 26px rgba(0,0,0,.12);
+  --radius: 22px;
+}
+
+/* General: Aseguramos que todas las letras estén en minúsculas */
+*{ box-sizing: border-box; }
+
+body{
+  margin:0;
+  min-height: 100vh;
+  color: var(--text);
+  font-family: "Nunito", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background:
+    radial-gradient(900px 380px at 10% 0%, rgba(77,150,255,.18), transparent 60%),
+    radial-gradient(900px 380px at 90% 15%, rgba(255,107,107,.16), transparent 60%),
+    radial-gradient(900px 380px at 50% 100%, rgba(6,214,160,.14), transparent 60%),
+    var(--bg);
+  text-transform: none !important; /* Evitar que todo se convierta en mayúsculas */
+}
+
+.container{
+  width: min(1100px, 92vw);
+  margin: 0 auto;
+  padding: 18px 0 44px;
+}
+
+header {
+  display: flex;
+  justify-content: center; /* Centra horizontalmente */
+  text-align: center;      /* Centra el texto */
+  padding: 20px 16px;
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+  position: sticky;
+  top: 10px;
+  z-index: 5;
+}
+
+.header-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+h1{
+  margin:0;
+  font-family: "Baloo 2", cursive;
+  font-size: clamp(28px, 4vw, 36px); /* Más grande para niños */
+  line-height: 1.1;
+}
+
+.main{
+  margin-top: 16px;
+  display:grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.panel{
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+  padding: 16px;
+}
+
+.subtitle{
+  margin:0 0 10px;
+  color: var(--muted);
+  font-weight: 800;
+  font-size: 18px; /* Texto de instrucciones más grande */
+  text-align: center;
+}
+
+.hint{ margin-top: 12px; }
+.hint2{ margin: 0; }
+
+/* Centrar botones de nivel */
+.levelGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  justify-content: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.btn{
+  border:0;
+  cursor:pointer;
+  border-radius: 16px;
+  padding: 12px 12px;
+  font-weight: 900;
+  font-size: 16px;
+  box-shadow: 0 10px 18px rgba(0,0,0,.10);
+  transition: transform .12s ease, box-shadow .12s ease;
+  user-select:none;
+}
+
+.btn:hover{ transform: translateY(-2px); box-shadow: 0 14px 22px rgba(0,0,0,.12); }
+.btn:active{ transform: translateY(0); }
+
+.btn.facil{ background: linear-gradient(135deg, rgba(6,214,160,.95), rgba(77,150,255,.95)); color:white; }
+.btn.medio{ background: linear-gradient(135deg, rgba(255,209,102,.95), rgba(77,150,255,.85)); color:#1f2937; }
+.btn.dificil{ background: linear-gradient(135deg, rgba(255,107,107,.95), rgba(255,209,102,.9)); color:#1f2937; }
+.btn.experto{ background: linear-gradient(135deg, rgba(155,93,229,.95), rgba(77,150,255,.9)); color:white; }
+
+/* Nuevo estilo para el botón de salir */
+.btnExit {
+  border: 0;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: #ff6b6b;
+  color: white;
+  font-weight: 800;
+  font-size: 13px;
+  box-shadow: 0 4px 10px rgba(255,107,107, 0.3);
+  transition: transform 0.1s ease;
+}
+
+.btnExit:hover {
+  transform: scale(1.05);
+  background: #ff5252;
+}
+
+.btnExit:active {
+  transform: scale(0.95);
+}
+
+.gameGrid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  align-items: stretch;
+}
+
+.wordBox{
+  display:flex;
+  flex-direction:column;
+  gap: 12px;
+}
+
+.word{
+  background: rgba(255,255,255,.75);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 10px 18px rgba(0,0,0,.08);
+  min-height: 92px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* Centrar la palabra a adivinar */
+.wordLetters {
+  font-family: "Baloo 2", cursive;
+  font-weight: 800;
+  letter-spacing: .25em; /* Más espacio entre letras */
+  font-size: clamp(32px, 6vw, 50px); /* Palabra mucho más grande */
+  text-align: center;
+}
+
+.statusRow{
+  display:flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items:center;
+  justify-content: space-between;
+}
+
+.pill{
+  display:inline-flex;
+  align-items:center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.72);
+  box-shadow: 0 10px 18px rgba(0,0,0,.08);
+  font-weight: 900;
+  font-size: 14px;
+}
+
+.pill small{
+  font-weight: 900;
+  color: var(--muted);
+}
+
+.figure{
+  background: rgba(255,255,255,.75);
+  border-radius: 18px;
+  padding: 12px;
+  box-shadow: 0 10px 18px rgba(0,0,0,.08);
+  display:flex;
+  flex-direction:column;
+  gap: 10px;
+}
+
+.figureTitle{
+  margin:0;
+  font-family:"Baloo 2", cursive;
+  font-size: 18px;
+}
+
+.svgWrap{
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 14px;
+  background: rgba(255,255,255,.65);
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+}
+
+svg{ width: 100%; height: 100%; }
+
+/* Centrar teclado */
+.alphaGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(45px, 1fr));
+  gap: 10px;
+  max-width: 800px;
+  margin: 15px auto 0;
+}
+
+/* Letras del abecedario más grandes y legibles */
+.letterBtn {
+  border: 0;
+  cursor: pointer;
+  padding: 15px 0; /* Más espacio para tocar */
+  border-radius: 14px;
+  background: rgba(255,255,255,.75);
+  box-shadow: 0 10px 18px rgba(0,0,0,.08);
+  font-weight: 900;
+  font-family: "Baloo 2", cursive;
+  font-size: 24px; /* Aumentado para mejor visión */
+  transition: transform .10s ease;
+  text-transform: lowercase; 
+}
+
+.letterBtn:hover{ transform: translateY(-2px); }
+.letterBtn:active{ transform: translateY(0); }
+
+.letterBtn:disabled{
+  opacity: .35;
+  cursor:not-allowed;
+  transform: none;
+}
+
+.message{
+  font-family: "Baloo 2", cursive;
+  font-weight: 800;
+  font-size: clamp(18px, 3.8vw, 26px);
+  text-align:center;
+  margin: 10px 0 0;
+}
+
+.actions{
+  display:flex;
+  justify-content:center;
+  margin-top: 12px;
+}
+
+.btnReplay{
+  background: linear-gradient(135deg, var(--a), var(--d));
+  color:white;
+  padding: 12px 16px;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 900;
+  border:0;
+  cursor:pointer;
+  box-shadow: 0 12px 18px rgba(0,0,0,.12);
+}
+
+.hidden{ display:none !important; }
+
+@media (max-width: 920px){
+  header{ position: relative; top: auto; }
+  .gameGrid{ grid-template-columns: 1fr; }
+  .alphaGrid{ grid-template-columns: repeat(6, 1fr); }
+}
+
+@media (max-width: 520px){
+  .levelGrid{ grid-template-columns: 1fr 1fr; }
+  .alphaGrid{ grid-template-columns: repeat(5, 1fr); }
+  .wordLetters{ letter-spacing: .14em; }
+}

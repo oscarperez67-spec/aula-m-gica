@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>El Ahorcado</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Nunito:wght@500;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div class="container">
+
+    <header>
+        <div class="header-content">
+          <h1>El Ahorcado</h1>
+          <div class="subtitle">Elige un nivel y adivina la palabra</div>
+        </div>
+    </header>
+
+    <main class="main">
+
+      <!-- Pantalla de dificultad -->
+      <section id="screenLevel" class="panel">
+        <p class="subtitle">Selecciona el nivel:</p>
+
+        <div class="levelGrid">
+          <button class="btn facil"  data-level="facil">Fácil</button>
+          <button class="btn medio"  data-level="medio">Medio</button>
+          <button class="btn dificil" data-level="dificil">Difícil</button>
+          <button class="btn experto" data-level="experto">Experto</button>
+        </div>
+
+        <p class="subtitle hint">
+          Fácil: 1º · Medio: 2º–3º · Difícil: 4º–5º · Experto: 6º
+        </p>
+      </section>
+
+      <!-- Pantalla de juego -->
+      <section id="screenGame" class="panel hidden">
+        <div class="gameGrid">
+
+          <div class="wordBox">
+            <div class="statusRow">
+              <div class="pill"><small>Nivel:</small> <span id="uiLevel">-</span></div>
+              <div class="pill"><small>Errores:</small> <span id="uiErrors">0</span> / 10</div>
+              <button id="btnExit" class="btnExit">✖ Salir</button>
+            </div>
+
+            <div class="word">
+              <div id="uiWord" class="wordLetters">_ _ _ _</div>
+            </div>
+
+            <div>
+              <p class="subtitle">Elige una letra:</p>
+              <div id="alpha" class="alphaGrid"></div>
+            </div>
+
+            <div id="uiMessage" class="message hidden"></div>
+
+            <div class="actions">
+              <button id="btnReplay" class="btnReplay hidden">Jugar de nuevo</button>
+            </div>
+          </div>
+
+          <div class="figure">
+            <p class="figureTitle">Ahorcado</p>
+
+            <div class="svgWrap">
+              <svg viewBox="0 0 260 200" xmlns="http://www.w3.org/2000/svg" aria-label="Figura del ahorcado">
+                <!-- soporte -->
+                <line x1="40" y1="180" x2="220" y2="180" stroke="#111827" stroke-width="6" />
+                <line x1="80" y1="180" x2="80" y2="20"  stroke="#111827" stroke-width="6" />
+                <line x1="80" y1="20"  x2="170" y2="20" stroke="#111827" stroke-width="6" />
+                <line x1="170" y1="20" x2="170" y2="40" stroke="#111827" stroke-width="6" />
+
+                <!-- Partes (10): cabeza, cuerpo, brazo izq, brazo der, pierna izq, pierna der, mano izq, mano der, pie izq, pie der -->
+                <g id="part-head" class="hidden">
+                  <circle cx="170" cy="58" r="18" fill="none" stroke="#111827" stroke-width="6"/>
+                </g>
+
+                <g id="part-body" class="hidden">
+                  <line x1="170" y1="76" x2="170" y2="120" stroke="#111827" stroke-width="6" />
+                </g>
+
+                <g id="part-armL" class="hidden">
+                  <line x1="170" y1="90" x2="145" y2="108" stroke="#111827" stroke-width="6" />
+                </g>
+
+                <g id="part-armR" class="hidden">
+                  <line x1="170" y1="90" x2="195" y2="108" stroke="#111827" stroke-width="6" />
+                </g>
+
+                <g id="part-legL" class="hidden">
+                  <line x1="170" y1="120" x2="152" y2="150" stroke="#111827" stroke-width="6" />
+                </g>
+
+                <g id="part-legR" class="hidden">
+                  <line x1="170" y1="120" x2="188" y2="150" stroke="#111827" stroke-width="6" />
+                </g>
+
+                <g id="part-handL" class="hidden">
+                  <circle cx="142" cy="112" r="6" fill="#111827"/>
+                </g>
+
+                <g id="part-handR" class="hidden">
+                  <circle cx="198" cy="112" r="6" fill="#111827"/>
+                </g>
+
+                <g id="part-footL" class="hidden">
+                  <line x1="152" y1="150" x2="140" y2="150" stroke="#111827" stroke-width="6" stroke-linecap="round"/>
+                </g>
+
+                <g id="part-footR" class="hidden">
+                  <line x1="188" y1="150" x2="200" y2="150" stroke="#111827" stroke-width="6" stroke-linecap="round"/>
+                </g>
+              </svg>
+            </div>
+
+            <p class="subtitle hint2">Tienes 10 oportunidades. Cada error dibuja una parte.</p>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
