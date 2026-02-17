@@ -1,29 +1,25 @@
-let range = 10; // Default to 10
+let range = 10; 
 let correctCount = 0;
 let incorrectCount = 0;
 let totalOperations = 0;
 
-// Select buttons for 10 and 20
+// Elementos del DOM
 const btn10 = document.getElementById('btn10');
 const btn20 = document.getElementById('btn20');
-
-// Select elements for sum and answers
 const sumContainer = document.getElementById('sum');
 const answerBtns = document.querySelectorAll('.answer-btn');
 const correctSpan = document.getElementById('correct');
 const incorrectSpan = document.getElementById('incorrect');
-
-// Select final score elements
 const finalScore = document.getElementById('final-score');
 const finalMessage = document.getElementById('final-message');
 const medal = document.getElementById('medal');
 const restartBtn = document.getElementById('restartBtn');
+const gameArea = document.getElementById('game'); // Referencia al área de juego
 
-// Array to store images
-const imageFolder = "imagenes/"; // Change this to your images path
+const imageFolder = "imagenes/"; 
 let sumImages = [];
 
-// Event listeners for selecting the range
+// Eventos de selección
 btn10.addEventListener('click', () => {
     range = 10;
     startGame();
@@ -36,21 +32,21 @@ btn20.addEventListener('click', () => {
     hideRangeButtons();
 });
 
-// Function to load sum images
 const loadImages = () => {
+    sumImages = []; // Limpiar para evitar duplicados al reiniciar
     for (let i = 1; i <= range; i++) {
         sumImages.push(`${imageFolder}${i.toString().padStart(2, '0')}.png`);
     }
 };
 
-// Generate sum and answers (either sum or subtraction)
 const generateSum = () => {
+    // Si ya llegamos a 20, terminamos inmediatamente
     if (totalOperations >= 20) {
         showFinalScore();
-        return; // Stop the game after 20 operations
+        return; 
     }
 
-    const isAddition = Math.random() < 0.5; // 50% chance for sum, 50% for subtraction
+    const isAddition = Math.random() < 0.5;
     
     if (isAddition) {
         generateAddition();
@@ -59,84 +55,65 @@ const generateSum = () => {
     }
 };
 
-// Generate sum operation
 const generateAddition = () => {
-    const num1 = Math.floor(Math.random() * range) + 1; // No 0 allowed
-    const num2 = Math.floor(Math.random() * range) + 1; // No 0 allowed
+    const num1 = Math.floor(Math.random() * range) + 1;
+    const num2 = Math.floor(Math.random() * range) + 1;
     
-    // Ensure sum does not exceed the selected range
     if (num1 + num2 > range) {
-        return generateAddition(); // Retry if sum is greater than the range
+        return generateAddition(); 
     }
 
     const sum = num1 + num2;
+    const sumImage1 = `<img src="${sumImages[num1 - 1]}" alt="${num1}" class="sum-image">`;
+    const sumImage2 = `<img src="${sumImages[num2 - 1]}" alt="${num2}" class="sum-image">`;
+    const plusImage = `<img src="${imageFolder}plus.png" alt="+" class="sum-image">`;
+    const equalsImage = `<img src="${imageFolder}equals.png" alt="=" class="sum-image">`;
     
-    // Create sum image layout
-    const sumImage1 = `<img src="${sumImages[num1 - 1]}" alt="Number ${num1}" class="sum-image">`;
-    const sumImage2 = `<img src="${sumImages[num2 - 1]}" alt="Number ${num2}" class="sum-image">`;
-    const plusImage = `<img src="${imageFolder}plus.png" alt="Plus" class="sum-image">`;
-    const equalsImage = `<img src="${imageFolder}equals.png" alt="Equals" class="sum-image">`;
-    
-    // Display sum in a single row
     sumContainer.innerHTML = `${sumImage1} ${plusImage} ${sumImage2} ${equalsImage}`;
-    
-    // Generate answers for sum
-    generateAnswers(sum, true);
+    generateAnswers(sum);
 };
 
-// Generate subtraction operation
 const generateSubtraction = () => {
-    const num1 = Math.floor(Math.random() * range) + 1; // No 0 allowed in minuend
-    let num2 = Math.floor(Math.random() * num1); // Ensure no negative results, and no 0
+    const num1 = Math.floor(Math.random() * range) + 1;
+    let num2 = Math.floor(Math.random() * num1); 
     
-    // Ensure no 0 for num2
     while (num2 === 0) {
         num2 = Math.floor(Math.random() * num1);
     }
     
-    // Ensure subtraction does not exceed the selected range
     const difference = num1 - num2;
-
-    const sumImage1 = `<img src="${sumImages[num1 - 1]}" alt="Number ${num1}" class="sum-image">`;
-    const sumImage2 = `<img src="${sumImages[num2 - 1]}" alt="Number ${num2}" class="sum-image">`;
-    const minusImage = `<img src="${imageFolder}minus.png" alt="Minus" class="sum-image">`;
-    const equalsImage = `<img src="${imageFolder}equals.png" alt="Equals" class="sum-image">`;
+    const sumImage1 = `<img src="${sumImages[num1 - 1]}" alt="${num1}" class="sum-image">`;
+    const sumImage2 = `<img src="${sumImages[num2 - 1]}" alt="${num2}" class="sum-image">`;
+    const minusImage = `<img src="${imageFolder}minus.png" alt="-" class="sum-image">`;
+    const equalsImage = `<img src="${imageFolder}equals.png" alt="=" class="sum-image">`;
     
-    // Display subtraction in a single row
     sumContainer.innerHTML = `${sumImage1} ${minusImage} ${sumImage2} ${equalsImage}`;
-    
-    // Generate answers for subtraction
-    generateAnswers(difference, false);
+    generateAnswers(difference);
 };
 
-// Generate random answers and place the correct one randomly
-const generateAnswers = (correctAnswer, isAddition) => {
-    // Ensure the answers are unique
+const generateAnswers = (correctAnswer) => {
     let wrongAnswer1, wrongAnswer2;
 
-    // Generate two unique wrong answers
     do {
         wrongAnswer1 = Math.floor(Math.random() * range) + 1;
-    } while (wrongAnswer1 === correctAnswer); // Ensure it's not the same as the correct answer
+    } while (wrongAnswer1 === correctAnswer);
 
     do {
         wrongAnswer2 = Math.floor(Math.random() * range) + 1;
-    } while (wrongAnswer2 === correctAnswer || wrongAnswer2 === wrongAnswer1); // Ensure no duplicates
+    } while (wrongAnswer2 === correctAnswer || wrongAnswer2 === wrongAnswer1);
 
     const answers = [correctAnswer, wrongAnswer1, wrongAnswer2];
-    answers.sort(() => Math.random() - 0.5); // Randomize answers
+    answers.sort(() => Math.random() - 0.5);
 
-    // Set answers in buttons with images
     answerBtns.forEach((btn, index) => {
-        const answerImage = `<img src="${imageFolder}${answers[index].toString().padStart(2, '0')}.png" alt="Answer ${answers[index]}" class="sum-image">`;
-        btn.innerHTML = answerImage;  // Set image as button content
-        btn.onclick = () => checkAnswer(answers[index], correctAnswer, btn);
+        const val = answers[index];
+        const answerImage = `<img src="${imageFolder}${val.toString().padStart(2, '0')}.png" alt="${val}" class="sum-image">`;
+        btn.innerHTML = answerImage;  
+        btn.onclick = () => checkAnswer(val, correctAnswer);
     });
 };
 
-// Check selected answer
-const checkAnswer = (selectedAnswer, correctAnswer, btnClicked) => {
-    // Disable buttons after selection
+const checkAnswer = (selectedAnswer, correctAnswer) => {
     answerBtns.forEach(btn => btn.disabled = true);
 
     if (selectedAnswer === correctAnswer) {
@@ -147,60 +124,52 @@ const checkAnswer = (selectedAnswer, correctAnswer, btnClicked) => {
         incorrectSpan.textContent = incorrectCount;
     }
 
-    // Wait for 2 seconds before generating new sum
     totalOperations++;
+
     setTimeout(() => {
-        answerBtns.forEach(btn => btn.disabled = false); // Re-enable buttons for the next sum
-        generateSum(); // Generate new sum
+        answerBtns.forEach(btn => btn.disabled = false);
+        generateSum(); // generateSum verificará si ya llegamos a 20
     }, 500);
 };
 
-// Show final score and restart button
 const showFinalScore = () => {
+    gameArea.style.display = 'none'; // OCULTA el área de juego para que no se vean más sumas
     finalScore.style.display = 'block';
+    
     if (correctCount === 20) {
         finalMessage.textContent = "¡Excelente! ¡Obtuviste todas las respuestas correctas!";
-        medal.src = "imagenes/medal_gold.png"; // Path to your gold medal image
+        medal.src = "imagenes/medal_gold.png"; 
         medal.style.display = 'block';
     } else {
-        finalMessage.textContent = `Tu puntaje final: ${correctCount} respuestas correctas.`;
+        finalMessage.textContent = `Tu puntaje final: ${correctCount} de 20 respuestas correctas.`;
+        medal.style.display = 'none';
     }
     
-    // Show restart button
     restartBtn.style.display = 'block';
 };
 
-// Restart game
 const restartGame = () => {
     correctCount = 0;
     incorrectCount = 0;
     totalOperations = 0;
-    correctSpan.textContent = correctCount;
-    incorrectSpan.textContent = incorrectCount;
+    correctSpan.textContent = "0";
+    incorrectSpan.textContent = "0";
     finalScore.style.display = 'none';
-    restartBtn.style.display = 'none'; // Hide restart button
+    gameArea.style.display = 'none'; 
 
-    // Hide game content
-    document.getElementById('game').style.display = 'none'; 
-
-    // Show the range selection buttons again
     btn10.style.display = 'inline-block';
     btn20.style.display = 'inline-block'; 
-
-    // Reset the game
-    sumImages = []; // Reset images array
+    sumImages = []; 
 };
 
-// Hide the range selection buttons after the game starts
 const hideRangeButtons = () => {
     btn10.style.display = 'none';
     btn20.style.display = 'none';
 };
 
-// Start game
 const startGame = () => {
-    document.getElementById('game').style.display = 'block'; // Show game area
-    finalScore.style.display = 'none'; // Hide final score area
-    loadImages();  // Load images based on the selected range
-    generateSum(); // Generate first sum
+    gameArea.style.display = 'block'; 
+    finalScore.style.display = 'none'; 
+    loadImages();  
+    generateSum(); 
 };
