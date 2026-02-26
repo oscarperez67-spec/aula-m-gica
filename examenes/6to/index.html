@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examen Tam Aprende 6to año</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div id="pantalla-inicio" class="pantalla activa">
+        <h1>Examen Tam Aprende 6to año</h1>
+        <p class="instruccion">Selecciona el examen que deseas contestar:</p>
+        <div class="contenedor-examenes">
+            <div class="tarjeta-examen" onclick="seleccionarExamen('K')">
+                <img src="imagenes/examen_k.png" alt="Examen K">
+                <h2>Examen K</h2>
+            </div>
+            <div class="tarjeta-examen" onclick="seleccionarExamen('L')">
+                <img src="imagenes/examen_l.png" alt="Examen L">
+                <h2>Examen L</h2>
+            </div>
+        </div>
+    </div>
+
+    <div id="pantalla-bloques" class="pantalla">
+        <h1 id="titulo-bloques">Bloques del Examen</h1>
+        <p class="instruccion">Selecciona el bloque de preguntas:</p>
+        <div class="contenedor-bloques" id="lista-bloques">
+            </div>
+        <button class="btn-secundario" onclick="mostrarPantalla('pantalla-inicio')">⬅️ Regresar al Inicio</button>
+    </div>
+
+ <div id="pantalla-preguntas" class="pantalla">
+        <h2 id="titulo-cuestionario">Bloque de Preguntas</h2>
+        
+        <div id="panel-progreso-flotante">
+            <div id="contenedor-progreso">
+                <div id="barra-progreso"></div>
+            </div>
+            <p id="texto-progreso">0 de X respondidas</p>
+        </div>
+        <div id="contenedor-preguntas">
+            </div>
+        
+        <button id="btn-calificar" class="btn-primario" onclick="calificarExamen()">📝 Calificar</button>
+
+        <div id="zona-resultados" style="display: none;">
+            <h2 id="texto-calificacion"></h2>
+            <div class="botones-finales">
+                <button class="btn-secundario" onclick="mostrarPantalla('pantalla-bloques')">⬅️ Elegir otro bloque</button>
+                <button id="btn-siguiente-bloque" class="btn-primario" onclick="siguienteBloque()">Siguiente Bloque ➡️</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
