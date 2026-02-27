@@ -102,10 +102,20 @@ h2 { font-size: 1.8em; }
     margin-bottom: 15px;
 }
 
+/* === NUEVO DISEÑO DE OPCIONES EN 2 COLUMNAS === */
 .opciones {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Esto crea exactamente 2 columnas del mismo tamaño */
+    gap: 15px; /* Espacio entre los botones */
+    margin-top: 15px;
+}
+
+/* Responsivo: Si la pantalla es muy pequeña (como un celular vertical), 
+   volvemos automáticamente a 1 columna para que el texto no se apachurre */
+@media (max-width: 600px) {
+    .opciones {
+        grid-template-columns: 1fr; /* 1 sola columna en celulares */
+    }
 }
 
 .opcion-label {
