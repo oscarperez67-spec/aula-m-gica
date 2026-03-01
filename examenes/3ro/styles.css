@@ -1,0 +1,233 @@
+:root {
+    --color-fondo: #f0f8ff;
+    --color-primario: #4CAF50;
+    --color-primario-hover: #45a049;
+    --color-secundario: #FF9800;
+    --color-secundario-hover: #e68a00;
+    --color-texto: #333;
+    --color-tarjeta: #ffffff;
+}
+
+body {
+    font-family: 'Nunito', sans-serif;
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+/* Sistema de Pantallas */
+.pantalla {
+    display: none;
+    width: 100%;
+    max-width: 800px;
+    text-align: center;
+    animation: fadeIn 0.5s ease;
+}
+.pantalla.activa {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+h1 { font-size: 2.5em; color: #2c3e50; }
+h2 { font-size: 1.8em; }
+.instruccion { font-size: 1.2em; color: #555; margin-bottom: 20px; }
+
+/* Tarjetas de Examen */
+.contenedor-examenes {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.tarjeta-examen {
+    background-color: var(--color-tarjeta);
+    border-radius: 15px;
+    padding: 20px;
+    width: 250px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.tarjeta-examen:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+.tarjeta-examen img {
+    width: 100%;
+    border-radius: 10px;
+    height: auto;
+}
+
+/* Botones de Bloques */
+.contenedor-bloques {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+/* Estilos de Cuestionario */
+.pregunta-card {
+    background: var(--color-tarjeta);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    text-align: left;
+}
+
+.imagen-pregunta {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.texto-pregunta {
+    font-size: 1.3em;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+/* === NUEVO DISEÑO DE OPCIONES EN 2 COLUMNAS === */
+.opciones {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Esto crea exactamente 2 columnas del mismo tamaño */
+    gap: 15px; /* Espacio entre los botones */
+    margin-top: 15px;
+}
+
+/* Responsivo: Si la pantalla es muy pequeña (como un celular vertical), 
+   volvemos automáticamente a 1 columna para que el texto no se apachurre */
+@media (max-width: 600px) {
+    .opciones {
+        grid-template-columns: 1fr; /* 1 sola columna en celulares */
+    }
+}
+
+.opcion-label {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 10px;
+    border: 2px solid #e0e0e0;
+    cursor: pointer;
+    font-size: 1.1em;
+    display: flex;
+    align-items: center;
+    transition: background 0.2s;
+}
+
+.opcion-label:hover { background: #f1f1f1; }
+.opcion-label input { margin-right: 15px; transform: scale(1.5); }
+
+/* Correcciones visuales al calificar */
+.opcion-correcta { background-color: #d4edda; border-color: #28a745; }
+.opcion-incorrecta { background-color: #f8d7da; border-color: #dc3545; }
+
+/* Botones Generales */
+button {
+    font-family: 'Nunito', sans-serif;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    padding: 15px 25px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.1s;
+    margin: 10px;
+}
+
+button:active { transform: scale(0.95); }
+
+.btn-bloque {
+    background-color: #3498db;
+    color: white;
+}
+.btn-bloque:hover { background-color: #2980b9; }
+
+.btn-primario {
+    background-color: var(--color-primario);
+    color: white;
+    width: 100%;
+    max-width: 300px;
+}
+.btn-primario:hover { background-color: var(--color-primario-hover); }
+
+.btn-secundario {
+    background-color: var(--color-secundario);
+    color: white;
+}
+.btn-secundario:hover { background-color: var(--color-secundario-hover); }
+
+#zona-resultados {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 3px dashed #ccc;
+}
+
+/* Responsivo Extra para celulares pequeños */
+@media (max-width: 600px) {
+    h1 { font-size: 2em; }
+    .opcion-label { font-size: 1em; padding: 12px; }
+}
+/* === Estilos de la Barra de Progreso === */
+#contenedor-progreso {
+    width: 100%;
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    margin-bottom: 5px;
+    height: 20px;
+    overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+}
+
+#barra-progreso {
+    height: 100%;
+    background-color: var(--color-primario);
+    width: 0%; /* Empieza vacía */
+    transition: width 0.4s ease; /* Animación suave */
+}
+
+#texto-progreso {
+    font-size: 1.1em;
+    color: #555;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+/* === PANEL FLOTANTE DE PROGRESO === */
+#panel-progreso-flotante {
+    position: sticky; /* La magia para que se quede pegado al hacer scroll */
+    top: 0; /* Se ancla a la parte más alta de la pantalla */
+    background-color: var(--color-fondo); /* Usa el mismo color del fondo de tu página */
+    padding: 15px 0 10px 0; /* Da un poco de aire arriba y abajo */
+    z-index: 100; /* Asegura que la barra flote POR ENCIMA de las preguntas */
+    border-bottom: 2px dashed #ccc; /* Una línea sutil para separarlo de las preguntas */
+    margin-bottom: 20px;
+}
+
+/* Ajuste opcional: Si quieres que el texto de progreso sea un poco más pequeño para que ocupe menos espacio al flotar */
+#texto-progreso {
+    font-size: 1em;
+    margin-bottom: 0;
+}
+/* === ESTILO PARA RESPUESTAS CON IMAGEN === */
+.imagen-opcion-respuesta {
+    max-width: 150px; /* Puedes hacer este número más grande o pequeño si lo necesitas */
+    height: auto;
+    border-radius: 8px;
+    margin-left: 10px;
+    vertical-align: middle; /* Alinea la imagen con el circulito de selección */
+}
