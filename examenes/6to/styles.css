@@ -231,3 +231,21 @@ button:active { transform: scale(0.95); }
     margin-left: 10px;
     vertical-align: middle; /* Alinea la imagen con el circulito de selección */
 }
+/* === ESTILO PARA EL BOTÓN DE REGRESAR === */
+.btn-regresar {
+    background-color: #2196F3; /* Azul amigable */
+    color: white;
+    padding: 12px 25px;
+    border-radius: 30px; /* Esquinas bien redondeadas */
+    text-decoration: none;
+    display: inline-block;
+    font-weight: bold;
+    font-size: 1.2em;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.btn-regresar:hover {
+    background-color: #1976D2; /* Azul más oscuro al pasar el ratón */
+    transform: scale(1.05); /* Se hace un poquito más grande */
+}
