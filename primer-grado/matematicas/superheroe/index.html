@@ -4,38 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Descubre el Dibujo</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+    
     <style>
         body {
-            font-family: 'Comic Sans MS', cursive, sans-serif;
+            /* Usamos la nueva fuente legible y redondeada */
+            font-family: 'Fredoka', sans-serif;
             background-color: #f0f8ff;
             text-align: center;
             margin: 0;
-            padding: 20px;
+            padding: 10px; /* Reduje el padding para aprovechar espacio en móviles */
         }
-        h1 { color: #ff6b6b; }
+        h1 { color: #ff6b6b; font-size: 28px; }
+        h2 { font-size: 22px; color: #333; }
         
         /* Pantalla de Inicio */
         #pantalla-inicio {
             background: white;
+            width: 90%;
             max-width: 500px;
-            margin: 50px auto;
-            padding: 40px;
+            margin: 30px auto;
+            padding: 30px 20px;
             border-radius: 15px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-sizing: border-box;
         }
 
         .btn-modo {
             background-color: #9b59b6;
             color: white;
             border: none;
-            padding: 15px 30px;
+            padding: 15px 20px;
             font-size: 20px;
-            margin: 10px;
+            margin: 10px auto;
             border-radius: 10px;
             cursor: pointer;
             box-shadow: 0 4px 0 #8e44ad;
-            width: 80%;
+            width: 90%;
+            display: block;
             transition: transform 0.1s;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
         }
         .btn-modo:active { transform: translateY(4px); box-shadow: none; }
 
@@ -52,29 +62,34 @@
             display: inline-block;
             margin-top: 20px;
             transition: transform 0.1s;
+            font-family: 'Fredoka', sans-serif;
         }
         .btn-navegacion:active { transform: translateY(4px); box-shadow: none; }
         
-        .btn-portal { background-color: #e67e22; box-shadow: 0 4px 0 #d35400; margin-top: 40px;}
+        .btn-portal { background-color: #e67e22; box-shadow: 0 4px 0 #d35400; margin-top: 30px;}
 
         /* Contenedor principal del juego */
         .contenedor {
             display: flex;
             align-items: center;
-            justify-content: space-around;
+            justify-content: center;
+            flex-wrap: wrap; /* ¡Clave para móviles! Permite que los elementos bajen de línea */
+            gap: 30px; /* Espacio entre la imagen y los botones */
             max-width: 900px;
             margin: 20px auto 0 auto;
             background: white;
-            padding: 30px;
+            padding: 20px;
             border-radius: 15px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            position: relative;
+            box-sizing: border-box;
+            width: 95%;
         }
 
-        /* Zona de la imagen oculta (¡AJUSTADA A CUADRADO PARA 3x3!) */
+        /* Zona de la imagen oculta (Ahora adaptativa) */
         #zona-imagen {
-            width: 360px;  /* Cambiado a 360px */
-            height: 360px; /* Cambiado a 360px para que sea cuadrado */
+            width: 100%;
+            max-width: 360px; /* No será más grande que esto en PC */
+            aspect-ratio: 1 / 1; /* Mantiene siempre la forma cuadrada sin importar el ancho */
             position: relative;
             border-radius: 15px;
             overflow: hidden;
@@ -87,8 +102,8 @@
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             display: grid;
-            grid-template-columns: repeat(3, 1fr); /* ¡AJUSTADO A 3 COLUMNAS! */
-            grid-template-rows: repeat(3, 1fr);    /* ¡AJUSTADO A 3 FILAS! */
+            grid-template-columns: repeat(3, 1fr); 
+            grid-template-rows: repeat(3, 1fr);    
         }
 
         .cuadro {
@@ -103,54 +118,77 @@
             pointer-events: none; 
         }
 
-        /* Controles (Lado Derecho) */
+        /* Controles (Botón Preguntar) */
         #controles {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
+            width: 100%;
+            max-width: 300px;
         }
 
         #btn-preguntar {
             background-color: #ff6b6b;
             color: white;
             border: none;
-            padding: 20px 40px;
+            padding: 20px 30px;
             font-size: 24px;
-            font-weight: bold;
+            font-weight: 600;
             border-radius: 15px;
             cursor: pointer;
             box-shadow: 0 6px 0 #d9534f;
+            width: 100%;
             transition: transform 0.1s;
+            font-family: 'Fredoka', sans-serif;
         }
         #btn-preguntar:active { transform: translateY(6px); box-shadow: none; }
 
-        /* Modal de la pregunta matemática */
+        /* Modal de la pregunta matemática - Ajustado para móviles */
         #modal-pregunta {
             display: none;
             position: fixed;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             background: #ffe66d;
-            padding: 40px;
+            padding: 30px 20px; /* Padding adaptable */
             border-radius: 20px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.3);
             z-index: 100;
             text-align: center;
+            width: 90%; /* Se adapta al ancho de la pantalla en celulares */
+            max-width: 450px; /* No crece demasiado en PC */
+            box-sizing: border-box;
         }
         
-        #texto-pregunta { font-size: 50px; font-weight: bold; margin-bottom: 30px; color: #333;}
+        #texto-pregunta { 
+            font-size: 45px; 
+            font-weight: 600; 
+            margin-bottom: 25px; 
+            color: #333;
+        }
         
+        /* Contenedor de los botones de respuesta */
+        #opciones {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap; /* Si no caben los 3, uno baja a la siguiente línea */
+            gap: 15px; /* Espacio uniforme entre botones */
+        }
+
         .opciones-btn {
             background-color: #3498db;
             color: white;
             border: none;
-            padding: 15px 35px;
+            padding: 15px 20px;
             font-size: 32px;
-            margin: 0 10px;
             border-radius: 10px;
             cursor: pointer;
             box-shadow: 0 4px 0 #2980b9;
+            flex: 1 1 auto; /* Permite que los botones crezcan o se encojan según el espacio */
+            min-width: 80px; /* Ancho mínimo para que el número se vea bien */
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
         }
         .opciones-btn:active { transform: translateY(4px); box-shadow: none; }
 
@@ -165,6 +203,13 @@
         .animacion-error {
             animation: vibrar 0.4s ease-in-out;
             background-color: #ff9999 !important;
+        }
+
+        /* Ajustes adicionales para pantallas muy pequeñas (celulares) */
+        @media (max-width: 400px) {
+            #texto-pregunta { font-size: 36px; }
+            .opciones-btn { font-size: 26px; padding: 12px 15px; }
+            #btn-preguntar { font-size: 20px; }
         }
     </style>
 </head>
@@ -181,7 +226,7 @@
     </div>
 
     <div id="juego" style="display: none;">
-        <h1>🎨 ¡Resuelve para descubrir! 🎨</h1>
+        <h1>🏋🏻‍♀️ ¡Resuelve para descubrir! 🏋🏻‍♀️</h1>
         
         <button class="btn-navegacion" onclick="volverASeleccion()">⬅️ Cambiar modo de juego</button>
 
@@ -194,8 +239,8 @@
                 <button id="btn-preguntar" onclick="mostrarPregunta()">❓ ¡Pregúntame!</button>
                 
                 <div id="mensaje-final" style="display:none;">
-                    <h3 style="color: #27ae60; font-size: 28px; margin-top: 0;">¡Lo lograste! 🎉</h3>
-                    <button class="btn-navegacion" style="background-color: #2ecc71; box-shadow: 0 4px 0 #27ae60;" onclick="reiniciarJuego()">🔄 Jugar de nuevo</button>
+                    <h3 style="color: #27ae60; font-size: 26px; margin-top: 0;">¡Lo lograste! 🎉</h3>
+                    <button class="btn-navegacion" style="background-color: #2ecc71; box-shadow: 0 4px 0 #27ae60; font-size: 18px;" onclick="reiniciarJuego()">🔄 Jugar de nuevo</button>
                 </div>
             </div>
         </div>
@@ -211,7 +256,7 @@
     </div>
 
     <script>
-        // TUS 20 IMÁGENES VAN AQUÍ (De preferencia usa imágenes cuadradas)
+        // TUS IMÁGENES
         const bancoImagenes = [
             "imagenes/01.png", 
             "imagenes/02.png", 
@@ -262,7 +307,6 @@
             modoJuego = modo;
             document.getElementById('pantalla-inicio').style.display = 'none';
             document.getElementById('juego').style.display = 'block';
-
             prepararTablero();
         }
 
@@ -287,7 +331,6 @@
             cuadricula.innerHTML = ''; 
             cuadrosDisponibles = []; 
 
-            // ¡AJUSTADO A 9 CUADROS (3x3)!
             for (let i = 0; i < 9; i++) {
                 let cuadro = document.createElement('div');
                 cuadro.className = 'cuadro';
