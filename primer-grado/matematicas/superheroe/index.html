@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descubre el Dibujo</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background-color: #f0f8ff;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 { color: #ff6b6b; }
+        
+        /* Pantalla de Inicio */
+        #pantalla-inicio {
+            background: white;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .btn-modo {
+            background-color: #9b59b6;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 20px;
+            margin: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #8e44ad;
+            width: 80%;
+            transition: transform 0.1s;
+        }
+        .btn-modo:active { transform: translateY(4px); box-shadow: none; }
+
+        .btn-navegacion {
+            background-color: #95a5a6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #7f8c8d;
+            text-decoration: none; 
+            display: inline-block;
+            margin-top: 20px;
+            transition: transform 0.1s;
+        }
+        .btn-navegacion:active { transform: translateY(4px); box-shadow: none; }
+        
+        .btn-portal { background-color: #e67e22; box-shadow: 0 4px 0 #d35400; margin-top: 40px;}
+
+        /* Contenedor principal del juego */
+        .contenedor {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            max-width: 900px;
+            margin: 20px auto 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        /* Zona de la imagen oculta (¡AJUSTADA A CUADRADO PARA 3x3!) */
+        #zona-imagen {
+            width: 360px;  /* Cambiado a 360px */
+            height: 360px; /* Cambiado a 360px para que sea cuadrado */
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 5px solid #ced4da;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        #cuadricula-tapa {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* ¡AJUSTADO A 3 COLUMNAS! */
+            grid-template-rows: repeat(3, 1fr);    /* ¡AJUSTADO A 3 FILAS! */
+        }
+
+        .cuadro {
+            background-color: #4ecdc4;
+            border: 1px solid #3baea3;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .descubierto {
+            opacity: 0;
+            transform: scale(0.8);
+            pointer-events: none; 
+        }
+
+        /* Controles (Lado Derecho) */
+        #controles {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        #btn-preguntar {
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 15px;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #d9534f;
+            transition: transform 0.1s;
+        }
+        #btn-preguntar:active { transform: translateY(6px); box-shadow: none; }
+
+        /* Modal de la pregunta matemática */
+        #modal-pregunta {
+            display: none;
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: #ffe66d;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            z-index: 100;
+            text-align: center;
+        }
+        
+        #texto-pregunta { font-size: 50px; font-weight: bold; margin-bottom: 30px; color: #333;}
+        
+        .opciones-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            font-size: 32px;
+            margin: 0 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #2980b9;
+        }
+        .opciones-btn:active { transform: translateY(4px); box-shadow: none; }
+
+        @keyframes vibrar {
+            0% { transform: translate(-50%, -50%) translateX(0); }
+            25% { transform: translate(-50%, -50%) translateX(-10px); }
+            50% { transform: translate(-50%, -50%) translateX(10px); }
+            75% { transform: translate(-50%, -50%) translateX(-10px); }
+            100% { transform: translate(-50%, -50%) translateX(0); }
+        }
+
+        .animacion-error {
+            animation: vibrar 0.4s ease-in-out;
+            background-color: #ff9999 !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="pantalla-inicio">
+        <h1>🏋🏻‍♀️ ¡Descubre al Superhéroe! 🏋🏻‍♀️</h1>
+        <h2>¿Qué quieres practicar hoy?</h2>
+        <button class="btn-modo" onclick="iniciarJuego('suma')">➕ Solo Sumas</button>
+        <button class="btn-modo" onclick="iniciarJuego('mixto')">➕ Sumas y Restas ➖</button>
+        
+        <br>
+        <a href="../matematicas.html" class="btn-navegacion btn-portal">🏠 Regresar al Menú Principal</a>
+    </div>
+
+    <div id="juego" style="display: none;">
+        <h1>🎨 ¡Resuelve para descubrir! 🎨</h1>
+        
+        <button class="btn-navegacion" onclick="volverASeleccion()">⬅️ Cambiar modo de juego</button>
+
+        <div class="contenedor">
+            <div id="zona-imagen">
+                <div id="cuadricula-tapa"></div>
+            </div>
+
+            <div id="controles">
+                <button id="btn-preguntar" onclick="mostrarPregunta()">❓ ¡Pregúntame!</button>
+                
+                <div id="mensaje-final" style="display:none;">
+                    <h3 style="color: #27ae60; font-size: 28px; margin-top: 0;">¡Lo lograste! 🎉</h3>
+                    <button class="btn-navegacion" style="background-color: #2ecc71; box-shadow: 0 4px 0 #27ae60;" onclick="reiniciarJuego()">🔄 Jugar de nuevo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-pregunta">
+        <div id="texto-pregunta">¿?</div>
+        <div id="opciones">
+            <button class="opciones-btn" onclick="verificarRespuesta(0)" id="opc0"></button>
+            <button class="opciones-btn" onclick="verificarRespuesta(1)" id="opc1"></button>
+            <button class="opciones-btn" onclick="verificarRespuesta(2)" id="opc2"></button>
+        </div>
+    </div>
+
+    <script>
+        // TUS 20 IMÁGENES VAN AQUÍ (De preferencia usa imágenes cuadradas)
+        const bancoImagenes = [
+            "imagenes/01.png", 
+            "imagenes/02.png", 
+            "imagenes/03.png", 
+            "imagenes/04.png", 
+            "imagenes/05.png", 
+            "imagenes/06.png", 
+            "imagenes/07.png", 
+            "imagenes/08.png",
+            "imagenes/09.png",
+            "imagenes/10.png",
+            "imagenes/11.png",
+            "imagenes/12.png",
+            "imagenes/13.png",
+            "imagenes/14.png",
+            "imagenes/15.png",
+            "imagenes/16.png",
+            "imagenes/17.png",
+            "imagenes/18.png",
+            "imagenes/19.png",
+            "imagenes/20.png",
+            "imagenes/21.png",
+            "imagenes/22.png",
+            "imagenes/23.png",
+            "imagenes/24.png",
+            "imagenes/25.png",
+            "imagenes/26.png",
+            "imagenes/27.png",
+            "imagenes/28.png",
+            "imagenes/29.png",
+            "imagenes/30.png",
+            "imagenes/31.png",
+            "imagenes/32.png",
+            "imagenes/33.png",
+            "imagenes/34.png",
+            "imagenes/35.png",
+            "imagenes/36.png",
+            "imagenes/37.png",
+            "imagenes/38.png",
+            "imagenes/39.png" 
+        ];
+
+        let modoJuego = '';
+        let respuestaCorrecta = 0;
+        let cuadrosDisponibles = []; 
+
+        function iniciarJuego(modo) {
+            modoJuego = modo;
+            document.getElementById('pantalla-inicio').style.display = 'none';
+            document.getElementById('juego').style.display = 'block';
+
+            prepararTablero();
+        }
+
+        function volverASeleccion() {
+            document.getElementById('juego').style.display = 'none';
+            document.getElementById('pantalla-inicio').style.display = 'block';
+            document.getElementById('modal-pregunta').style.display = 'none';
+        }
+
+        function reiniciarJuego() {
+            prepararTablero();
+        }
+
+        function prepararTablero() {
+            document.getElementById('btn-preguntar').style.display = 'block';
+            document.getElementById('mensaje-final').style.display = 'none';
+
+            const imagenElegida = bancoImagenes[Math.floor(Math.random() * bancoImagenes.length)];
+            document.getElementById('zona-imagen').style.backgroundImage = `url('${imagenElegida}')`;
+
+            const cuadricula = document.getElementById('cuadricula-tapa');
+            cuadricula.innerHTML = ''; 
+            cuadrosDisponibles = []; 
+
+            // ¡AJUSTADO A 9 CUADROS (3x3)!
+            for (let i = 0; i < 9; i++) {
+                let cuadro = document.createElement('div');
+                cuadro.className = 'cuadro';
+                cuadro.id = 'cuadro-' + i;
+                cuadricula.appendChild(cuadro);
+                cuadrosDisponibles.push(i); 
+            }
+        }
+
+        function generarOperacion() {
+            let tipo = modoJuego;
+            if (modoJuego === 'mixto') {
+                tipo = Math.random() > 0.5 ? 'suma' : 'resta';
+            }
+
+            let num1, num2, resultado, signo;
+
+            if (tipo === 'suma') {
+                resultado = Math.floor(Math.random() * 8) + 3;
+                num1 = Math.floor(Math.random() * (resultado - 1)) + 1;
+                num2 = resultado - num1;
+                signo = '+';
+            } else {
+                num1 = Math.floor(Math.random() * 8) + 3;
+                num2 = Math.floor(Math.random() * (num1 - 1)) + 1; 
+                resultado = num1 - num2;
+                signo = '-';
+            }
+
+            let opciones = [resultado];
+            while (opciones.length < 3) {
+                let distractor = resultado + (Math.floor(Math.random() * 5) - 2);
+                if (distractor > 0 && distractor <= 10 && !opciones.includes(distractor)) {
+                    opciones.push(distractor);
+                }
+            }
+
+            opciones.sort(() => Math.random() - 0.5);
+
+            return {
+                texto: `${num1} ${signo} ${num2} = ?`,
+                respuesta: resultado,
+                opciones: opciones
+            };
+        }
+
+        function mostrarPregunta() {
+            const operacion = generarOperacion();
+            respuestaCorrecta = operacion.respuesta;
+
+            document.getElementById('texto-pregunta').innerText = operacion.texto;
+            
+            for (let i = 0; i < 3; i++) {
+                let btn = document.getElementById('opc' + i);
+                btn.innerText = operacion.opciones[i];
+                btn.dataset.valor = operacion.opciones[i];
+            }
+
+            document.getElementById('modal-pregunta').style.display = 'block';
+        }
+
+        function verificarRespuesta(indice) {
+            let btn = document.getElementById('opc' + indice);
+            let valorElegido = parseInt(btn.dataset.valor);
+            let modal = document.getElementById('modal-pregunta');
+
+            if (valorElegido === respuestaCorrecta) {
+                modal.style.display = 'none';
+                destaparCuadroAlAzar();
+            } else {
+                modal.classList.add('animacion-error');
+                setTimeout(() => {
+                    modal.classList.remove('animacion-error');
+                    modal.style.display = 'none';
+                }, 400); 
+            }
+        }
+
+        function destaparCuadroAlAzar() {
+            if (cuadrosDisponibles.length > 0) {
+                let indiceAleatorio = Math.floor(Math.random() * cuadrosDisponibles.length);
+                let numeroDeCuadro = cuadrosDisponibles[indiceAleatorio];
+
+                document.getElementById('cuadro-' + numeroDeCuadro).classList.add('descubierto');
+                cuadrosDisponibles.splice(indiceAleatorio, 1);
+
+                if (cuadrosDisponibles.length === 0) {
+                    document.getElementById('btn-preguntar').style.display = 'none';
+                    document.getElementById('mensaje-final').style.display = 'block';
+                }
+            }
+        }
+    </script>
+</body>
+</html>
