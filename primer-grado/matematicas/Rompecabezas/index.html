@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sumas con Rompecabezas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <section id="start-screen">
+            <h1>¡A Sumar!</h1>
+            <p>Elige hasta qué número quieres sumar:</p>
+            <div class="level-buttons">
+                <button id="btn-10" class="level-btn">Hasta el 10</button>
+                <button id="btn-20" class="level-btn">Hasta el 20</button>
+            </div>
+            
+            <div class="menu-return">
+                <a href="../matematicas.html" class="return-btn">⬅️ Regresar a Menú Principal</a>
+            </div>
+        </section>
+
+        <div id="game-ui" style="display: none;">
+            <header>
+                <div id="progress-container">
+                    <div id="progress-bar"></div>
+                </div>
+                <p id="progress-text">Problema 1 de 25</p>
+            </header>
+
+            <main id="game-area">
+                <div id="puzzle-container"></div>
+                
+                <div id="equation"></div>
+                <div id="feedback"></div>
+                <div id="answers"></div>
+            </main>
+
+            <div class="menu-return">
+                <a href="index.html" class="return-btn">⬅️ Regresar a Menú Principal</a>
+            </div>
+        </div>
+
+        <section id="final-screen" style="display: none;">
+            <h2>¡Terminaste!</h2>
+            <p id="final-score"></p>
+            <button id="restart-btn">Volver al Inicio</button>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

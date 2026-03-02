@@ -1,0 +1,243 @@
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+}
+
+body {
+    font-family: 'Fredoka', sans-serif;
+    background-color: #E0F7FA; 
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 10px;
+}
+
+#app {
+    width: 100%;
+    max-width: 600px;
+    background: white;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+h1 { 
+    color: #FF4081; 
+    font-size: 2.8rem; 
+    margin-bottom: 15px; 
+}
+
+/* Estilos de la pantalla de inicio */
+#start-screen p {
+    font-size: 1.5rem;
+    color: #555;
+    margin-bottom: 25px;
+}
+
+.level-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+}
+
+.level-btn {
+    background-color: #00E676;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.8rem;
+    font-weight: 600;
+    border-radius: 15px;
+    cursor: pointer;
+    box-shadow: 0 5px 0 #00C853;
+    width: 80%;
+    max-width: 300px;
+    transition: all 0.1s;
+}
+
+.level-btn:active {
+    transform: translateY(5px);
+    box-shadow: 0 0 0 #00C853;
+}
+
+#btn-20 {
+    background-color: #FFCA28;
+    box-shadow: 0 5px 0 #FF8F00;
+}
+#btn-20:active {
+    box-shadow: 0 0 0 #FF8F00;
+}
+
+/* Estilos de la barra de progreso */
+#progress-container {
+    width: 100%;
+    background-color: #E0E0E0;
+    border-radius: 15px;
+    height: 25px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#progress-bar {
+    height: 100%;
+    background-color: #00E676; 
+    width: 0%;
+    transition: width 0.4s ease;
+}
+
+#progress-text { 
+    font-size: 1.2rem; 
+    color: #757575; 
+    margin-bottom: 25px; 
+}
+
+/* Contenedor de rompecabezas */
+#puzzle-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 20px;
+    min-height: 70px;
+    row-gap: 10px; /* Separación vertical si caen en dos líneas */
+}
+
+.puzzle-piece {
+    width: 50px;
+    height: 50px;
+    margin-left: -12px; 
+    filter: drop-shadow(2px 3px 2px rgba(0,0,0,0.2));
+}
+
+.puzzle-piece:first-child {
+    margin-left: 0; 
+}
+
+/* Adaptación para pantallas pequeñas */
+@media (max-width: 400px) {
+    .puzzle-piece { 
+        width: 38px; 
+        height: 38px; 
+        margin-left: -8px;
+    }
+    .answer-btn {
+        width: 65px;
+        height: 65px;
+        font-size: 2rem;
+    }
+}
+
+#equation {
+    font-size: 3.5rem;
+    font-weight: 600;
+    color: #3F51B5;
+    margin-bottom: 15px;
+}
+
+#answers {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.answer-btn {
+    background-color: #448AFF;
+    border: none;
+    border-radius: 15px;
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: #fff;
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+    box-shadow: 0 5px 0 #2962FF; 
+    transition: all 0.1s;
+}
+
+.answer-btn:active { 
+    transform: translateY(5px);
+    box-shadow: 0 0 0 #2962FF;
+}
+
+.answer-btn:disabled { 
+    opacity: 0.8; 
+    cursor: not-allowed; 
+}
+
+#feedback {
+    font-size: 1.8rem;
+    height: 2.5rem; 
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.correct { color: #00C853; }
+.incorrect { color: #D50000; }
+
+#final-screen h2 { 
+    font-size: 3rem; 
+    color: #FF4081; 
+    margin-bottom: 20px; 
+}
+
+#final-score { 
+    font-size: 2rem; 
+    color: #333;
+    margin-bottom: 30px; 
+}
+
+#restart-btn {
+    background-color: #FF4081;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.8rem;
+    font-weight: 600;
+    border-radius: 15px;
+    cursor: pointer;
+    box-shadow: 0 5px 0 #C51162;
+}
+
+#restart-btn:active {
+    transform: translateY(5px);
+    box-shadow: 0 0 0 #C51162;
+}
+
+/* --- Estilos para los botones de regresar al menú --- */
+.menu-return {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 2px dashed #B2EBF2; /* Una línea sutil para separar el botón del área de juego */
+}
+
+.return-btn {
+    background-color: #9C27B0; /* Morado brillante */
+    color: white;
+    padding: 12px 25px;
+    border-radius: 12px;
+    text-decoration: none; /* Quita la línea de abajo típica de los links */
+    font-weight: 600;
+    font-size: 1.4rem;
+    display: inline-block;
+    box-shadow: 0 5px 0 #7B1FA2;
+    transition: all 0.1s;
+}
+
+.return-btn:active {
+    transform: translateY(5px);
+    box-shadow: 0 0 0 #7B1FA2;
+}
+
+/* Ajuste para celulares pequeños */
+@media (max-width: 400px) {
+    .return-btn {
+        font-size: 1.1rem;
+        padding: 10px 15px;
+    }
+}

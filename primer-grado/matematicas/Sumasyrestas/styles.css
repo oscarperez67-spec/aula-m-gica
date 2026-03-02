@@ -1,123 +1,97 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
 body {
-    font-family: 'Fredericka the Great', cursive;
-    background-color: #f8f9fa;
+    font-family: 'Fredoka', sans-serif;
+    background-color: #E0F7FA; 
     color: #333;
-    text-align: center;
-}
-
-header {
-    background-color: #ffcc00;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-}
-
-h1 {
-    font-size: 2.5em;
-    color: #fff;
-}
-
-button {
-    padding: 10px 20px;
-    margin: 10px;
-    font-size: 1.2em;
-    background-color: #ff9900;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-button:hover {
-    background-color: #e68a00;
-}
-
-#sum-container {
-    margin: 20px;
-}
-
-#sum {
-    font-size: 2em;
-    margin-bottom: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
+    min-height: 100vh;
+    padding: 10px;
 }
 
-#sum img {
-    width: 20vw; /* Ajusta el tamaño de las imágenes de la operación al ancho de la ventana */
-    max-width: 160px; /* Limita el tamaño máximo */
+#app {
+    width: 100%;
+    max-width: 600px;
+    background: white;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+h1 { color: #FF4081; font-size: 2.5rem; margin-bottom: 15px; }
+#start-screen p { font-size: 1.5rem; color: #555; margin-bottom: 25px; }
+
+.level-buttons { display: flex; flex-direction: column; gap: 15px; align-items: center; }
+.level-btn { border: none; padding: 15px 30px; font-size: 1.8rem; font-weight: 600; border-radius: 15px; cursor: pointer; width: 80%; max-width: 300px; transition: all 0.1s; color: white; }
+.level-btn:active { transform: translateY(5px); box-shadow: 0 0 0 transparent; }
+
+#btn-10 { background-color: #00E676; box-shadow: 0 5px 0 #00C853; }
+#btn-20 { background-color: #FFCA28; box-shadow: 0 5px 0 #FF8F00; }
+
+#progress-container { width: 100%; background-color: #E0E0E0; border-radius: 15px; height: 20px; overflow: hidden; margin-bottom: 10px; }
+#progress-bar { height: 100%; background-color: #00E676; width: 0%; transition: width 0.4s ease; }
+#progress-text { font-size: 1.1rem; color: #757575; margin-bottom: 20px; }
+
+#puzzle-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap; 
+    align-items: center;
+    margin-bottom: 25px;
+    min-height: 80px;
+    gap: 10px; 
+}
+
+.puzzle-group {
+    display: flex;
+    align-items: center;
+    filter: drop-shadow(3px 4px 2px rgba(0,0,0,0.2));
+    margin-bottom: 10px; 
+}
+
+.puzzle-piece {
+    width: 50px; 
+    height: 50px;
+    margin-left: -15px; 
+    flex-shrink: 0; 
+}
+
+.puzzle-piece:first-child { margin-left: 0; }
+
+.puzzle-operator-visual {
+    font-size: 4rem; /* Un poco más grande para que el "menos" se vea claro */
+    font-weight: bold;
+    color: #FF4081;
     margin: 0 5px;
 }
 
-#answers {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
+@media (max-width: 500px) {
+    #app { padding: 15px 10px; }
+    h1 { font-size: 2.2rem; }
+    .puzzle-piece { width: 35px; height: 35px; margin-left: -10px; }
+    .puzzle-operator-visual { font-size: 3rem; }
+    #equation { font-size: 2.8rem; }
+    .answer-btn { width: 65px; height: 65px; font-size: 2rem; }
 }
 
-.answer-btn {
-    padding: 10px;
-    font-size: 1.2em;
-    background-color: #ffffff;
-    border: 2px solid #ff9900;
-    border-radius: 10px;
-    cursor: pointer;
-    width: 160px;
-    height: 160px; /* Ajustar el tamaño de los botones */
-}
+#equation { font-size: 3.5rem; font-weight: 600; color: #3F51B5; margin-bottom: 15px; }
+#answers { display: flex; justify-content: center; gap: 15px; }
+.answer-btn { background-color: #448AFF; border: none; border-radius: 15px; font-size: 2.5rem; font-weight: 600; color: #fff; width: 80px; height: 80px; cursor: pointer; box-shadow: 0 5px 0 #2962FF; transition: all 0.1s; }
+.answer-btn:active { transform: translateY(5px); box-shadow: 0 0 0 transparent; }
+.answer-btn:disabled { opacity: 0.8; cursor: not-allowed; }
 
-.answer-btn img {
-    width: 18vw;  /* Ajuste dinámico del tamaño de las imágenes de las respuestas */
-    max-width: 140px;  /* Limitar el tamaño máximo de las imágenes */
-    height: auto; /* Mantener la proporción */
-}
+#feedback { font-size: 1.8rem; height: 2.5rem; margin-bottom: 15px; font-weight: 600; }
+.correct { color: #00C853; }
+.incorrect { color: #D50000; }
 
-.answer-btn:hover {
-    background-color: #f0f0f0;
-}
+#final-screen h2 { font-size: 3rem; color: #FF4081; margin-bottom: 20px; }
+#final-score { font-size: 2rem; color: #333; margin-bottom: 30px; }
+#restart-btn { background-color: #FF4081; color: white; border: none; padding: 15px 30px; font-size: 1.8rem; font-weight: 600; border-radius: 15px; cursor: pointer; box-shadow: 0 5px 0 #C51162; }
+#restart-btn:active { transform: translateY(5px); box-shadow: 0 0 0 transparent; }
 
-#score {
-    margin-top: 20px;
-    font-size: 1.5em;
-}
-
-#final-score {
-    margin-top: 40px;
-}
-
-#final-message {
-    font-size: 1.8em;
-    font-weight: bold;
-}
-
-#medal {
-    width: 100px;
-    margin-top: 20px;
-}
-
-#restartBtn {
-    padding: 15px;
-    font-size: 1.5em;
-    background-color: #ff9900;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
-    width: 200px;  /* Definir un tamaño fijo para el botón */
-    display: block;
-    margin-left: auto;
-    margin-right: auto; /* Esto centra el botón */
-}
-
-@media (max-width: 600px) {
-    .answer-btn {
-        width: 100px;
-        height: 100px;
-    }
-
-    #sum img {
-        width: 15vw; /* Aumenta el tamaño de las imágenes de la operación en pantallas pequeñas */
-    }
-}
+.menu-return { margin-top: 30px; padding-top: 20px; border-top: 2px dashed #B2EBF2; }
+.return-btn { background-color: #9C27B0; color: white; padding: 12px 25px; border-radius: 12px; text-decoration: none; font-weight: 600; font-size: 1.2rem; display: inline-block; box-shadow: 0 5px 0 #7B1FA2; transition: all 0.1s; }
+.return-btn:active { transform: translateY(5px); box-shadow: 0 0 0 transparent; }
