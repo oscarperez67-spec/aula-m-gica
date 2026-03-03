@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Perro Glotón 🐶</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=4">
+</head>
+<body>
+
+    <div id="pantalla-inicio">
+        <h1>🐶 El Perro Glotón 🦴</h1>
+        <h2>¿Qué le daremos de comer hoy?</h2>
+        
+        <button class="btn-modo btn-suma10" onclick="iniciarJuego('suma10')">➕ Sumas hasta 10</button>
+        <button class="btn-modo btn-suma20" onclick="iniciarJuego('suma20')">➕ Sumas hasta 20</button>
+        <button class="btn-modo btn-mixto10" onclick="iniciarJuego('mixto10')">➕ Sumas y Restas hasta 10 ➖</button>
+        <button class="btn-modo btn-mixto20" onclick="iniciarJuego('mixto20')">➕ Sumas y Restas hasta 20 ➖</button>
+
+        <br>
+        <a href="../matematicas.html" class="btn-navegacion btn-portal">🏠 Regreso al Menú</a>
+    </div>
+
+    <div id="juego" style="display: none;">
+        
+        <button class="btn-navegacion" onclick="volverASeleccion()">⬅️ Niveles</button>
+
+        <div class="contenedor-juego">
+            
+            <div id="zona-perro">
+                <img id="img-perro" src="" alt="Perrito">
+                <div id="letrero-operacion">¿?</div>
+            </div>
+
+            <div id="pantalla-victoria" style="display: none; text-align: center; margin-top: 20px;">
+                <h2 style="color: #27ae60; font-size: 32px; margin-bottom: 10px;">¡El perrito está lleno y feliz! 🐶❤️</h2>
+                <button class="btn-navegacion" style="background-color: #2ecc71; box-shadow: 0 5px 0 #27ae60; font-size: 22px; padding: 15px 30px;" onclick="reiniciarDesdeCero()">🔄 Volver a jugar</button>
+            </div>
+
+            <div id="zona-banda">
+                <div id="rodillos"></div>
+                <div id="contenedor-platos">
+                    <div class="plato" id="plato0" onclick="verificarRespuesta(0)"></div>
+                    <div class="plato" id="plato1" onclick="verificarRespuesta(1)"></div>
+                    <div class="plato" id="plato2" onclick="verificarRespuesta(2)"></div>
+                </div>
+            </div>
+
+            <div id="marcador">Platos comidos: <span id="contador-puntos">0</span> / 10 🍽️</div>
+        </div>
+    </div>
+
+    <script src="script.js?v=3"></script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+:root {
+    --color-fondo: #f0f8ff; 
+    --color-primario: #ff6b6b; 
+    --color-secundario: #4ecdc4; 
+    --color-terciario: #ffe66d; 
+    --color-menu: #fff;
+    --color-texto: #333;
+    --color-banda: #3498db; 
+}
+
+body {
+    font-family: 'Fredoka', sans-serif;
+    background-color: var(--color-fondo);
+    text-align: center;
+    margin: 0;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+h1 { color: var(--color-primario); font-size: 32px; margin-bottom: 5px; text-shadow: 2px 2px 0 #fff; }
+h2 { font-size: 22px; color: var(--color-texto); margin-bottom: 25px;}
+
+#pantalla-inicio {
+    background: var(--color-menu);
+    width: 95%;
+    max-width: 500px;
+    margin: 30px auto;
+    padding: 35px 20px;
+    border-radius: 20px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    box-sizing: border-box;
+}
+
+.btn-modo {
+    color: white;
+    border: none;
+    padding: 18px 20px;
+    font-size: 20px;
+    margin: 12px auto;
+    border-radius: 15px;
+    cursor: pointer;
+    width: 100%;
+    display: block;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    transition: transform 0.1s;
+    box-sizing: border-box;
+}
+.btn-modo:active { transform: translateY(5px); }
+
+.btn-suma10 { background-color: #2ecc71; box-shadow: 0 6px 0 #27ae60; }
+.btn-suma20 { background-color: #3498db; box-shadow: 0 6px 0 #2980b9; }
+.btn-mixto10 { background-color: #f1c40f; box-shadow: 0 6px 0 #f39c12; color: #333;}
+.btn-mixto20 { background-color: #e74c3c; box-shadow: 0 6px 0 #c0392b; }
+
+.btn-navegacion {
+    background-color: #95a5a6;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #7f8c8d;
+    text-decoration: none; 
+    display: inline-block;
+    margin-top: 20px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+}
+.btn-navegacion:active { transform: translateY(4px); box-shadow: none; }
+.btn-portal { background-color: #e67e22; box-shadow: 0 4px 0 #d35400; margin-top: 35px; width: 85%; }
+
+.contenedor-juego {
+    max-width: 600px;
+    margin: 20px auto;
+    background: white;
+    border-radius: 20px;
+    padding: 25px 10px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    box-sizing: border-box;
+    width: 95%;
+}
+
+#zona-perro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+#img-perro {
+    width: 150px;
+    height: 150px;
+    object-fit: contain; 
+    margin-bottom: -15px;
+    z-index: 1;
+    transition: transform 0.2s;
+}
+
+#letrero-operacion {
+    background: var(--color-terciario);
+    color: var(--color-texto);
+    font-size: 50px;
+    font-weight: 600;
+    padding: 12px 35px;
+    border-radius: 25px;
+    border: 5px solid #f1c40f;
+    z-index: 2;
+    box-shadow: 0 5px 0 rgba(0,0,0,0.1);
+}
+
+#zona-banda {
+    height: 160px;
+    background-color: var(--color-banda);
+    border-top: 10px solid #2980b9;
+    border-bottom: 10px solid #2980b9;
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden; 
+    box-shadow: inset 0 5px 10px rgba(0,0,0,0.2);
+}
+
+#rodillos {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: repeating-linear-gradient(90deg, #2980b9 0px, #2980b9 4px, transparent 4px, transparent 30px);
+    opacity: 0.3;
+}
+
+#contenedor-platos {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+/* --- PLATOS 3D MEJORADOS (Ajuste de tamaño total) --- */
+.plato {
+    /* ¡NUEVO! Agrandé el tazón de 95px a 105px para que el número grande quepa */
+    width: 105px;
+    height: 105px;
+    background: radial-gradient(circle at 30% 30%, #ffffff, #f1f2f6 60%, #dfe4ea);
+    border: 6px solid #e17055; 
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column; 
+    justify-content: center;
+    align-items: center;
+    /* font-size base quitado, ahora se maneja por elemento */
+    font-weight: 600;
+    color: white; 
+    text-shadow: 2px 2px 0px #d63031, -1px -1px 0 #d63031, 1px -1px 0 #d63031, -1px 1px 0 #d63031, 1px 1px 0 #d63031;
+    cursor: pointer;
+    box-shadow: 0 8px 0 #d63031, inset 0 -4px 8px rgba(0,0,0,0.2); 
+    z-index: 5;
+    position: absolute; 
+    transition: transform 0.1s, filter 0.1s;
+    top: 50%;
+    transform: translateY(-50%);
+    box-sizing: border-box;
+    left: 100%; 
+}
+.plato:active { transform: translateY(calc(-50% + 8px)); box-shadow: inset 0 -4px 8px rgba(0,0,0,0.2) !important; }
+
+/* Configuración de la imagen del alimento (Emoji) */
+.comida-icono {
+    font-size: 35px; /* Mismo tamaño para el emoji */
+    margin-bottom: -10px; /* Ajuste para centralizar mejor */
+    text-shadow: none; 
+    filter: drop-shadow(2px 4px 2px rgba(0,0,0,0.2));
+}
+
+/* ¡NUEVO SELECTOR PARA EL NÚMERO! */
+/* Apunta al segundo div dentro del plato, donde está el número */
+.plato div:last-child {
+    /* ¡CAMBIO AQUÍ! Agrandé el número de 30px a 50px */
+    font-size: 50px; 
+    line-height: 1.1; /* Ajuste sutil para que no ocupe tanto espacio vertical */
+}
+
+@keyframes moverPlato {
+    0% { left: 100%; } 
+    100% { left: -100px; } 
+}
+
+#marcador {
+    margin-top: 30px;
+    font-size: 26px;
+    font-weight: 600;
+    color: #27ae60;
+}
+
+@keyframes vibrar {
+    0% { transform: translateY(-50%) translateX(0); }
+    25% { transform: translateY(-50%) translateX(-10px); }
+    50% { transform: translateY(-50%) translateX(10px); }
+    75% { transform: translateY(-50%) translateX(-10px); }
+    100% { transform: translateY(-50%) translateX(0); }
+}
+
+.animacion-error {
+    animation: vibrar 0.4s ease-in-out;
+    background: #ffcccc !important;
+    border-color: #e74c3c !important;
+}
+
+@media (max-width: 400px) {
+    #img-perro { width: 120px; height: 120px; }
+    #letrero-operacion { font-size: 40px; padding: 10px 25px; }
+    /* Ajustes para móviles manteniendo la proporción grande */
+    .plato { width: 85px; height: 85px; border-width: 5px;}
+    .comida-icono { font-size: 28px; }
+    .plato div:last-child { font-size: 36px; } /* Número un poco más pequeño en móviles muy chicos */
+    @keyframes moverPlato { 
+        0% { left: 100%; }
+        100% { left: -80px; } 
+    }
+}
