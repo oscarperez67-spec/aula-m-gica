@@ -1,0 +1,151 @@
+/* style.css */
+body {
+    font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', sans-serif;
+    background-color: #2c3e50;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    text-align: center;
+    overflow: hidden; 
+}
+
+#game-container {
+    background-color: #34495e;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    width: 95%;
+    max-width: 600px;
+    box-sizing: border-box;
+}
+
+#scoreboard {
+    display: flex;
+    justify-content: space-between;
+    font-size: 24px;
+    margin-bottom: 15px;
+    font-weight: bold;
+    background-color: rgba(0,0,0,0.2);
+    padding: 10px;
+    border-radius: 15px;
+}
+
+.score-box.buenas { color: #2ecc71; text-shadow: 1px 1px 2px black; }
+.score-box.malas { color: #e74c3c; text-shadow: 1px 1px 2px black; }
+
+#instruccion {
+    font-size: 26px;
+    margin-bottom: 20px;
+    color: #f1c40f;
+    line-height: 1.3;
+}
+
+/* --- ESTILOS DE LA ALERTA DE NIVEL --- */
+#alerta-nivel {
+    background-color: #f39c12;
+    color: white;
+    padding: 10px;
+    border-radius: 15px;
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    animation: latido 1s infinite;
+    box-shadow: 0 5px 15px rgba(243, 156, 18, 0.5);
+    text-shadow: 1px 1px 2px black;
+}
+
+@keyframes latido {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+#caldero {
+    font-size: 90px;
+    margin: 10px 0;
+    transition: all 0.5s ease;
+}
+
+.caldero-normal { filter: hue-rotate(0deg); }
+.caldero-ganador { 
+    filter: hue-rotate(90deg) drop-shadow(0 0 30px #2ecc71); 
+    transform: scale(1.2);
+}
+
+.explosion {
+    animation: agitar 0.4s ease-in-out;
+    filter: hue-rotate(-90deg) drop-shadow(0 0 40px #e74c3c);
+}
+
+@keyframes agitar {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+#frascos-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap; 
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.btn-frasco {
+    background-color: #9b59b6;
+    color: white;
+    border: 3px solid #8e44ad;
+    border-radius: 20px;
+    padding: 15px 20px;
+    font-size: 28px;
+    cursor: pointer;
+    box-shadow: 0 6px 0 #8e44ad, 0 10px 15px rgba(0,0,0,0.3); 
+    transition: all 0.1s;
+    font-weight: bold;
+    min-width: 90px;
+}
+
+.btn-frasco:active {
+    transform: translateY(6px); 
+    box-shadow: 0 0 0 #8e44ad, 0 5px 10px rgba(0,0,0,0.3);
+}
+
+.btn-accion {
+    background-color: #3498db;
+    color: white;
+    border: 3px solid #2980b9;
+    border-radius: 15px;
+    padding: 15px 20px;
+    font-size: 20px;
+    cursor: pointer;
+    margin: 10px;
+    font-weight: bold;
+    box-shadow: 0 5px 0 #2980b9;
+}
+
+.btn-accion:active {
+    transform: translateY(5px);
+    box-shadow: 0 0 0 #2980b9;
+}
+
+.oculto { display: none !important; }
+
+/* --- ADAPTACIÓN PARA CELULARES --- */
+@media (max-width: 600px) {
+    #instruccion { font-size: 22px; }
+    #scoreboard { font-size: 20px; }
+    #caldero { font-size: 80px; }
+    #alerta-nivel { font-size: 18px; padding: 8px; }
+    .btn-frasco {
+        font-size: 24px;
+        padding: 12px 15px;
+        min-width: 80px;
+    }
+    .btn-accion { font-size: 18px; width: 100%; margin: 10px 0; }
+}

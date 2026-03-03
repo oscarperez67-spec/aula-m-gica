@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratorio de Pociones Mágicas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <div id="scoreboard">
+            <div class="score-box buenas">✅ Buenas: <span id="score-buenas">0</span></div>
+            <div class="score-box malas">❌ Malas: <span id="score-malas">0</span></div>
+        </div>
+
+        <div id="alerta-nivel" class="oculto">
+            🌟 ¡SUBISTE DE NIVEL! 🌟<br>¡Pociones más difíciles!
+        </div>
+
+        <div id="play-area">
+            <h1 id="instruccion">¡Preparando el caldero!</h1>
+            
+            <div id="caldero-container">
+                <div id="caldero" class="caldero-normal">🍲</div>
+            </div>
+
+            <div id="frascos-container">
+                </div>
+        </div>
+
+        <div id="end-screen" class="oculto">
+            <h2 id="mensaje-final">¡Poción Maestra Completada!</h2>
+            <div class="botones-finales">
+                <button id="btn-reinicio" class="btn-accion">🔄 Jugar de Nuevo</button>
+                <button id="btn-menu" class="btn-accion">🏠 Menú Principal</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
