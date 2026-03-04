@@ -2,8 +2,37 @@
 let examenActual = '';
 let bloqueActual = 0;
 
+
+// === NOMBRES DE MATERIAS ===
+// Aquí defines qué materia es cada bloque. 
+const materiasPorBloque = {
+    'Y': { // Si usas Examen Y, cambia la 'K' por 'Y'
+        1: "LENGUAJE Y COMUNICACIÓN",
+        2: "LENGUAJE Y COMUNICACIÓN",
+        3: "LENGUAJE Y COMUNICACIÓN",
+        4: "CIENCIAS",
+	5: "CIENCIAS",
+	6: "CIENCIAS",
+	7: "MATEMÁTICAS",
+	8: "MATEMÁTICAS",
+	9: "MATEMÁTICAS"
+    },
+    'Z': { // Si usas Examen Z, cambia la 'L' por 'Z'
+        1: "LENGUAJE Y COMUNICACIÓN",
+        2: "LENGUAJE Y COMUNICACIÓN",
+        3: "LENGUAJE Y COMUNICACIÓN",
+        4: "CIENCIAS",
+	5: "CIENCIAS",
+	6: "CIENCIAS",
+	7: "MATEMÁTICAS",
+	8: "MATEMÁTICAS",
+	9: "MATEMÁTICAS"
+    }
+};
+
 // === BASE DE DATOS DE PREGUNTAS ===
 // Aquí es donde vas a capturar toda tu información.
+
 const baseDeDatos = {
     'Y': {
         // Bloque 1: Preguntas 1 a 10
@@ -2352,9 +2381,21 @@ const generarBotonesBloques = () => {
         if (cantidadPreguntas > 0) {
             const numeroPreguntaFin = numeroPreguntaInicio + cantidadPreguntas - 1;
             
+            // === NUEVO: Buscar el nombre de la materia ===
+            let nombreMateria = "Evaluación"; // Texto por defecto si se te olvida ponerla
+            if (materiasPorBloque[examenActual] && materiasPorBloque[examenActual][bloqueId]) {
+                nombreMateria = materiasPorBloque[examenActual][bloqueId];
+            }
+            
             const btn = document.createElement('button');
             btn.className = 'btn-bloque';
-            btn.textContent = `Opción ${bloqueId}: Preguntas ${numeroPreguntaInicio} - ${numeroPreguntaFin}`;
+            
+            // === NUEVO: Insertar la materia y luego el número de preguntas ===
+            btn.innerHTML = `
+                <strong style="font-size: 1.3em; display: block; margin-bottom: 5px;">${nombreMateria}</strong>
+                Opción ${bloqueId}: Preguntas ${numeroPreguntaInicio} - ${numeroPreguntaFin}
+            `;
+            
             btn.onclick = () => iniciarCuestionario(parseInt(bloqueId));
             contenedor.appendChild(btn);
             
