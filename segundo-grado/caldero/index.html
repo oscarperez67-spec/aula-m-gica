@@ -8,35 +8,61 @@
 </head>
 <body>
     <div id="game-container">
-        <div id="scoreboard">
-            <div class="score-box buenas">✅ Buenas: <span id="score-buenas">0</span></div>
-            <div class="score-box malas">❌ Malas: <span id="score-malas">0</span></div>
-        </div>
-
-        <div id="alerta-nivel" class="oculto">
-            🌟 ¡SUBISTE DE NIVEL! 🌟<br>¡Pociones más difíciles!
+        <div id="top-bar">
+            <button id="btn-salir-header" class="btn-salir">⬅️ Menú</button>
+            <button id="btn-abrir-modal-pdf" class="btn-salir btn-pdf">📄 Descarga de ejercicios</button>
+            <div class="info-nivel">Nivel <span id="nivel-actual">1</span></div>
+            <div class="puntos">
+                <span class="score-box buenas">✅ <span id="score-buenas">0</span></span>
+                <span class="score-box malas">❌ <span id="score-malas">0</span></span>
+            </div>
         </div>
 
         <div id="play-area">
-            <h1 id="instruccion">¡Preparando el caldero!</h1>
-            
-            <div id="caldero-container">
-                <div id="caldero" class="caldero-normal">🍲</div>
+            <div class="columnas-juego">
+                <div class="col-pregunta">
+                    <h2 id="instruccion">Cargando...</h2>
+                    <div id="caldero-container">
+                        <div id="caldero" class="caldero-normal">🍲</div>
+                    </div>
+                </div>
+
+                <div class="col-operacion">
+                    <div id="v-cuenta-box">
+                        <div id="v-num1" class="v-linea-num"></div>
+                        <div id="v-num2" class="v-linea-num"></div>
+                        <div class="v-linea-resultado"></div>
+                        <div id="v-resultado-incognita">?</div>
+                    </div>
+                </div>
             </div>
 
-            <div id="frascos-container">
-                </div>
+            <div id="frascos-container"></div>
+            <div class="reto-contador">Reto: <span id="reto-actual">1</span>/10</div>
         </div>
 
-        <div id="end-screen" class="oculto">
-            <h2 id="mensaje-final">¡Poción Maestra Completada!</h2>
-            <div class="botones-finales">
-                <button id="btn-reinicio" class="btn-accion">🔄 Jugar de Nuevo</button>
-                <button id="btn-menu" class="btn-accion">🏠 Menú Principal</button>
+        <div id="level-screen" class="oculto">
+            <h1 id="titulo-nivel">¡Nivel Terminado!</h1>
+            <p id="resumen-nivel" class="texto-grande"></p>
+            <div id="botones-nivel" class="botones-finales"></div>
+        </div>
+
+        <div id="modal-pdf" class="oculto">
+            <div class="modal-contenido">
+                <h2>Elige el nivel a descargar</h2>
+                <p>Se generarán 12 ejercicios al azar sin llevadas ni prestadas.</p>
+                <div class="botones-modal">
+                    <button class="btn-accion btn-verde" onclick="descargarPDF(1)">Nivel 1 (Hasta 10)</button>
+                    <button class="btn-accion btn-verde" onclick="descargarPDF(2)">Nivel 2 (Hasta 50)</button>
+                    <button class="btn-accion btn-verde" onclick="descargarPDF(3)">Nivel 3 (Hasta 100)</button>
+                    <button class="btn-accion btn-verde" onclick="descargarPDF(4)">Nivel 4 (Hasta 999)</button>
+                    <button class="btn-accion btn-rojo mt-10" onclick="cerrarModalPDF()">❌ Cancelar</button>
+                </div>
             </div>
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
