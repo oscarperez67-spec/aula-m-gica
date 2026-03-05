@@ -203,7 +203,7 @@ function descargarPDF(nivelSeleccionado) {
     }
 
     doc.setFont("helvetica", "italic"); doc.setFontSize(10);
-    doc.text("¡Sigue practicando para ser un Maestro Alquimista!", 105, 280, { align: "center" });
+    doc.text("¡Sigue Practicando!", 105, 280, { align: "center" });
 
     doc.save(`Ejercicios_Pociones_Nivel_${nivelSeleccionado}.pdf`);
     cerrarModalPDF(); // Cerramos el menú
