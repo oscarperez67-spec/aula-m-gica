@@ -176,18 +176,35 @@ function cerrarModalPDF() {
     modalPdf.classList.add('oculto');
 }
 
+// --- FUNCIONES DEL PDF (LABORATORIO DE POCIONES) ---
 function descargarPDF(nivelSeleccionado) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
-    doc.setFont("helvetica", "bold"); doc.setFontSize(22);
+    // Título principal
+    doc.setFont("helvetica", "bold"); 
+    doc.setFontSize(22);
     doc.text("Laboratorio de Pociones - Ejercicios", 105, 20, { align: "center" });
     
-    doc.setFontSize(14); doc.setFont("helvetica", "normal");
-    doc.text(`Nivel de dificultad: ${nivelSeleccionado}`, 20, 35);
+    // --- NUEVO: Datos de la Escuela y Alumno ---
+    doc.setFontSize(12); 
+    doc.setFont("helvetica", "normal");
+    
+    doc.text("Escuela: __________________________________________", 20, 35);
+    doc.text("Grado: _______    Grupo: _______", 135, 35);
+    doc.text("Nombre del alumno: __________________________________________________", 20, 45);
 
-    let y = 55; let x = 40;
-    doc.setFont("courier", "bold"); doc.setFontSize(18);
+    // Nivel de dificultad
+    doc.setFontSize(12); 
+    doc.setFont("helvetica", "italic");
+    doc.text(`Nivel de dificultad: ${nivelSeleccionado}`, 20, 55);
+
+    // Coordenadas iniciales desplazadas hacia abajo para dar espacio al encabezado
+    let y = 75; 
+    let x = 40; 
+    
+    doc.setFont("courier", "bold"); 
+    doc.setFontSize(18);
 
     // Generar 12 problemas garantizados para ese nivel exacto
     for (let i = 1; i <= 12; i++) {
@@ -199,11 +216,15 @@ function descargarPDF(nivelSeleccionado) {
         doc.text("____", x, y + 9, { align: "right" }); 
         
         x += 60; 
-        if (i % 3 === 0) { x = 40; y += 40; }
+        if (i % 3 === 0) { 
+            x = 40; 
+            y += 40; 
+        }
     }
 
-    doc.setFont("helvetica", "italic"); doc.setFontSize(10);
-    doc.text("¡Sigue Practicando!", 105, 280, { align: "center" });
+    doc.setFont("helvetica", "italic"); 
+    doc.setFontSize(10);
+    doc.text("¡Sigue practicando para ser un Maestro Alquimista!", 105, 280, { align: "center" });
 
     doc.save(`Ejercicios_Pociones_Nivel_${nivelSeleccionado}.pdf`);
     cerrarModalPDF(); // Cerramos el menú

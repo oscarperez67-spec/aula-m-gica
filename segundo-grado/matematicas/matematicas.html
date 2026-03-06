@@ -11,7 +11,6 @@
 <body>
 
     <div class="contenedor-principal">
-        
         <div class="encabezado-principal">
             <button id="btn-menu" class="btn-salir">⬅️ Menú Principal</button>
             <h1 class="titulo">Ejercicios de Matemáticas</h1>
@@ -22,29 +21,56 @@
                 <div class="opcion-item">
                     <input type="checkbox" id="chk-suma">
                     <label for="chk-suma">Suma</label>
-                    <select id="dif-suma"><option value="U" selected>Unidades</option><option value="D">Decenas</option><option value="C">Centenas</option></select>
+                    <select id="dif-suma">
+                        <option value="U" selected>Unidades</option>
+                        <option value="D">Decenas</option>
+                        <option value="C">Centenas</option>
+                        <option value="UM">Unidades de Millar</option>
+                        <option value="DM">Decenas de Millar</option>
+                    </select>
                 </div>
                 <div class="opcion-item">
                     <input type="checkbox" id="chk-resta">
                     <label for="chk-resta">Resta</label>
-                    <select id="dif-resta"><option value="U" selected>Unidades</option><option value="D">Decenas</option><option value="C">Centenas</option></select>
+                    <select id="dif-resta">
+                        <option value="U" selected>Unidades</option>
+                        <option value="D">Decenas</option>
+                        <option value="C">Centenas</option>
+                        <option value="UM">Unidades de Millar</option>
+                        <option value="DM">Decenas de Millar</option>
+                    </select>
                 </div>
                 <div class="opcion-item">
                     <input type="checkbox" id="chk-multi">
                     <label for="chk-multi">Multiplicación</label>
-                    <select id="dif-multi"><option value="U" selected>Unidades</option><option value="D">Decenas</option><option value="C">Centenas</option></select>
+                    <select id="dif-multi">
+                        <option value="U" selected>Unidades</option>
+                        <option value="D">Decenas</option>
+                    </select>
                 </div>
             </div>
 
             <div class="cantidad-box">
-                <label for="cantidad">Cantidad de ejercicios (10 a 20):</label>
-                <input type="number" id="cantidad" min="10" max="20" value="10">
+                <label for="cantidad">Cantidad de ejercicios:</label>
+                <select id="cantidad">
+                    <option value="10" selected>10</option>
+                    <option value="20">20</option>
+                    <option value="40">40</option>
+                    <option value="60">60</option>
+                </select>
             </div>
 
             <button id="btn-generar" class="btn-azul">Generar Ejercicios</button>
         </div>
 
         <div id="panel-accion" class="oculto">
+            
+            <div id="panel-resultados" class="oculto">
+                <h3>Resultados</h3>
+                <p class="texto-calif">Calificación: <span id="calif-final">0.0</span></p>
+                <p>✅ Buenas: <span id="buenas-final">0</span> | ❌ Malas: <span id="malas-final">0</span></p>
+            </div>
+
             <div id="area-ejercicios"></div>
 
             <div class="botones-control">
