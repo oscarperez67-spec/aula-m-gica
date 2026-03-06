@@ -1,0 +1,91 @@
+/* style.css */
+body {
+    font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', Arial, sans-serif;
+    background: linear-gradient(135deg, #fdf4ff, #e0e7ff);
+    margin: 0;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    color: #333;
+}
+
+.contenedor-principal { width: 100%; max-width: 600px; }
+
+/* Barra superior independiente */
+.barra-superior { width: 100%; display: flex; justify-content: flex-start; margin-bottom: 10px; }
+.btn-salir { background-color: #4c1d95; color: white; border: none; border-radius: 8px; padding: 10px 15px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #311361; }
+.btn-salir:active { transform: translateY(4px); box-shadow: none; }
+.titulo { width: 100%; text-align: center; margin: 0 0 20px 0; color: #1e3a8a; font-size: 28px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+
+/* Tarjetas */
+.tarjeta { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); margin-bottom: 20px; text-align: center; }
+.tarjeta h2 { color: #4338ca; margin-top: 0; }
+
+/* Configuración */
+.config-seccion { margin-bottom: 20px; background-color: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; }
+.config-seccion label { display: block; font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #334155; }
+
+.opciones-radio { display: flex; justify-content: center; gap: 15px; }
+.opciones-radio input[type="radio"] { display: none; }
+.radio-label { padding: 10px 20px; background-color: #e2e8f0; border-radius: 10px; cursor: pointer; font-size: 18px; font-weight: bold; transition: 0.2s; border: 2px solid transparent; }
+.opciones-radio input[type="radio"]:checked + .radio-label { background-color: #c7d2fe; border-color: #4f46e5; color: #4f46e5; }
+
+select { padding: 10px; border-radius: 8px; border: 2px solid #cbd5e1; font-size: 18px; font-weight: bold; background-color: white; color: #1e293b; text-align: center; }
+.select-ancho { width: 80%; max-width: 300px; }
+.rango-inputs { display: flex; justify-content: center; align-items: center; gap: 10px; font-size: 18px; font-weight: bold; }
+
+/* Botones */
+.btn-gigante { width: 100%; padding: 15px; border: none; border-radius: 15px; font-size: 20px; font-weight: bold; color: white; cursor: pointer; transition: transform 0.1s; display: block; margin: 0 auto; }
+.btn-verde { background-color: #22c55e; box-shadow: 0 6px 0 #16a34a; }
+.btn-azul { background-color: #3b82f6; box-shadow: 0 6px 0 #2563eb; }
+.btn-naranja { background-color: #f59e0b; box-shadow: 0 6px 0 #d97706; }
+.btn-morado { background-color: #8b5cf6; box-shadow: 0 6px 0 #6d28d9; }
+.btn-gigante:active { transform: translateY(6px); box-shadow: none; }
+.mt-20 { margin-top: 20px; }
+.mt-10 { margin-top: 10px; }
+
+/* Estadísticas y Progreso */
+.barra-estadisticas { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 20px; font-weight: bold; }
+.stat-box { background: white; padding: 10px 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+.tiempo-box { color: #dc2626; }
+
+.progreso-contenedor { width: 100%; height: 25px; background-color: #e2e8f0; border-radius: 15px; overflow: hidden; margin-bottom: 5px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
+.progreso-relleno { height: 100%; width: 0%; background-color: #22c55e; transition: width 0.3s ease; }
+.progreso-texto { text-align: center; font-weight: bold; color: #64748b; margin-bottom: 20px; }
+
+/* Operaciones */
+.operacion-fila { display: flex; justify-content: center; align-items: center; font-size: 32px; font-weight: bold; margin-bottom: 15px; gap: 10px; color: #1e293b; }
+.operacion-input { width: 70px; height: 50px; text-align: center; font-size: 28px; font-weight: bold; border: 3px solid #cbd5e1; border-radius: 10px; color: #4338ca; }
+.operacion-input:focus { border-color: #4f46e5; outline: none; background-color: #eef2ff; }
+
+/* Resultados Finales */
+.resultados-grid { display: flex; justify-content: space-around; margin: 20px 0; }
+.res-item { padding: 20px; border-radius: 15px; width: 40%; }
+.res-item h2 { margin: 0 0 10px 0; font-size: 20px; }
+.res-item p { margin: 0; font-size: 40px; font-weight: bold; }
+.correctas { background-color: #dcfce3; color: #15803d; border: 2px solid #22c55e; }
+.incorrectas { background-color: #fee2e2; color: #b91c1c; border: 2px solid #ef4444; }
+.res-calif { font-size: 28px; font-weight: bold; margin-top: 15px; color: #1e3a8a; }
+
+/* --- NUEVO: Caja de Errores --- */
+#contenedor-errores { margin-top: 20px; background-color: #fee2e2; border: 2px dashed #ef4444; border-radius: 15px; padding: 15px; text-align: left; }
+#contenedor-errores h3 { color: #b91c1c; margin-top: 0; text-align: center; font-size: 22px; }
+#lista-errores { margin: 0; padding-left: 20px; color: #7f1d1d; font-size: 18px; font-weight: bold; line-height: 1.6; }
+
+/* Modal PDF */
+.modal-fondo { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+.modal-contenido { background: white; padding: 25px; border-radius: 20px; text-align: center; width: 90%; max-width: 450px; }
+
+.oculto { display: none !important; }
+
+@media (max-width: 600px) {
+    .barra-superior { justify-content: center; }
+    .btn-salir { width: 100%; }
+    .titulo { font-size: 24px; }
+    .opciones-radio { flex-direction: column; gap: 10px; }
+    .operacion-fila { font-size: 28px; }
+    .operacion-input { width: 60px; height: 45px; font-size: 24px; }
+    .barra-estadisticas { font-size: 16px; }
+    .stat-box { padding: 8px 10px; }
+    #lista-errores { font-size: 16px; }
+}
