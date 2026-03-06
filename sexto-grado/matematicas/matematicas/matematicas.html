@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Ejercicios Matemáticos</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+    <div class="contenedor-principal">
+        <div class="encabezado-principal">
+            <button id="btn-menu" class="btn-salir">⬅️ Menú Principal</button>
+            <h1 class="titulo">Ejercicios de Matemáticas</h1>
+        </div>
+
+        <div id="panel-configuracion" class="tarjeta">
+            <div class="opciones-fila">
+                <div class="opcion-item">
+                    <input type="checkbox" id="chk-suma">
+                    <label for="chk-suma">Suma</label>
+                    <select id="dif-suma">
+                        <option value="U" selected>Unidades</option>
+                        <option value="D">Decenas</option>
+                        <option value="C">Centenas</option>
+                        <option value="UM">Unidades de Millar</option>
+                        <option value="DM">Decenas de Millar</option>
+                    </select>
+                </div>
+                <div class="opcion-item">
+                    <input type="checkbox" id="chk-resta">
+                    <label for="chk-resta">Resta</label>
+                    <select id="dif-resta">
+                        <option value="U" selected>Unidades</option>
+                        <option value="D">Decenas</option>
+                        <option value="C">Centenas</option>
+                        <option value="UM">Unidades de Millar</option>
+                        <option value="DM">Decenas de Millar</option>
+                    </select>
+                </div>
+                <div class="opcion-item">
+                    <input type="checkbox" id="chk-multi">
+                    <label for="chk-multi">Multiplicación</label>
+                    <select id="dif-multi">
+                        <option value="U" selected>Unidades</option>
+                        <option value="D">Decenas</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="cantidad-box">
+                <label for="cantidad">Cantidad de ejercicios:</label>
+                <select id="cantidad">
+                    <option value="10" selected>10</option>
+                    <option value="20">20</option>
+                    <option value="40">40</option>
+                    <option value="60">60</option>
+                </select>
+            </div>
+
+            <button id="btn-generar" class="btn-azul">Generar Ejercicios</button>
+        </div>
+
+        <div id="panel-accion" class="oculto">
+            
+            <div id="panel-resultados" class="oculto">
+                <h3>Resultados</h3>
+                <p class="texto-calif">Calificación: <span id="calif-final">0.0</span></p>
+                <p>✅ Buenas: <span id="buenas-final">0</span> | ❌ Malas: <span id="malas-final">0</span></p>
+            </div>
+
+            <div id="area-ejercicios"></div>
+
+            <div class="botones-control">
+                <button id="btn-calificar" class="btn-verde">Calificar</button>
+                <button id="btn-descargar-pdf" class="btn-morado">📄 Descargar en PDF</button>
+                <button id="btn-reiniciar" class="btn-naranja">🔄 Limpiar</button>
+                <button id="btn-nueva-seleccion" class="btn-gris">⚙️ Nueva Selección</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
