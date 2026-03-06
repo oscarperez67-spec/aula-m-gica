@@ -1,206 +1,78 @@
+/* style.css */
 body {
-  font-family: 'Segoe UI', sans-serif;
-  padding: 20px;
-  background: linear-gradient(135deg, #d0f0ff, #fce4ec);
-  color: #333;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #e0f2fe, #fdf4ff);
+    margin: 0;
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    color: #333;
 }
 
-h1 {
-  font-size: 34px;
-  text-align: center;
-  color: #2c3e50;
-  margin-bottom: 10px;
-}
+.contenedor-principal { width: 100%; max-width: 1000px; }
 
-.box-opciones {
-  background: #ffffffdd;
-  border: 2px solid #ccc;
-  border-radius: 12px;
-  padding: 15px 20px;
-  margin: 20px auto;
-  max-width: 600px;
-  box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
-  text-align: center;
-}
+.encabezado-principal { display: flex; align-items: center; position: relative; margin-bottom: 20px; }
+.btn-salir { background-color: #4c1d95; color: white; border: none; border-radius: 8px; padding: 10px 15px; font-size: 16px; font-weight: bold; cursor: pointer; position: absolute; left: 0; }
+.titulo { width: 100%; text-align: center; margin: 0; color: #1e3a8a; font-size: 28px; }
 
-.box-opciones label {
-  font-size: 26px;
-  margin-right: 15px;
-  display: inline-block;
-  margin-bottom: 10px;
-}
+.tarjeta { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
 
-.box-opciones input[type="number"],
-.box-opciones select {
-  font-size: 22px;
-  padding: 6px 12px;
-  border-radius: 8px;
-  border: 1px solid #aaa;
-  margin: 5px;
-}
+.opciones-fila { display: flex; flex-wrap: wrap; justify-content: center; gap: 25px; margin-bottom: 25px; }
+.opcion-item { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: bold; }
+select, input[type="number"] { padding: 6px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; background-color: #f8fafc;}
+.cantidad-box { text-align: center; margin-bottom: 20px; font-size: 16px; font-weight: bold; }
 
-.box-opciones button {
-  font-size: 24px;
-  padding: 10px 25px;
-  margin-top: 10px;
-  cursor: pointer;
-  border-radius: 10px;
-  border: none;
-  background-color: #2196F3;
-  color: white;
-  transition: background-color 0.3s ease;
-}
+button { padding: 10px 15px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; color: white; cursor: pointer; transition: transform 0.1s; display: block; margin: 0 auto; }
+button:active { transform: scale(0.95); }
+.btn-azul { background-color: #3b82f6; width: 100%; max-width: 250px; }
+.btn-verde { background-color: #22c55e; }
+.btn-naranja { background-color: #f59e0b; }
+.btn-morado { background-color: #8b5cf6; }
+.btn-gris { background-color: #64748b; }
+.botones-control { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 25px; }
 
-.box-opciones button:hover {
-  background-color: #1976d2;
-}
+#panel-resultados { background-color: #f0fdf4; border: 3px solid #22c55e; border-radius: 15px; padding: 15px; text-align: center; margin-bottom: 20px; }
+#panel-resultados h3 { margin: 0 0 10px 0; color: #16a34a; font-size: 24px; }
+.texto-calif { font-size: 22px; font-weight: bold; margin: 5px 0; }
+#calif-final { color: #1e3a8a; font-size: 28px; }
 
-#container {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
-  margin-top: 30px;
-}
+#area-ejercicios { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; background: white; padding: 20px; border-radius: 15px; }
+.ejercicio-caja { display: flex; flex-direction: column; align-items: center; padding: 15px 10px; border: 1px dashed #ccc; border-radius: 10px; background-color: #fafafa; overflow-x: auto; }
 
-.exercise {
-  background: white;
-  border: 2px solid #ccc;
-  border-radius: 10px;
-  padding: 10px;
-  font-family: monospace;
-  font-size: 28px;
-  text-align: right;
-  box-shadow: 1px 1px 6px rgba(0,0,0,0.1);
-}
+.fila-grid { display: flex; justify-content: flex-end; width: 100%; margin-bottom: 3px; position: relative; }
+.celda { width: 30px; height: 32px; display: flex; justify-content: center; align-items: center; font-size: 22px; font-family: 'Courier New', Courier, monospace; font-weight: bold; }
+.celda.encabezado { font-size: 13px; font-family: Arial, sans-serif; height: 20px; }
 
-.operacion {
-  margin-bottom: 10px;
-}
+.color-d { color: #2563eb; } 
+.color-c { color: #dc2626; } 
+.color-u { color: #16a34a; } 
+.color-um { color: #059669; }
 
-.fila {
-  display: flex;
-  justify-content: flex-end;
-  padding-right: 15px;
-  font-family: monospace;
-  font-size: 24px;
-  margin-bottom: 2px;
-}
+.operador-pos { position: absolute; left: 2px; bottom: 0; font-size: 20px; font-weight: bold; }
+.caja-input { width: 26px; height: 28px; text-align: center; font-size: 20px; font-weight: bold; border: 2px solid #cbd5e1; border-radius: 4px; outline: none; background-color: white; font-family: 'Courier New', Courier, monospace; }
+.caja-input:focus { border-color: #3b82f6; background-color: #eff6ff; }
+.linea-res { width: 100%; height: 2px; background-color: #000; margin: 6px 0; }
 
-.celda {
-  width: 30px;
-  text-align: center;
-  position: relative;
-}
+/* --- MODO COMPACTO DINÁMICO (Para números muy grandes) --- */
+.ejercicio-caja.compacto { padding: 10px 5px !important; }
+.compacto .celda { width: 22px; height: 24px; font-size: 18px; }
+.compacto .caja-input { width: 20px; height: 22px; font-size: 16px; }
+.compacto .operador-pos { font-size: 16px; left: 0px; }
+.compacto .celda.encabezado { font-size: 10px; height: 16px; }
 
-.simbolo-operacion {
-  margin-right: 5px;
-  font-weight: bold;
-}
+.correcto { background-color: #dcfce3 !important; border-color: #22c55e !important; color: #15803d; }
+.incorrecto { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #b91c1c; }
+.oculto { display: none !important; }
 
-.celda-linea {
-  border-top: 2px solid black;
-  height: 0;
-  margin-bottom: 2px;
-  margin-top: 5px;
-}
-
-.celda-input input {
-  font-size: 24px;
-  font-family: monospace;
-  text-align: right;
-  background-color: white;
-  border: 1px solid #ccc;
-  width: 30px;
-  height: 30px;
-  margin-top: -16px;
-  padding: 0;
-}
-
-input.respuesta:focus,
-.celda-input input:focus {
-  outline: none;
-}
-
-#botonCalificar {
-  display: block;
-  margin: 40px auto 10px;
-  padding: 12px 30px;
-  font-size: 20px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-#botonCalificar:hover {
-  background-color: #45a049;
-}
-
-#botonReiniciar {
-  display: block;
-  margin: 10px auto 20px;
-  padding: 12px 30px;
-  font-size: 20px;
-  background-color: #ff9800;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-#botonReiniciar:hover {
-  background-color: #e68900;
-}
-
-#resultado {
-  margin-top: 20px;
-  font-size: 22px;
-  text-align: center;
-}
-
-.mensaje-final {
-  padding: 20px;
-  border-radius: 12px;
-  font-size: 22px;
-  font-weight: bold;
-  margin-top: 15px;
-}
-
-.oro {
-  background-color: #ffe066;
-  color: #b8860b;
-}
-
-.plata {
-  background-color: #d9e0f5;
-  color: #5c6bc0;
-}
-
-.bronce {
-  background-color: #f5cba7;
-  color: #a04000;
-}
-
-.intentalo {
-  background-color: #f8d7da;
-  color: #c62828;
-}
-
-#botonMenu {
-  display: inline-block;
-  padding: 10px 20px;
-  font-size: 18px;
-  background-color: #9c27b0;
-  color: white;
-  border-radius: 10px;
-  text-decoration: none;
-  transition: background-color 0.3s;
-  margin-bottom: 30px;
-}
-
-#botonMenu:hover {
-  background-color: #7b1fa2;
+@media (max-width: 600px) {
+    body { padding: 5px; }
+    .encabezado-principal { flex-direction: column; gap: 15px; margin-bottom: 10px; }
+    .btn-salir { position: static; width: 100%; }
+    .titulo { font-size: 24px; }
+    .tarjeta { padding: 15px; }
+    .opciones-fila { flex-direction: column; align-items: center; gap: 15px; }
+    #area-ejercicios { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); padding: 10px; gap: 10px; }
+    .ejercicio-caja { padding: 10px 5px; }
+    .botones-control { flex-direction: column; width: 100%; }
+    .botones-control button { width: 100%; }
 }
