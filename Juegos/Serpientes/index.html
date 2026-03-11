@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Serpientes y Escaleras de Mate</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="menu-screen" class="screen">
+        <div style="width: 100%; max-width: 450px; text-align: left; margin-bottom: 20px;">
+            <button class="btn-small" onclick="window.location.href='../matematicas.html'">⬅ Salir al Menú de Juegos</button>
+        </div>
+
+        <h1>🐍 Serpientes y Escaleras de Mate 🪜</h1>
+        <div class="menu-card">
+            <label>Nivel de Dificultad:</label>
+            <select id="difficulty">
+                <option value="easy">Fácil (Sumas/Restas hasta 100)</option>
+                <option value="medium">Medio (Sumas/Restas 1000 + Tablas)</option>
+                <option value="hard">Difícil (Sumas/Restas 10000 + Mult 2x1)</option>
+            </select>
+
+            <label>Jugadores (1 a 4):</label>
+            <select id="player-count">
+                <option value="1">1 Jugador</option>
+                <option value="2">2 Jugadores</option>
+                <option value="3">3 Jugadores</option>
+                <option value="4">4 Jugadores</option>
+            </select>
+
+            <button class="btn-primary" onclick="initGame()">¡Comenzar!</button>
+        </div>
+    </div>
+
+    <div id="game-screen" class="screen" style="display: none;">
+        <div id="game-header">
+            <button class="btn-small" onclick="location.reload()">⬅ Reiniciar Juego</button>
+            <div id="turn-display">Turno de la Ficha <span id="current-color-name">Roja</span></div>
+        </div>
+
+        <div id="board-container">
+            <div id="board"></div>
+        </div>
+
+        <div id="game-footer">
+            <div id="dice-section">
+                <div id="dice">🎲</div>
+                <button id="roll-btn" class="btn-primary" onclick="processMove()">Tirar Dado</button>
+            </div>
+        </div>
+    </div>
+
+    <dialog id="math-modal">
+        <div class="modal-content">
+            <h2>📝 ¡Resuelve para quedarte!</h2>
+            <div id="op-question" class="math-expression"></div>
+            <input type="number" id="op-answer" pattern="\d*" inputmode="numeric" placeholder="Respuesta">
+            <br>
+            <button class="btn-primary mt-10" onclick="checkAnswer()">Comprobar</button>
+        </div>
+    </dialog>
+
+    <div id="confetti-container"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
