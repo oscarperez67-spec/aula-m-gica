@@ -1,0 +1,129 @@
+:root {
+    --bg-color: #e0f7fa;
+    --font-kids: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+}
+
+body {
+    font-family: var(--font-kids);
+    margin: 0;
+    background-color: var(--bg-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Usamos min-height y permitimos scroll vertical por si el celular es muy pequeño */
+    min-height: 100vh;
+    min-height: 100dvh; 
+    overflow-x: hidden;
+    overflow-y: auto;
+    touch-action: manipulation; /* Evita el doble toque para zoom accidental */
+}
+
+/* Pantallas */
+.screen {
+    width: 100vw; 
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; 
+    padding: 15px 10px; /* Un poco más de margen arriba y abajo */
+    box-sizing: border-box;
+}
+
+h1 { color: #00796b; text-align: center; font-size: 1.6rem; margin-bottom: 20px;}
+
+.menu-card {
+    background: white; padding: 25px; border-radius: 25px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    display: flex; flex-direction: column; gap: 15px; width: 90%; max-width: 320px;
+}
+
+.menu-card select { font-size: 1rem; padding: 10px; border-radius: 10px; border: 2px solid #ccc;}
+
+/* Controles de Juego */
+#game-header {
+    display: flex; justify-content: space-between; align-items: center;
+    width: 100%; max-width: 450px; margin-bottom: 10px;
+}
+
+#turn-display {
+    font-size: 1rem; font-weight: bold; background: white;
+    padding: 8px 12px; border-radius: 20px; border: 2px solid #ccc;
+    text-align: center;
+}
+
+/* TABLERO 100% RESPONSIVO */
+#board-container {
+    /* vmin asegura que NUNCA se salga de la pantalla, sin importar si es ancha o alta */
+    width: 95vmin; height: 95vmin;
+    max-width: 450px; max-height: 450px;
+    background-color: #ffffff;
+    border: 5px solid #333; border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    flex-shrink: 0; /* Evita que se aplaste si no hay espacio */
+}
+
+#board {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(7, 1fr);
+    width: 100%; height: 100%;
+    background-image: url('tablero.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
+
+.cell {
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    border: none; 
+}
+
+/* Fichas */
+.token {
+    width: clamp(18px, 5vw, 25px); /* Se ajustan solas en celulares muy chicos */
+    height: clamp(18px, 5vw, 25px);
+    border-radius: 50%;
+    border: 2px solid white; position: absolute; z-index: 10;
+    transition: all 0.4s ease-in-out;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+}
+
+.active-token { animation: bounce 0.6s infinite alternate; z-index: 20; border: 2px solid gold; }
+@keyframes bounce { from { transform: translateY(0) scale(1.1); } to { transform: translateY(-5px) scale(1.1); } }
+
+/* Dado y Pie */
+#game-footer { margin-top: 15px; display: flex; justify-content: center; width: 100%; }
+#dice-section { display: flex; align-items: center; gap: 15px; background: white; padding: 10px 25px; border-radius: 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+#dice { width: 50px; height: 50px; background: #fff; border: 3px solid #333; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: bold; }
+
+/* Botones */
+.btn-primary { background: #ff9800; color: white; border: none; padding: 12px 25px; border-radius: 30px; font-size: 1.1rem; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #e68a00; }
+.btn-primary:active { transform: translateY(4px); box-shadow: none; }
+.btn-small { background: #78909c; color: white; border: none; padding: 8px 12px; border-radius: 15px; cursor: pointer; font-weight: bold; font-size: 0.9rem;}
+.mt-10 { margin-top: 15px; width: 100%; }
+
+/* Modal Adaptado a Móvil */
+#math-modal { 
+    border: none; border-radius: 20px; padding: 20px; 
+    text-align: center; width: 90%; max-width: 320px; 
+    margin: auto; /* Centrado absoluto */
+}
+#math-modal::backdrop { background: rgba(0,0,0,0.7); }
+.math-expression { font-size: 3rem; color: #1565c0; font-weight: bold; margin: 15px 0; }
+input[type="number"] { 
+    font-size: 2rem; width: 80%; text-align: center; 
+    border: 3px solid #ccc; border-radius: 10px; padding: 10px; 
+    /* Truco para que en iPhone no se vea redondeado raro */
+    -webkit-appearance: none; 
+    margin: 0;
+}
+
+/* Animación de Confeti */
+#confetti-container {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    pointer-events: none; z-index: 9999; overflow: hidden;
+}
+.confetti-piece { position: absolute; top: -20px; animation: fall linear forwards; }
+@keyframes fall {
+    0% { transform: translateY(-20px) rotate(0deg) scale(1); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg) scale(0.5); opacity: 0; }
+}
