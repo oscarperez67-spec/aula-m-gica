@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
+</head>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Defensor Matemático Futurista</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="game-container">
+    
+    <div id="pantalla-grado" class="pantalla activa">
+      <h1>¡Defiende la Ciudad!</h1>
+      <p>Selecciona tu grado escolar:</p>
+      <div class="grid-botones">
+        <button onclick="seleccionarGrado(1)">1er Año</button>
+        <button onclick="seleccionarGrado(2)">2do Año</button>
+        <button onclick="seleccionarGrado(3)">3er Año</button>
+        <button onclick="seleccionarGrado(4)">4to Año</button>
+        <button onclick="seleccionarGrado(5)">5to Año</button>
+        <button onclick="seleccionarGrado(6)">6to Año</button>
+      </div>
+         <button onclick="mostrarSalonFama()" class="btn-fama">🏆 Salón de la Fama</button>
+      
+        <button onclick="window.location.href='../matematicas.html'" style="margin-top: 15px; background: #ff4a4a; border-color: #cc0000; font-size: 1.3rem;">⬅️ Volver a Juegos</button>
+    </div>
+
+    <div id="pantalla-avatar" class="pantalla">
+      <h2>Elige tu Robot Defensor</h2>
+      <div class="grid-avatares" id="lista-avatares">
+        </div>
+      <button onclick="mostrarPantalla('pantalla-grado')" style="margin-top: 20px;">Volver</button>
+    </div>
+
+    <div id="pantalla-juego" class="pantalla">
+      
+      <div id="hud">
+        <div id="vidas">
+          <img src="img/engrane.png" class="engrane" id="vida1" alt="vida">
+          <img src="img/engrane.png" class="engrane" id="vida2" alt="vida">
+          <img src="img/engrane.png" class="engrane" id="vida3" alt="vida">
+        </div>
+        <div id="progreso-texto">Pregunta: <span id="num-pregunta">1</span>/40</div>
+        <div id="puntos-texto">Puntos: <span id="puntuacion">0</span></div>
+        <div id="tiempo-texto">Tiempo: <span id="temporizador">20</span>s</div>
+        
+        <button onclick="salirJuego()" class="btn-salir">❌ Salir</button>
+      </div>
+
+      <div id="ventana-operacion">
+        <div id="operacion-vertical">
+          <div id="num1" class="numero-math"></div>
+          <div class="fila-inferior">
+            <div id="signo-operacion"></div>
+            <div id="num2" class="numero-math"></div>
+          </div>
+          <div class="linea-resultado"></div>
+        </div>
+
+        <div class="grid-respuestas" id="botones-respuestas">
+          <button class="btn-respuesta" onclick="verificarRespuesta(0)"></button>
+          <button class="btn-respuesta" onclick="verificarRespuesta(1)"></button>
+          <button class="btn-respuesta" onclick="verificarRespuesta(2)"></button>
+          <button class="btn-respuesta" onclick="verificarRespuesta(3)"></button>
+        </div>
+      </div>
+
+      <div id="puente">
+        <div id="mi-robot" class="personaje"></div>
+        <div id="enemigo" class="personaje"></div>
+        <div id="explosion" class="efecto-explosion">💥</div>
+      </div>
+    </div>
+
+    <div id="pantalla-fin" class="pantalla">
+      <h1 id="titulo-fin">¡Juego Terminado!</h1>
+      <h2>Puntuación Final: <span id="puntos-finales">0</span></h2>
+      
+      <div id="registro-record" style="display: none;">
+        <p>¡Nuevo Récord! Ingresa tu nombre:</p>
+        <input type="text" id="nombre-jugador" placeholder="Tu nombre aquí" maxlength="12">
+        <button onclick="guardarPuntuacion()">Guardar</button>
+      </div>
+
+      <div id="tabla-posiciones">
+        <h3>Top 3 de tu Grado</h3>
+        <ul id="lista-records"></ul>
+      </div>
+      
+      <button onclick="reiniciarJuego()" style="margin-top: 20px;">Menú Principal</button>
+    </div>
+
+    <div id="pantalla-fama" class="pantalla">
+      <h2>🏆 Los Mejores Defensores</h2>
+      <div id="contenedor-fama" class="contenedor-scroll">
+        </div>
+      <button onclick="mostrarPantalla('pantalla-grado')">Volver al Menú</button>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
