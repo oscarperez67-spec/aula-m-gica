@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
-<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
- <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
-</head>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Defensor Matemático Futurista</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
 </head>
 <body>
 
@@ -25,20 +24,25 @@
         <button onclick="seleccionarGrado(5)">5to Año</button>
         <button onclick="seleccionarGrado(6)">6to Año</button>
       </div>
-         <button onclick="mostrarSalonFama()" class="btn-fama">🏆 Salón de la Fama</button>
-      
-        <button onclick="window.location.href='../matematicas.html'" style="margin-top: 15px; background: #ff4a4a; border-color: #cc0000; font-size: 1.3rem;">⬅️ Volver a Juegos</button>
+      <button onclick="mostrarSalonFama()" class="btn-fama">🏆 Salón de la Fama</button>
+      <button onclick="window.location.href='../matematicas.html'" class="btn-volver">⬅️ Volver a Aula Mágica</button>
+    </div>
+
+    <div id="pantalla-operacion" class="pantalla">
+      <h2>¿Qué deseas practicar?</h2>
+      <div class="grid-botones" id="botones-operacion">
+        </div>
+      <button onclick="mostrarPantalla('pantalla-grado')" class="btn-volver">⬅️ Volver a Grados</button>
     </div>
 
     <div id="pantalla-avatar" class="pantalla">
       <h2>Elige tu Robot Defensor</h2>
       <div class="grid-avatares" id="lista-avatares">
         </div>
-      <button onclick="mostrarPantalla('pantalla-grado')" style="margin-top: 20px;">Volver</button>
+      <button onclick="mostrarPantalla('pantalla-operacion')" class="btn-volver">⬅️ Volver a Operaciones</button>
     </div>
 
     <div id="pantalla-juego" class="pantalla">
-      
       <div id="hud">
         <div id="vidas">
           <img src="img/engrane.png" class="engrane" id="vida1" alt="vida">
@@ -48,7 +52,6 @@
         <div id="progreso-texto">Pregunta: <span id="num-pregunta">1</span>/40</div>
         <div id="puntos-texto">Puntos: <span id="puntuacion">0</span></div>
         <div id="tiempo-texto">Tiempo: <span id="temporizador">20</span>s</div>
-        
         <button onclick="salirJuego()" class="btn-salir">❌ Salir</button>
       </div>
 
@@ -81,14 +84,14 @@
       <h1 id="titulo-fin">¡Juego Terminado!</h1>
       <h2>Puntuación Final: <span id="puntos-finales">0</span></h2>
       
-      <div id="registro-record" style="display: none;">
+      <div id="registro-record" style="display: none; text-align: center; width: 100%;">
         <p>¡Nuevo Récord! Ingresa tu nombre:</p>
         <input type="text" id="nombre-jugador" placeholder="Tu nombre aquí" maxlength="12">
-        <button onclick="guardarPuntuacion()">Guardar</button>
+        <br> <button onclick="guardarPuntuacion()">Guardar</button>
       </div>
 
       <div id="tabla-posiciones">
-        <h3>Top 3 de tu Grado</h3>
+        <h3>Top 3 de tu Operación</h3>
         <ul id="lista-records"></ul>
       </div>
       
@@ -97,9 +100,8 @@
 
     <div id="pantalla-fama" class="pantalla">
       <h2>🏆 Los Mejores Defensores</h2>
-      <div id="contenedor-fama" class="contenedor-scroll">
-        </div>
-      <button onclick="mostrarPantalla('pantalla-grado')">Volver al Menú</button>
+      <div id="contenedor-fama" class="contenedor-scroll"></div>
+      <button onclick="mostrarPantalla('pantalla-grado')" class="btn-volver">⬅️ Volver al Menú</button>
     </div>
 
   </div>

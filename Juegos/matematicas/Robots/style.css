@@ -63,11 +63,33 @@ button {
 
 button:active { transform: scale(0.95); }
 
+/* ... Deja todo tu CSS anterior y solo agrega/modifica estas clases ... */
+
 .btn-fama {
   margin-top: 30px;
   background: linear-gradient(to bottom, #ffcc00, #ffaa00);
   border-color: #ffe600;
   color: #333;
+}
+
+/* Botones de regreso estándar */
+.btn-volver {
+  margin-top: 15px; 
+  background: #ff4a4a; 
+  border-color: #cc0000; 
+  font-size: 1.3rem;
+}
+
+/* Botón de salir en el HUD */
+.btn-salir {
+  font-size: 1.1rem;
+  padding: 8px 12px;
+  margin: 0;
+  background: #ff4a4a;
+  border-color: #cc0000;
+  border-width: 2px;
+  border-radius: 10px;
+  box-shadow: none;
 }
 
 .grid-botones, .grid-avatares, .grid-respuestas {
@@ -228,15 +250,3 @@ input[type="text"] {
 
 ul { list-style: none; padding: 0; font-size: 1.6rem; }
 li { margin: 10px 0; border-bottom: 1px solid #444; padding-bottom: 5px; }
-
-/* Botón de salir en el HUD */
-.btn-salir {
-  font-size: 1.1rem;
-  padding: 8px 12px;
-  margin: 0;
-  background: #ff4a4a;
-  border-color: #cc0000;
-  border-width: 2px;
-  border-radius: 10px;
-  box-shadow: none;
-}
