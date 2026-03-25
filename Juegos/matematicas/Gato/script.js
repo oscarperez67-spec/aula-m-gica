@@ -10,6 +10,7 @@ const turnIndicator = document.getElementById('turn-indicator');
 const selectMode = document.getElementById('select-mode');
 const pcDifficultyGroup = document.getElementById('pc-difficulty-group'); 
 const winningLine = document.getElementById('winning-line');
+const gameInfoBar = document.getElementById('game-info-bar'); // NUEVO
 
 // Modal Operación
 const mathModal = document.getElementById('math-modal');
@@ -109,14 +110,32 @@ btnBackPortal.addEventListener('click', () => {
 });
 
 btnStart.addEventListener('click', () => {
-    currentGrade = parseInt(document.getElementById('select-grade').value);
-    currentDifficulty = document.getElementById('select-difficulty').value;
-    gameMode = document.getElementById('select-mode').value;
-    currentPCDifficulty = document.getElementById('select-pc-difficulty').value; 
+    // Obtener valores seleccionados
+    const selectGradeEl = document.getElementById('select-grade');
+    const selectDiffEl = document.getElementById('select-difficulty');
+    const selectModeEl = document.getElementById('select-mode');
+    const selectPCDiffEl = document.getElementById('select-pc-difficulty');
     
+    currentGrade = parseInt(selectGradeEl.value);
+    currentDifficulty = selectDiffEl.value;
+    gameMode = selectModeEl.value;
+    currentPCDifficulty = selectPCDiffEl.value; 
+    
+    // Configurar PC
     if (gameMode === 'pc') {
         const availableForPC = allAvatars.filter(a => a !== avatarP1);
         avatarP2 = availableForPC[Math.floor(Math.random() * availableForPC.length)];
+    }
+    
+    // Actualizar barra de información visual
+    const textGrade = selectGradeEl.options[selectGradeEl.selectedIndex].text;
+    const textMathDiff = selectDiffEl.options[selectDiffEl.selectedIndex].text;
+    
+    if (gameMode === 'pc') {
+        const textPCDiff = selectPCDiffEl.options[selectPCDiffEl.selectedIndex].text;
+        gameInfoBar.innerHTML = `📚 Grado: <span>${textGrade}</span> | 🧮 Mates: <span>${textMathDiff}</span><br>🤖 Nivel PC: <span>${textPCDiff}</span>`;
+    } else {
+        gameInfoBar.innerHTML = `📚 Grado: <span>${textGrade}</span> | 🧮 Mates: <span>${textMathDiff}</span><br>👥 Modo: <span>2 Jugadores Local</span>`;
     }
     
     resetGame();
@@ -359,17 +378,14 @@ function playPCTurn() {
 
     // 1. ESTRATEGIA DE TABLERO
     if (currentPCDifficulty === 'invencible') {
-        // Uso de Minimax: Jamás pierde.
         chosenCell = minimax([...boardState], 'O').index;
     } else if (currentPCDifficulty === 'normal') {
-        // 50% Listo, 50% Azar
         if (Math.random() > 0.5) {
             chosenCell = findBestMove('O'); 
             if (chosenCell === -1) chosenCell = findBestMove('X'); 
         }
         if (chosenCell === -1) chosenCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
     } else {
-        // Despistada (Fácil): 100% al azar
         chosenCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
     }
 
@@ -381,7 +397,7 @@ function playPCTurn() {
 
     if (currentPCDifficulty === 'despistada') errorChance = 0.30; 
     else if (currentPCDifficulty === 'normal') errorChance = 0.15; 
-    else errorChance = 0; // invencible = 0% error matemático
+    else errorChance = 0; 
 
     if (Math.random() < errorChance) {
         isMathCorrect = false;
@@ -402,7 +418,6 @@ function playPCTurn() {
     }, 800);
 }
 
-// Auxiliar para nivel "Normal"
 function findBestMove(playerSymbol) {
     for (let i = 0; i < winningConditions.length; i++) {
         const [a, b, c] = winningConditions[i];
@@ -417,7 +432,6 @@ function findBestMove(playerSymbol) {
     return -1; 
 }
 
-// Algoritmo Minimax (El cerebro perfecto)
 function minimax(newBoard, player) {
     let availSpots = newBoard.map((val, idx) => val === '' ? idx : null).filter(val => val !== null);
 
@@ -439,7 +453,7 @@ function minimax(newBoard, player) {
             move.score = result.score;
         }
 
-        newBoard[availSpots[i]] = ''; // resetear para la siguiente simulación
+        newBoard[availSpots[i]] = ''; 
         moves.push(move);
     }
 
