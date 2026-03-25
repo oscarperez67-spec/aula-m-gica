@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gato Matemático</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="menu-screen" class="screen active">
+        <div style="width: 100%; display: flex; justify-content: flex-start; margin-bottom: 10px;">
+            <button id="btn-back-portal" class="btn-secondary" style="width: auto; font-size: 1rem; padding: 10px 15px;">⬅ Regresar al Menú Principal</button>
+        </div>
+
+        <h1>Gato Matemático</h1>
+        
+        <div class="config-group">
+            <label for="select-grade">Grado Escolar:</label>
+            <select id="select-grade">
+                <option value="1">1er Año</option>
+                <option value="2">2do Año</option>
+                <option value="3">3er Año</option>
+                <option value="4">4to Año</option>
+                <option value="5">5to Año</option>
+                <option value="6">6to Año</option>
+            </select>
+        </div>
+
+        <div class="config-group">
+            <label for="select-difficulty">Dificultad Matemática:</label>
+            <select id="select-difficulty">
+                <option value="facil">Fácil</option>
+                <option value="medio">Medio</option>
+                <option value="dificil">Difícil</option>
+            </select>
+        </div>
+
+        <div class="config-group">
+            <label for="select-mode">Modo de Juego:</label>
+            <select id="select-mode">
+                <option value="1v1">2 Jugadores (Local)</option>
+                <option value="pc">1 Jugador vs PC</option>
+            </select>
+        </div>
+
+        <div class="config-group" id="pc-difficulty-group" style="display: none;">
+            <label for="select-pc-difficulty">Nivel de la Computadora:</label>
+            <select id="select-pc-difficulty">
+                <option value="despistada">Despistada (Fácil)</option>
+                <option value="normal" selected>Normal (Medio)</option>
+                <option value="invencible">Invencible (Difícil)</option>
+            </select>
+        </div>
+
+        <div class="config-group">
+            <label>Elige los Avatares:</label>
+            <p class="avatar-title p1-title">Jugador 1 (X)</p>
+            <div class="avatar-list" id="avatars-p1">
+                <span class="avatar-option selected" data-avatar="🐶">🐶</span>
+                <span class="avatar-option" data-avatar="🐱">🐱</span>
+                <span class="avatar-option" data-avatar="🦊">🦊</span>
+                <span class="avatar-option" data-avatar="🐼">🐼</span>
+                <span class="avatar-option" data-avatar="🦁">🦁</span>
+                <span class="avatar-option" data-avatar="🐸">🐸</span>
+            </div>
+            
+            <div id="p2-avatar-section">
+                <p class="avatar-title p2-title">Jugador 2 (O)</p>
+                <div class="avatar-list" id="avatars-p2">
+                    <span class="avatar-option disabled" data-avatar="🐶">🐶</span>
+                    <span class="avatar-option selected" data-avatar="🐱">🐱</span>
+                    <span class="avatar-option" data-avatar="🦊">🦊</span>
+                    <span class="avatar-option" data-avatar="🐼">🐼</span>
+                    <span class="avatar-option" data-avatar="🦁">🦁</span>
+                    <span class="avatar-option" data-avatar="🐸">🐸</span>
+                </div>
+            </div>
+        </div>
+
+        <button id="btn-start" class="btn-primary">¡Jugar!</button>
+    </div>
+
+    <div id="game-screen" class="screen">
+        <div class="top-bar">
+            <button id="btn-menu" class="btn-secondary">Regresar a Configuración</button>
+            <div id="turn-indicator" class="pulse">Turno: Jugador 1 (X)</div>
+        </div>
+
+        <div id="board" class="board">
+            <div id="winning-line"></div>
+            <div class="cell" data-index="0"></div>
+            <div class="cell" data-index="1"></div>
+            <div class="cell" data-index="2"></div>
+            <div class="cell" data-index="3"></div>
+            <div class="cell" data-index="4"></div>
+            <div class="cell" data-index="5"></div>
+            <div class="cell" data-index="6"></div>
+            <div class="cell" data-index="7"></div>
+            <div class="cell" data-index="8"></div>
+        </div>
+    </div>
+
+    <div id="math-modal" class="modal">
+        <div class="modal-content">
+            <h2 id="modal-player-title">¡Resuelve para tirar!</h2>
+            
+            <div class="math-problem-container">
+                <div id="math-grid" class="math-grid">
+                    </div>
+                
+                <div class="math-input-container">
+                    <div class="math-input-wrapper">
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" id="math-answer" placeholder="?" autocomplete="off">
+                        <div id="visual-answer" class="visual-answer">
+                            <span id="ans-cm"></span>
+                            <span id="ans-dm"></span>
+                            <span id="ans-um"></span>
+                            <span id="ans-c"></span>
+                            <span id="ans-d"></span>
+                            <span id="ans-u"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button id="btn-submit-answer" class="btn-primary">Responder</button>
+                <button id="btn-cancel" class="btn-secondary">Cancelar</button>
+            </div>
+            <p id="feedback-msg" class="feedback"></p>
+        </div>
+    </div>
+
+    <div id="winner-modal" class="modal">
+        <div class="modal-content">
+            <h2 id="winner-title">¡Tenemos un ganador!</h2>
+            <div id="winner-avatar-display" class="bounce">🐶</div>
+            <div class="modal-actions">
+                <button id="btn-play-again" class="btn-primary" style="margin: 0 auto;">Jugar de Nuevo</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
