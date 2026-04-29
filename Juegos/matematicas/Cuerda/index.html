@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Jalando la Cuerda - Matemáticas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="setup-screen" class="container">
+        <a href="../matematicas.html" class="btn-menu">🏠 Volver al Menú</a>
+        
+        <h1>Jalando la Cuerda</h1>
+        <div class="player-setup blue-setup">
+            <h2>Jugador Azul</h2>
+            <label for="grade-blue">Selecciona tu grado:</label>
+            <select id="grade-blue">
+                <option value="1">1ero</option>
+                <option value="2">2do</option>
+                <option value="3">3ro</option>
+                <option value="4">4to</option>
+                <option value="5">5to</option>
+                <option value="6">6to</option>
+            </select>
+        </div>
+        <div class="player-setup red-setup">
+            <h2>Jugador Rojo</h2>
+            <label for="grade-red">Selecciona tu grado:</label>
+            <select id="grade-red">
+                <option value="1">1ero</option>
+                <option value="2">2do</option>
+                <option value="3">3ro</option>
+                <option value="4">4to</option>
+                <option value="5">5to</option>
+                <option value="6">6to</option>
+            </select>
+        </div>
+        <button id="btn-start" onclick="iniciarJuego()">¡Empezar a Jalar!</button>
+    </div>
+
+    <div id="game-screen" class="container hidden">
+        
+        <div class="game-controls">
+            <button onclick="reiniciarJuego()" class="btn-menu-small">🔄 Reiniciar</button>
+        </div>
+
+        <h2 id="turn-indicator">Turno del Jugador Azul</h2>
+        
+        <div id="game-area">
+            <div class="rope-container">
+                <div id="handkerchief"></div> 
+            </div>
+        </div>
+
+        <div id="ready-container">
+            <button id="btn-ready" onclick="mostrarPregunta()">¡Estoy Listo!</button>
+        </div>
+
+        <div id="question-container" class="hidden">
+            <h3 id="math-question">¿Cuánto es...?</h3>
+            <input type="number" id="answer-input" placeholder="Tu respuesta..." autocomplete="off">
+            <button id="btn-answer" onclick="verificarRespuesta()">Responder</button>
+        </div>
+        
+        <div id="feedback-message"></div>
+        <button id="btn-restart" class="hidden" onclick="reiniciarJuego()">Jugar de Nuevo</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
