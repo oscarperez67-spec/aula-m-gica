@@ -173,7 +173,7 @@ function siguienteTurno() {
     let pregunta = generarPregunta(gradoActual);
     
     currentAnswer = pregunta.respuesta;
-    mathQuestion.innerText = `¿Cuánto es ${pregunta.texto}?`;
+    mathQuestion.innerText = `${pregunta.texto} = ?`;
 }
 
 // Se dispara cuando el jugador presiona "¡Estoy Listo!"
