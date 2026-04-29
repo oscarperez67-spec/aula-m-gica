@@ -132,28 +132,35 @@ button:active {
 /* Zona de movimiento del pañuelo */
 .rope-container {
     position: absolute;
-    top: 27%;          /* Prueba con 38%, 35%, etc. Menor número = Más arriba */
-    left: 10%; /* Comienza un poco después del niño azul */
-    right: 10%; /* Termina un poco antes del niño rojo */
-    height: 50px; /* Alto de la zona móvil */
-    background: transparent; 
+    top: 57%; /* IMPORTANTE: Deja aquí el porcentaje con el que sentiste que cuadraba bien la altura */
+    left: 10%; 
+    right: 10%; 
+    
+    /* CAMBIO CLAVE 1: Lo dejamos sin altura para que actúe como una "línea guía" exacta */
+    height: 0px; 
     pointer-events: none; 
 }
 
-/* EL PAÑUELO (NUEVO: Usando image_1.png) */
+/* EL PAÑUELO */
 #handkerchief {
     position: absolute;
-    /* Usamos el nuevo gráfico independiente */
     background-image: url('image_1.png');
-    background-size: contain; /* Asegura que la cinta se vea completa */
+    background-size: contain; 
     background-repeat: no-repeat;
-    background-position: center bottom; /* Centrado y sin recortar abajo */
-    width: 30px; /* Ancho de la cinta */
-    height: 48px; /* Alto de la cinta */
-    top: 0;
-    left: 50%; /* Inicia en el centro */
-    transform: translateX(-50%); /* Se centra en la posición left */
-    transition: left 0.5s ease-out; /* Animación suave al jalar */
+    background-position: center;
+    
+    /* CAMBIO CLAVE 2: Tamaños relativos. Así se encoge en celular vertical, pero tiene un tope en tablet/PC */
+    width: 8vw; 
+    max-width: 30px; 
+    height: 12vw; 
+    max-height: 48px;
+    
+    top: 0; 
+    left: 50%; 
+    
+    /* CAMBIO CLAVE 3: Esta es la magia. translate(-50%, -50%) centra exactamente la mitad del moño sobre la línea guía, sin importar si la pantalla se hace chiquita */
+    transform: translate(-50%, -50%); 
+    transition: left 0.5s ease-out; 
     border: none; 
     z-index: 3;
 }
