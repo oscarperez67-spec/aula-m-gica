@@ -300,7 +300,7 @@
                     <button class="btn btn-mixed" onclick="startGame('mixto')">🌪️ Volar Sumas y Restas</button>
                 </div>
                 
-                <button class="btn btn-exit" onclick="window.location.href='index.html'">← Regresar a Aula Mágica</button>
+                <button class="btn btn-exit" onclick="window.location.href='../matematicas.html'">← Regresar a Aula Mágica</button>
             </div>
         </div>
 
@@ -624,19 +624,74 @@
         }
     }
 
-    // === CONTROLES ===
+    // === CONTROLES (Movimiento Relativo / Estilo Trackpad) ===
+    
+    // Variables para calcular el deslizamiento
+    let lastPointerX = 0;
+    let lastPointerY = 0;
+    let isDragging = false;
+
+    // -- CONTROLES TÁCTILES (Celulares / Tablets) --
+    canvas.addEventListener('touchstart', (e) => {
+        if (!isPlaying || isPaused) return;
+        // Al tocar, guardamos la posición inicial del dedo
+        lastPointerX = e.touches[0].clientX;
+        lastPointerY = e.touches[0].clientY;
+    }, { passive: false });
+
     canvas.addEventListener('touchmove', (e) => {
         if (!isPlaying || isPaused) return;
-        const touchX = e.touches[0].clientX; 
-        const touchY = e.touches[0].clientY;
-        plane.targetX = touchX; 
-        plane.targetY = touchY;
+        e.preventDefault(); // Evita que la pantalla haga "scroll" por accidente
+        
+        const currentX = e.touches[0].clientX; 
+        const currentY = e.touches[0].clientY;
+        
+        // Calculamos cuánto se movió el dedo desde el último milisegundo
+        const deltaX = currentX - lastPointerX;
+        const deltaY = currentY - lastPointerY;
+        
+        // Movemos el avión esa misma distancia (movimiento relativo)
+        plane.targetX += deltaX; 
+        plane.targetY += deltaY;
+        
+        // Evitamos que el objetivo se salga de los límites de la pantalla
+        plane.targetX = Math.max(plane.imgWidth / 2, Math.min(canvas.width - plane.imgWidth / 2, plane.targetX));
+        plane.targetY = Math.max(40, Math.min(canvas.height - 40, plane.targetY));
+
+        // Actualizamos la última posición para el siguiente movimiento
+        lastPointerX = currentX;
+        lastPointerY = currentY;
+    }, { passive: false });
+
+    // -- CONTROLES CON RATÓN (PC) --
+    canvas.addEventListener('mousedown', (e) => {
+        if (!isPlaying || isPaused) return;
+        isDragging = true;
+        lastPointerX = e.clientX;
+        lastPointerY = e.clientY;
+    });
+
+    window.addEventListener('mouseup', () => {
+        isDragging = false; // Al soltar el clic, deja de moverse
     });
 
     canvas.addEventListener('mousemove', (e) => {
-        if (!isPlaying || isPaused) return;
-        plane.targetX = e.clientX; 
-        plane.targetY = e.clientY;
+        if (!isPlaying || isPaused || !isDragging) return; // Solo se mueve si mantienes el clic presionado
+        
+        const currentX = e.clientX; 
+        const currentY = e.clientY;
+        
+        const deltaX = currentX - lastPointerX;
+        const deltaY = currentY - lastPointerY;
+        
+        plane.targetX += deltaX; 
+        plane.targetY += deltaY;
+        
+        plane.targetX = Math.max(plane.imgWidth / 2, Math.min(canvas.width - plane.imgWidth / 2, plane.targetX));
+        plane.targetY = Math.max(40, Math.min(canvas.height - 40, plane.targetY));
+
+        lastPointerX = currentX;
+        lastPointerY = currentY;
     });
 
     // === BUCLE PRINCIPAL ===
