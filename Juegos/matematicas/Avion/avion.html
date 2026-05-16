@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Aula Mágica - Aviador Matemático</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3498db;
+            --secondary: #f1c40f;
+            --text-dark: #2c3e50;
+            --sky-top: #87CEEB;
+            --sky-bottom: #E0F6FF;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Nunito', sans-serif;
+            user-select: none;
+            touch-action: none;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #333;
+            overflow: hidden; 
+        }
+
+        #orientation-warning {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--primary);
+            color: white;
+            z-index: 9999;
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+        }
+        
+        @media (orientation: portrait) {
+            #orientation-warning { display: flex; }
+            .app-container { display: none !important; }
+        }
+
+        .app-container {
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(to bottom, var(--sky-top), var(--sky-bottom));
+            position: relative;
+            overflow: hidden;
+        }
+
+        #game-canvas {
+            display: block;
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .ui-layer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; 
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Modificaciones al HUD para incluir el botón de salir */
+        .hud {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            z-index: 10;
+            pointer-events: none;
+        }
+        
+        .hud > * {
+            pointer-events: auto; /* Solo los elementos del HUD reaccionan a clics, no el contenedor */
+        }
+        
+        .btn-game-back {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 16px;
+            box-shadow: 0 4px 0 #c0392b;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .btn-game-back:active { transform: translateY(2px); box-shadow: 0 0px 0 transparent; }
+
+        .operation-board {
+            background: white;
+            padding: 5px 25px;
+            border-radius: 20px;
+            font-size: 40px;
+            font-weight: 900;
+            color: var(--primary);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border: 4px solid var(--secondary);
+            text-align: center;
+            min-width: 150px;
+        }
+
+        .stats-board {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px 15px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 18px;
+            color: var(--text-dark);
+            text-align: right;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .lives { color: #e74c3c; font-size: 22px; margin-top: 5px; letter-spacing: 2px; }
+
+        .screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            pointer-events: auto; 
+            z-index: 20;
+            backdrop-filter: blur(5px);
+            padding: 20px;
+            text-align: center;
+            transition: opacity 0.3s;
+        }
+
+        .screen.hidden { opacity: 0; pointer-events: none; }
+
+        .title {
+            color: var(--primary);
+            font-size: 45px;
+            font-weight: 900;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 0px white;
+        }
+
+        .subtitle {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--text-dark);
+            margin-bottom: 30px;
+        }
+
+        /* Estilo para los botones principales */
+        .btn-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .btn {
+            background-color: #2ecc71;
+            color: white;
+            padding: 15px 30px;
+            font-size: 22px;
+            font-weight: 900;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #27ae60;
+            transition: transform 0.1s;
+            width: 100%;
+            max-width: 280px;
+            flex-shrink: 0; /* Evita que los botones se aplasten verticalmente */
+        }
+        .btn-mixed {
+            background-color: #9b59b6;
+            box-shadow: 0 6px 0 #8e44ad;
+        }
+        .btn:active { transform: translateY(4px); box-shadow: 0 0px 0 transparent; }
+        
+        .btn-exit {
+            background-color: #ecf0f1;
+            color: #7f8c8d;
+            box-shadow: 0 4px 0 #bdc3c7;
+            font-size: 18px;
+            max-width: 280px;
+        }
+
+        .game-over-stats {
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            border: 4px dashed #e74c3c;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 320px;
+        }
+
+        /* === MODAL DE PAUSA / SALIR === */
+        .modal-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 30;
+            pointer-events: auto;
+        }
+        .modal-box {
+            background: white;
+            border-radius: 25px;
+            padding: 25px;
+            text-align: center;
+            width: 85%;
+            max-width: 320px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 4px solid var(--primary);
+        }
+        .modal-box h2 { color: var(--primary); font-size: 24px; margin: 0 0 10px 0; }
+        .modal-box p { color: var(--text-dark); font-size: 16px; margin-bottom: 20px; font-weight: bold; }
+        .modal-buttons { display: flex; flex-direction: column; gap: 10px; }
+        
+        .btn-modal {
+            padding: 12px; font-size: 18px; font-weight: 900;
+            border: none; border-radius: 12px; cursor: pointer; transition: transform 0.1s;
+        }
+        .btn-modal:active { transform: translateY(2px); box-shadow: 0 0px 0 transparent !important; }
+        .btn-modal-cancel { background: #2ecc71; color: white; box-shadow: 0 5px 0 #27ae60; }
+        .btn-modal-confirm { background: #e74c3c; color: white; box-shadow: 0 5px 0 #c0392b; }
+
+    </style>
+</head>
+<body>
+
+<div id="orientation-warning" onclick="this.style.display='none'; document.querySelector('.app-container').style.display='block'; setTimeout(resizeCanvas, 200);">
+    <div style="font-size: 80px; margin-bottom: 20px;">🔄</div>
+    <h2>¡Gira tu dispositivo!</h2>
+    <p style="font-size: 22px;">Este juego de vuelo se disfruta mejor con la pantalla acostada.</p>
+    <p style="font-size: 14px; text-decoration: underline; cursor: pointer; margin-top: 20px;">(Toca aquí para forzar la vista si estás probando en PC)</p>
+</div>
+
+<div class="app-container">
+    <canvas id="game-canvas"></canvas>
+
+    <div class="ui-layer">
+        <div class="hud" id="hud" style="display: none;">
+            <!-- Botón de salir en juego -->
+            <button class="btn-game-back" onclick="pauseAndConfirmExit()">⬅ Salir</button>
+            <div class="operation-board" id="operation-display">2 + 3</div>
+            <div class="stats-board">
+                <div>Nivel: <span id="level-display">1</span></div>
+                <div>Buenas: <span id="score-display">0</span></div>
+                <div class="lives" id="lives-display">❤️❤️❤️</div>
+            </div>
+        </div>
+
+        <div id="screen-start" class="screen">
+            <h1 class="title">Aviador Matemático</h1>
+            <p class="subtitle">¡Atrapa la nube correcta y esquiva las equivocadas!</p>
+            
+            <div class="btn-container">
+                <button class="btn" onclick="startGame('sumas')">✈️ Volar Sumas</button>
+                <button class="btn btn-mixed" onclick="startGame('mixto')">🌪️ Volar Sumas y Restas</button>
+            </div>
+            
+            <button class="btn btn-exit" onclick="window.location.href='../matematicas.html'">← Regresar al Menú</button>
+        </div>
+
+        <div id="screen-gameover" class="screen hidden">
+            <h1 class="title" style="color: #e74c3c;">¡Aterrizaje Forzoso!</h1>
+            
+            <div class="game-over-stats">
+                <p style="margin: 0; font-size: 20px; font-weight: bold;">Llegaste al Nivel: <span id="final-level" style="color: var(--primary);">1</span></p>
+                <p style="margin: 10px 0 0 0; font-size: 20px; font-weight: bold;">Respuestas Buenas: <span id="final-score" style="color: #2ecc71;">0</span></p>
+            </div>
+
+            <!-- Envolvemos los botones en su contenedor para que se acomoden mejor -->
+            <div class="btn-container">
+                <button class="btn" onclick="startGame(currentGameMode)">Intentar de Nuevo</button>
+                <button class="btn btn-exit" onclick="showStartMenu()">← Menú Principal</button>
+            </div>
+        </div>
+
+        <!-- Ventana Modal de Confirmación de Salida -->
+        <div id="exit-modal" class="modal-overlay">
+            <div class="modal-box">
+                <h2>¿Seguro que quieres salir?</h2>
+                <p>Tu vuelo actual se terminará y regresarás a la base.</p>
+                <div class="modal-buttons">
+                    <button class="btn-modal btn-modal-cancel" onclick="resumeGame()">Mejor sigo volando</button>
+                    <button class="btn-modal btn-modal-confirm" onclick="quitToMenu()">Sí, salir ahora</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const canvas = document.getElementById('game-canvas');
+    const ctx = canvas.getContext('2d');
+    
+    const uiHud = document.getElementById('hud');
+    const screenStart = document.getElementById('screen-start');
+    const screenGameOver = document.getElementById('screen-gameover');
+    const exitModal = document.getElementById('exit-modal');
+    
+    const operationDisplay = document.getElementById('operation-display');
+    const scoreDisplay = document.getElementById('score-display');
+    const levelDisplay = document.getElementById('level-display');
+    const livesDisplay = document.getElementById('lives-display');
+
+    const planeImage = new Image();
+    planeImage.src = 'avion.png';
+
+    // Variables de Estado del Juego
+    let isPlaying = false;
+    let isPaused = false;
+    let animationId;
+    let score = 0;
+    let lives = 3;
+    let level = 1;
+    let currentGameMode = 'sumas'; // 'sumas' o 'mixto'
+    
+    let baseSpeed = 1.5; 
+    let cloudSpawnTimer = 0;
+    let spawnInterval = 100;
+    let correctCloudCounter = 0;
+
+    let currentMath = { a: 0, b: 0, ans: 0 };
+
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', () => { setTimeout(resizeCanvas, 100); });
+    resizeCanvas();
+
+    // === MODAL DE PAUSA ===
+    function pauseAndConfirmExit() {
+        isPaused = true;
+        exitModal.style.display = 'flex';
+    }
+
+    function resumeGame() {
+        isPaused = false;
+        exitModal.style.display = 'none';
+    }
+
+    function quitToMenu() {
+        isPaused = false;
+        isPlaying = false;
+        exitModal.style.display = 'none';
+        showStartMenu();
+    }
+
+    // === CLASES DEL JUEGO ===
+    class Plane {
+        constructor() {
+            this.x = 100;
+            this.y = canvas.height / 2;
+            this.size = 35;
+            this.targetX = this.x; // ¡NUEVO! Destino en X
+            this.targetY = this.y;
+            this.particles = [];
+            this.imgWidth = 110; 
+            this.imgHeight = 50;
+        }
+
+        draw() {
+            // Solo se mueve si no está pausado
+            if (!isPaused) {
+                // ¡NUEVO! Movimiento suave en X e Y
+                this.x += (this.targetX - this.x) * 0.15;
+                this.y += (this.targetY - this.y) * 0.15;
+                
+                // Topes para no salirse de la pantalla (ahora también en los lados)
+                this.x = Math.max(this.imgWidth / 2, Math.min(canvas.width - this.imgWidth / 2, this.x));
+                this.y = Math.max(40, Math.min(canvas.height - 40, this.y));
+
+                this.particles.push({ 
+                    x: this.x - (this.imgWidth / 2) + 10,
+                    y: this.y + 10 + (Math.random() * 8 - 4),
+                    life: 1.0 
+                });
+            }
+
+            for (let i = this.particles.length - 1; i >= 0; i--) {
+                let p = this.particles[i];
+                if (!isPaused) {
+                    p.x -= (baseSpeed + 2);
+                    p.life -= 0.05;
+                }
+                
+                if (p.life <= 0) {
+                    this.particles.splice(i, 1);
+                    continue;
+                }
+                
+                ctx.fillStyle = `rgba(255, 255, 255, ${p.life})`;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 10 * p.life, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            ctx.save();
+            ctx.translate(this.x, this.y);
+            
+            let tilt = (this.targetY - this.y) * 0.02;
+            if (isPaused) tilt = 0; // Se estabiliza en pausa
+            tilt = Math.max(-0.3, Math.min(0.3, tilt)); 
+            ctx.rotate(tilt);
+
+            if (planeImage.complete && planeImage.naturalHeight !== 0) {
+                ctx.drawImage(planeImage, -this.imgWidth/2, -this.imgHeight/2, this.imgWidth, this.imgHeight);
+            } else {
+                ctx.fillStyle = "#e74c3c";
+                ctx.fillRect(-40, -15, 80, 30);
+                ctx.fillStyle = "white";
+                ctx.fillText("✈️", 0, 5);
+            }
+
+            ctx.restore();
+        }
+
+        collidesWith(cloud) {
+            const dx = this.x - cloud.x;
+            const dy = this.y - cloud.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            return distance < (this.size + cloud.radius - 15);
+        }
+    }
+
+    class Cloud {
+        constructor(x, y, number, speed) {
+            this.x = x;
+            this.y = y;
+            this.number = number;
+            this.speed = speed;
+            this.radius = 45; 
+            this.active = true;
+        }
+
+        update() {
+            if (!isPaused) {
+                this.x -= this.speed;
+                if (this.x < -100) {
+                    this.active = false;
+                }
+            }
+        }
+
+        draw() {
+            if (!this.active) return;
+
+            ctx.fillStyle = "white";
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.arc(this.x - 30, this.y + 10, 30, 0, Math.PI * 2);
+            ctx.arc(this.x + 30, this.y + 10, 30, 0, Math.PI * 2);
+            ctx.arc(this.x, this.y - 20, 35, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = "rgba(0,0,0,0.05)";
+            ctx.beginPath();
+            ctx.arc(this.x, this.y + 15, this.radius-5, 0, Math.PI);
+            ctx.fill();
+
+            ctx.fillStyle = "#1b4f72"; // Color azul oscuro para mayor legibilidad
+            ctx.font = "900 36px Nunito";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(this.number, this.x, this.y);
+        }
+    }
+
+    let plane;
+    let clouds = [];
+
+    // === LÓGICA MATEMÁTICA Y DIFICULTAD ===
+    function generateMath() {
+        level = Math.floor(score / 10) + 1;
+        if (level > 10) level = 10;
+        levelDisplay.innerText = level;
+
+        let a, b, ans;
+        let levelMax = level * 10;
+        if (levelMax > 99) levelMax = 99;
+
+        let valid = false;
+
+        // Decidimos si será suma o resta (Si el modo es mixto, 50% probabilidad)
+        let isAddition = true;
+        if (currentGameMode === 'mixto') {
+            isAddition = Math.random() > 0.5;
+        }
+        
+        if (isAddition) {
+            // ALGORITMO: Sumas SIN LLEVADA
+            while (!valid) {
+                let ta = Math.floor(Math.random() * 10);
+                let tb = Math.floor(Math.random() * (10 - ta)); 
+                let ua = Math.floor(Math.random() * 10);
+                let ub = Math.floor(Math.random() * (10 - ua)); 
+
+                a = ta * 10 + ua;
+                b = tb * 10 + ub;
+                ans = a + b;
+
+                let minForLevel = (level - 1) * 10;
+                if (level === 1) minForLevel = 0; 
+
+                if (a > 0 && b > 0 && ans <= levelMax && ans > minForLevel) {
+                    valid = true;
+                }
+            }
+            // Asegurar que el primer sumando sea mayor
+            if (b > a) { let temp = a; a = b; b = temp; }
+            currentMath = { a, b, ans };
+            operationDisplay.innerText = `${a} + ${b}`;
+
+        } else {
+            // ALGORITMO: Restas SIN LLEVADA (Sin pedir prestado)
+            while (!valid) {
+                let ta = Math.floor(Math.random() * 10);
+                let ua = Math.floor(Math.random() * 10);
+                
+                // Aseguramos que la decenas y unidades del segundo número sean MENORES o iguales al primero
+                let tb = Math.floor(Math.random() * (ta + 1)); 
+                let ub = Math.floor(Math.random() * (ua + 1)); 
+
+                a = ta * 10 + ua;
+                b = tb * 10 + ub;
+                ans = a - b;
+
+                let minForLevel = (level - 1) * 10;
+                if (level === 1) minForLevel = 0;
+
+                // Validamos que 'a' esté dentro del límite del nivel y no reste ceros
+                if (a > 0 && b > 0 && a <= levelMax && a > minForLevel && a !== b) {
+                    valid = true;
+                }
+            }
+            // Con este algoritmo, 'a' SIEMPRE es mayor que 'b', así que no hay que intercambiarlos.
+            currentMath = { a, b, ans };
+            operationDisplay.innerText = `${a} - ${b}`;
+        }
+    }
+
+    function handleCloudSpawning() {
+        if (isPaused) return;
+
+        cloudSpawnTimer++;
+        if (cloudSpawnTimer >= spawnInterval) {
+            cloudSpawnTimer = 0;
+            correctCloudCounter++;
+
+            let randomY = Math.random() * (canvas.height - 150) + 75;
+            let startX = canvas.width + 50;
+
+            let numToSpawn;
+            
+            if (correctCloudCounter >= 2 && Math.random() > 0.3) {
+                numToSpawn = currentMath.ans;
+                correctCloudCounter = 0;
+            } else {
+                do {
+                    numToSpawn = currentMath.ans + Math.floor(Math.random() * 15) - 7;
+                } while (numToSpawn === currentMath.ans || numToSpawn < 0);
+            }
+
+            clouds.push(new Cloud(startX, randomY, numToSpawn, baseSpeed));
+        }
+    }
+
+    // === CONTROLES ===
+    canvas.addEventListener('touchmove', (e) => {
+        if (!isPlaying || isPaused) return;
+        const touchX = e.touches[0].clientX; // Capturamos la posición X del dedo
+        const touchY = e.touches[0].clientY;
+        plane.targetX = touchX; // Le decimos al avión que vaya a esa X
+        plane.targetY = touchY;
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+        if (!isPlaying || isPaused) return;
+        plane.targetX = e.clientX; // Capturamos la posición X del mouse
+        plane.targetY = e.clientY;
+    });
+
+    // === BUCLE PRINCIPAL ===
+    function gameLoop() {
+        if (!isPlaying) return;
+
+        // Si está en pausa, no borramos el canvas ni actualizamos lógica, 
+        // solo esperamos dibujando el frame actual para que el fondo siga viéndose.
+        if (isPaused) {
+            animationId = requestAnimationFrame(gameLoop);
+            return;
+        }
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        handleCloudSpawning();
+        plane.draw();
+
+        for (let i = clouds.length - 1; i >= 0; i--) {
+            let c = clouds[i];
+            
+            if (c.active) {
+                c.update();
+                c.draw();
+
+                if (plane.collidesWith(c)) {
+                    c.active = false; 
+                    
+                    if (c.number === currentMath.ans) {
+                        // ¡ACIERTO!
+                        score++;
+                        scoreDisplay.innerText = score;
+                        
+                        baseSpeed = 1.5 + (level * 0.15);
+                        spawnInterval = Math.max(40, 100 - (level * 5));
+
+                        generateMath();
+                        
+                        ctx.fillStyle = "rgba(46, 204, 113, 0.3)";
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    } else {
+                        // ¡ERROR!
+                        loseLife();
+                        generateMath(); 
+                        clouds.forEach(cl => cl.active = false);
+                    }
+                }
+            } else {
+                clouds.splice(i, 1);
+            }
+        }
+
+        animationId = requestAnimationFrame(gameLoop);
+    }
+
+    function loseLife() {
+        lives--;
+        ctx.fillStyle = "rgba(231, 76, 60, 0.5)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        updateLivesUI();
+        if (lives <= 0) gameOver();
+    }
+
+    function updateLivesUI() {
+        let hearts = "";
+        for(let i=0; i<lives; i++) hearts += "❤️";
+        livesDisplay.innerText = hearts;
+    }
+
+    function showStartMenu() {
+        screenStart.classList.remove('hidden');
+        screenGameOver.classList.add('hidden');
+        uiHud.style.display = 'none';
+        exitModal.style.display = 'none'; // Aseguramos que el modal no se quede pegado
+    }
+
+    function startGame(mode) {
+        currentGameMode = mode; // 'sumas' o 'mixto'
+        resizeCanvas();
+
+        score = 0;
+        lives = 3;
+        level = 1;
+        baseSpeed = 1.5; 
+        spawnInterval = 100; 
+        cloudSpawnTimer = 0;
+        correctCloudCounter = 0;
+        clouds = []; 
+        isPaused = false;
+        
+        scoreDisplay.innerText = score;
+        updateLivesUI();
+        
+        screenStart.classList.add('hidden');
+        screenGameOver.classList.add('hidden');
+        uiHud.style.display = 'flex';
+
+        plane = new Plane();
+        plane.x = 100; // Reiniciamos posición X
+        plane.y = canvas.height / 2;
+        plane.targetX = 100; // Reiniciamos objetivo X
+        plane.targetY = canvas.height / 2;
+        
+        generateMath();
+
+        isPlaying = true;
+        if(animationId) cancelAnimationFrame(animationId);
+        gameLoop();
+    }
+
+    function gameOver() {
+        isPlaying = false;
+        uiHud.style.display = 'none';
+        
+        document.getElementById('final-score').innerText = score;
+        document.getElementById('final-level').innerText = level;
+        
+        screenGameOver.classList.remove('hidden');
+    }
+
+</script>
+
+</body>
+</html>
