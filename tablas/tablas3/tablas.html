@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Aula Mágica - Multiplicaciones Nivel Avanzado</title>
+    <!-- Usamos una fuente amigable para niños -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* === ESTILOS BASE (CSS) === */
+        :root {
+            --primary: #8e44ad; /* Morado avanzado */
+            --secondary: #f39c12; /* Naranja/Amarillo */
+            --tens-color: #e74c3c; /* Rojo decenas */
+            --units-color: #3498db; /* Azul unidades */
+            --bg-color: #f4f6f7; /* Fondo gris claro */
+            --text-dark: #2c3e50;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Nunito', sans-serif;
+            user-select: none;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at 50% 50%, #ffffff 0%, #f4f6f7 100%);
+        }
+
+        /* Contenedor principal que simula la pantalla del celular */
+        .app-container {
+            width: 100%;
+            max-width: 500px;
+            height: 100vh;
+            max-height: 850px;
+            background: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Vistas (Pantallas) */
+        .screen {
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* === PANTALLA 1: MENÚ === */
+        .menu-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .menu-header h1 {
+            color: var(--primary);
+            font-size: 32px;
+            margin: 10px 0;
+        }
+        .badge-advanced {
+            background: var(--text-dark);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .settings-card {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 3px solid #eee;
+        }
+        .settings-row {
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .setting-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .setting-group label {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        .setting-group select {
+            width: 80px;
+            padding: 8px;
+            font-size: 18px;
+            border-radius: 10px;
+            border: 2px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            font-weight: bold;
+            outline: none;
+            text-align: center;
+            cursor: pointer;
+        }
+        
+        /* Botones Generales */
+        .btn {
+            padding: 15px 20px;
+            font-size: 22px;
+            font-weight: 900;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            text-align: center;
+            transition: transform 0.1s, box-shadow 0.1s;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        .btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 0px 0 transparent !important;
+        }
+        .btn-play {
+            background-color: var(--secondary);
+            color: white;
+            box-shadow: 0 6px 0 #d68910;
+        }
+        .btn-back {
+            background-color: #ecf0f1;
+            color: #7f8c8d;
+            box-shadow: 0 6px 0 #bdc3c7;
+            font-size: 18px;
+        }
+        .btn-check {
+            background-color: #2ecc71;
+            color: white;
+            box-shadow: 0 6px 0 #27ae60;
+            margin-top: 5px; /* <--- AJUSTA AQUÍ: Espacio arriba del botón Revisar (lo bajé a 5px para que pegue más) */
+        }
+
+        /* === PANTALLA 2: JUEGO === */
+        .game-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .btn-game-back {
+            background-color: #ecf0f1;
+            color: #7f8c8d;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 4px 0 #bdc3c7;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .btn-game-back:active {
+            transform: translateY(2px);
+            box-shadow: 0 0px 0 transparent;
+        }
+
+        .progress-container {
+            flex: 1;
+            height: 15px;
+            background: #eee;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: var(--secondary);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 900;
+            font-size: 16px;
+            margin-bottom: 10px;
+            padding: 0 10px;
+        }
+        .stat-correct { color: #2ecc71; }
+        .stat-incorrect { color: #e74c3c; }
+
+        .operation-board {
+            text-align: center;
+            font-size: 50px;
+            font-weight: 900;
+            color: var(--primary);
+            margin: 10px 0 15px 0;
+            background: #fff;
+            border-radius: 20px;
+            padding: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border: 2px dashed var(--primary);
+        }
+
+        /* Selectores de Pincel (Leyenda + Botones interactivos) */
+        .tool-selector-title {
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+        .tools-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .tool-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #fff;
+            padding: 10px 20px;
+            border-radius: 25px;
+            box-shadow: 0 4px 0 #ddd;
+            border: 2px solid #ddd;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            color: var(--text-dark);
+            transition: all 0.2s;
+        }
+        .tool-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 0px 0 transparent !important;
+        }
+        .tool-circle {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+        }
+        /* Estados Activos de las herramientas */
+        .tool-btn.active.tool-tens {
+            border-color: var(--tens-color);
+            background: #ffeaea;
+            box-shadow: 0 4px 0 #c0392b;
+        }
+        .tool-btn.active.tool-units {
+            border-color: var(--units-color);
+            background: #eaf5ff;
+            box-shadow: 0 4px 0 #2980b9;
+        }
+
+        /* Zona Única de Círculos */
+        .circles-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center; 
+            margin-bottom: 15px; /* <--- AJUSTA AQUÍ: Espacio entre la caja de círculos y el botón de Revisar */
+            /* flex: 1; ELIMINAMOS ESTO: Esto empujaba el botón hacia el fondo de la pantalla */
+        }
+        .zone-unified {
+            width: 100%;
+            max-width: 320px; /* Ancho máximo para mantenerlos juntos */
+            background: #f8f9fa;
+            border-radius: 15px; 
+            padding: 20px;
+            border: 3px solid #eee;
+        }
+
+        .circle-grid {
+            display: flex;
+            flex-wrap: wrap; /* Permite que los círculos se acomoden según la cantidad */
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .circle {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            border: 3px solid #ccc;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        /* Colores aplicados a los círculos */
+        .circle.active-tens {
+            background: var(--tens-color);
+            border-color: #c0392b;
+            box-shadow: inset -3px -3px 0 rgba(0,0,0,0.1);
+            transform: scale(1.1);
+        }
+        .circle.active-units {
+            background: var(--units-color);
+            border-color: #2980b9;
+            box-shadow: inset -3px -3px 0 rgba(0,0,0,0.1);
+            transform: scale(1.1);
+        }
+
+        /* Feedback temporal (Correcto/Incorrecto) */
+        #feedback-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255,255,255,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 10;
+        }
+        .feedback-icon { font-size: 80px; margin-bottom: 10px; }
+        .feedback-text { font-size: 30px; font-weight: bold; }
+
+        /* === PANTALLA 3: RESULTADOS === */
+        .results-container {
+            text-align: center;
+            margin: auto;
+        }
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            font-weight: 900;
+            margin: 0 auto 20px auto;
+            border: 8px solid var(--secondary);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .results-message {
+            font-size: 24px;
+            color: var(--text-dark);
+            margin-bottom: 40px;
+        }
+
+        /* === MODAL PERSONALIZADO (POP-UP) === */
+        .modal-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+            animation: fadeIn 0.3s;
+        }
+        .modal-box {
+            background: white;
+            border-radius: 25px;
+            padding: 25px;
+            text-align: center;
+            width: 85%;
+            max-width: 320px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 4px solid var(--primary);
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .modal-icon-text { font-size: 40px; margin-bottom: 10px; }
+        .modal-box h2 { color: var(--primary); font-size: 22px; margin: 0 0 10px 0; }
+        .modal-box p { color: var(--text-dark); font-size: 16px; margin-bottom: 20px; font-weight: bold; }
+        .modal-buttons { display: flex; flex-direction: column; gap: 10px; }
+        
+        .btn-modal {
+            padding: 12px; font-size: 18px; font-weight: 900;
+            border: none; border-radius: 12px; cursor: pointer; transition: transform 0.1s;
+        }
+        .btn-modal:active { transform: translateY(2px); box-shadow: 0 0px 0 transparent !important; }
+        .btn-modal-cancel { background: #2ecc71; color: white; box-shadow: 0 5px 0 #27ae60; }
+        .btn-modal-confirm { background: #e74c3c; color: white; box-shadow: 0 5px 0 #c0392b; }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    
+    <!-- === PANTALLA 1: MENÚ === -->
+    <div id="screen-menu" class="screen active">
+        <div class="menu-header">
+            <h1>✨ Aula Mágica ✨</h1>
+            <p style="font-size: 18px; font-weight: bold; margin:0;">Multiplica con Círculos</p>
+            <span class="badge-advanced">Nivel Avanzado</span>
+        </div>
+
+        <div class="settings-card">
+            <p style="text-align: center; font-weight: bold; margin-top: 0; font-size: 18px;">Selecciona las tablas:</p>
+            <div class="settings-row">
+                <div class="setting-group">
+                    <label for="min-table">Desde:</label>
+                    <select id="min-table">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4" selected>4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                    </select>
+                </div>
+                
+                <div class="setting-group">
+                    <label for="max-table">Hasta:</label>
+                    <select id="max-table">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9" selected>9</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn btn-play" onclick="startGame()">¡JUGAR!</button>
+        <button class="btn btn-back" onclick="goBackToMainPlatform()">← Regresar a Menú</button>
+    </div>
+
+    <!-- === PANTALLA 2: JUEGO === -->
+    <div id="screen-game" class="screen">
+        <div class="game-header">
+            <button class="btn-game-back" onclick="quitGame()">⬅ Menú</button>
+            <div class="progress-container">
+                <div id="progress-bar" class="progress-bar"></div>
+            </div>
+        </div>
+
+        <div class="stats-container">
+            <span id="score-correct" class="stat-correct">✅ Buenas: 0</span>
+            <span id="score-incorrect" class="stat-incorrect">❌ Malas: 0</span>
+        </div>
+        
+        <div id="operation-text" class="operation-board">8 x 7 = ?</div>
+
+        <!-- Leyenda Convertida en Botones de Selección -->
+        <div class="tool-selector-title">Elige el color para pintar:</div>
+        <div class="tools-container">
+            <div class="tool-btn tool-tens active" id="btn-tool-tens" onclick="selectTool('tens')">
+                <div class="tool-circle" style="background: var(--tens-color); border: 2px solid #c0392b;"></div>
+                <span>1 Decena (10)</span>
+            </div>
+            <div class="tool-btn tool-units" id="btn-tool-units" onclick="selectTool('units')">
+                <div class="tool-circle" style="background: var(--units-color); border: 2px solid #2980b9;"></div>
+                <span>1 Unidad (1)</span>
+            </div>
+        </div>
+
+        <!-- Zona Única de Círculos Dinámicos -->
+        <div class="circles-wrapper">
+            <div class="zone-unified">
+                <div class="circle-grid" id="grid-unified">
+                    <!-- Los círculos se generan con JS de forma dinámica -->
+                </div>
+            </div>
+        </div>
+
+        <button class="btn btn-check" onclick="checkAnswer()">REVISAR</button>
+
+        <div id="feedback-overlay">
+            <div id="feedback-icon" class="feedback-icon">🌟</div>
+            <div id="feedback-text" class="feedback-text">¡Correcto!</div>
+        </div>
+    </div>
+
+    <!-- === PANTALLA 3: RESULTADOS === -->
+    <div id="screen-result" class="screen">
+        <div class="results-container">
+            <h1 style="color: var(--primary); font-size: 36px;">¡Terminaste!</h1>
+            <div id="final-score" class="score-circle">20/20</div>
+            <div id="final-message" class="results-message">¡Eres un mago de las matemáticas!</div>
+            
+            <button class="btn btn-play" onclick="showScreen('screen-menu')">Volver a Jugar</button>
+        </div>
+    </div>
+
+    <!-- === VENTANA MODAL EMERGENTE === -->
+    <div id="custom-modal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-icon-text" id="modal-icon">🤔</div>
+            <h2 id="modal-title">¿Título?</h2>
+            <p id="modal-text">Texto de la pregunta...</p>
+            <div class="modal-buttons">
+                <button class="btn-modal btn-modal-cancel" id="btn-modal-cancel" onclick="closeModal()">Mejor me quedo</button>
+                <button class="btn-modal btn-modal-confirm" id="btn-modal-confirm" onclick="executeModalAction()">Sí, salir</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- === LÓGICA DEL JUEGO === -->
+<script>
+    // Variables de estado
+    const totalQuestions = 20;
+    let questions = [];
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let incorrectScore = 0;
+    
+    // Contadores actuales dibujados en pantalla
+    let currentTensCount = 0;
+    let currentUnitsCount = 0;
+    
+    // Herramienta seleccionada ('tens' para Decenas, 'units' para Unidades)
+    let selectedTool = 'tens'; 
+    let currentModalAction = null;
+
+    // Elementos DOM
+    const minTableSelect = document.getElementById('min-table');
+    const maxTableSelect = document.getElementById('max-table');
+    const gridUnified = document.getElementById('grid-unified');
+    const operationText = document.getElementById('operation-text');
+    const progressBar = document.getElementById('progress-bar');
+    const scoreCorrectEl = document.getElementById('score-correct');
+    const scoreIncorrectEl = document.getElementById('score-incorrect');
+    const feedbackOverlay = document.getElementById('feedback-overlay');
+    const feedbackIcon = document.getElementById('feedback-icon');
+    const feedbackText = document.getElementById('feedback-text');
+
+    // Inicializar menú
+    window.onload = () => {
+        minTableSelect.addEventListener('change', () => {
+            if(parseInt(minTableSelect.value) > parseInt(maxTableSelect.value)) {
+                maxTableSelect.value = minTableSelect.value;
+            }
+        });
+        maxTableSelect.addEventListener('change', () => {
+            if(parseInt(maxTableSelect.value) < parseInt(minTableSelect.value)) {
+                minTableSelect.value = maxTableSelect.value;
+            }
+        });
+    };
+
+    function showScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+    }
+
+    // Navegación y Modal
+    function showModal(icon, title, text, confirmText, cancelText, actionFn) {
+        document.getElementById('modal-icon').innerText = icon;
+        document.getElementById('modal-title').innerText = title;
+        document.getElementById('modal-text').innerText = text;
+        document.getElementById('btn-modal-confirm').innerText = confirmText;
+        document.getElementById('btn-modal-cancel').innerText = cancelText;
+        currentModalAction = actionFn;
+        document.getElementById('custom-modal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('custom-modal').style.display = 'none';
+        currentModalAction = null;
+    }
+
+    function executeModalAction() {
+        if (currentModalAction) currentModalAction();
+        closeModal();
+    }
+
+    function goBackToMainPlatform() {
+        showModal(
+            "👋",
+            "¿Regresar a Menú?",
+            "Saldrás de este minijuego.",
+            "Sí, regresar",
+            "Cancelar",
+            () => window.location = "../tablas.html"
+        );
+    }
+
+    function quitGame() {
+        showModal(
+            "🥺",
+            "¿Seguro que quieres salir?",
+            "Tu progreso mágico se perderá.",
+            "Sí, salir",
+            "Mejor sigo jugando",
+            () => showScreen('screen-menu')
+        );
+    }
+
+    // Funciones del Nivel Avanzado
+    
+    // 1. Elegir Pincel
+    function selectTool(toolName) {
+        selectedTool = toolName;
+        // Actualizar UI
+        document.getElementById('btn-tool-tens').classList.remove('active');
+        document.getElementById('btn-tool-units').classList.remove('active');
+        
+        if (toolName === 'tens') {
+            document.getElementById('btn-tool-tens').classList.add('active');
+        } else {
+            document.getElementById('btn-tool-units').classList.add('active');
+        }
+    }
+
+    // 2. Iniciar Juego
+    function startGame() {
+        const min = parseInt(minTableSelect.value);
+        const max = parseInt(maxTableSelect.value);
+        
+        generateQuestions(min, max);
+        currentQuestionIndex = 0;
+        score = 0;
+        incorrectScore = 0;
+        updateScoresUI();
+        
+        // Empezar siempre con el pincel de decenas
+        selectTool('tens');
+        
+        showScreen('screen-game');
+        loadQuestion();
+    }
+
+    function updateScoresUI() {
+        scoreCorrectEl.innerText = `✅ Buenas: ${score}`;
+        scoreIncorrectEl.innerText = `❌ Malas: ${incorrectScore}`;
+    }
+
+    function generateQuestions(min, max) {
+        questions = [];
+        for (let i = 0; i < totalQuestions; i++) {
+            const a = Math.floor(Math.random() * (max - min + 1)) + min;
+            const b = Math.floor(Math.random() * 9) + 1; 
+            questions.push({ a: a, b: b });
+        }
+    }
+
+    // 3. Cargar Pregunta con Círculos Dinámicos
+    function loadQuestion() {
+        const q = questions[currentQuestionIndex];
+        const answer = q.a * q.b;
+        
+        operationText.innerText = `${q.a} x ${q.b} = ?`;
+
+        // Lógica de círculos dinámicos
+        // Calculamos cuántos necesitan exactamente
+        const neededTens = Math.floor(answer / 10);
+        const neededUnits = answer % 10;
+        const exactCirclesRequired = neededTens + neededUnits;
+        
+        // Sumamos entre 2 y 5 distractores para que tengan que pensar
+        const distractors = Math.floor(Math.random() * 4) + 2; 
+        const totalCirclesToRender = exactCirclesRequired + distractors;
+
+        // Limpiamos y generamos la nueva cuadrícula
+        gridUnified.innerHTML = '';
+        currentTensCount = 0;
+        currentUnitsCount = 0;
+
+        for(let i = 0; i < totalCirclesToRender; i++) {
+            let circle = document.createElement('div');
+            circle.className = 'circle';
+            
+            // Lógica al tocar un círculo
+            circle.onclick = function() {
+                if (selectedTool === 'tens') {
+                    // Si ya es rojo, lo despintamos (borrar)
+                    if (this.classList.contains('active-tens')) {
+                        this.classList.remove('active-tens');
+                    } else {
+                        // Lo pintamos de rojo (y borramos azul si lo tuviera)
+                        this.classList.remove('active-units');
+                        this.classList.add('active-tens');
+                    }
+                } else if (selectedTool === 'units') {
+                    // Si ya es azul, lo despintamos (borrar)
+                    if (this.classList.contains('active-units')) {
+                        this.classList.remove('active-units');
+                    } else {
+                        // Lo pintamos de azul (y borramos rojo si lo tuviera)
+                        this.classList.remove('active-tens');
+                        this.classList.add('active-units');
+                    }
+                }
+                recalculateScore();
+            };
+            gridUnified.appendChild(circle);
+        }
+
+        // Progreso
+        const progressPercentage = (currentQuestionIndex / totalQuestions) * 100;
+        progressBar.style.width = `${progressPercentage}%`;
+    }
+
+    function recalculateScore() {
+        currentTensCount = document.querySelectorAll('.active-tens').length;
+        currentUnitsCount = document.querySelectorAll('.active-units').length;
+    }
+
+    // 4. Revisar Respuesta
+    function checkAnswer() {
+        const q = questions[currentQuestionIndex];
+        const correctAnswer = q.a * q.b;
+        const userAnswer = (currentTensCount * 10) + currentUnitsCount;
+
+        if (userAnswer === correctAnswer) {
+            score++;
+            updateScoresUI();
+            showFeedback(true);
+        } else {
+            incorrectScore++;
+            updateScoresUI();
+            showFeedback(false, correctAnswer);
+        }
+    }
+
+    function showFeedback(isCorrect, correctAnswer = 0) {
+        feedbackOverlay.style.display = 'flex';
+        
+        if (isCorrect) {
+            feedbackIcon.innerText = '⭐';
+            feedbackText.innerText = '¡Correcto!';
+            feedbackText.style.color = '#27ae60';
+        } else {
+            feedbackIcon.innerText = 'Oops...';
+            feedbackText.innerText = `La respuesta era ${correctAnswer}`; 
+            feedbackText.style.color = '#c0392b';
+        }
+
+        setTimeout(() => {
+            feedbackOverlay.style.display = 'none';
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < totalQuestions) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }, 1800); // 1.8 seg de pausa para que alcancen a leer la respuesta correcta
+    }
+
+    function showResults() {
+        progressBar.style.width = '100%';
+        document.getElementById('final-score').innerText = `${score}/${totalQuestions}`;
+        
+        const messageEl = document.getElementById('final-message');
+        if (score === totalQuestions) {
+            messageEl.innerText = "¡Excelente nivel, maestro multiplicador! 🏅";
+        } else if (score >= totalQuestions * 0.7) {
+            messageEl.innerText = "¡Buen trabajo! Sigue practicando. 👍";
+        } else {
+            messageEl.innerText = "¡Sigue esforzándote! La práctica hace al maestro. 💪";
+        }
+
+        showScreen('screen-result');
+    }
+</script>
+
+</body>
+</html>

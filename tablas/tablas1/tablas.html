@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maratón de Tablas de Multiplicar</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+    <div class="contenedor-principal">
+        
+        <div class="barra-superior">
+            <button id="btn-menu" class="btn-salir">⬅️ Menú Principal</button>
+        </div>
+        
+        <h1 class="titulo">Maratón de Multiplicaciones</h1>
+
+        <div id="panel-configuracion" class="tarjeta">
+            <h2>Configura tu Reto</h2>
+            
+            <div class="config-seccion">
+                <label>Modo de Juego:</label>
+                <div class="opciones-radio">
+                    <input type="radio" name="modo" id="modo-tiempo" value="tiempo" checked>
+                    <label for="modo-tiempo" class="radio-label">⏳ Con Tiempo</label>
+                    
+                    <input type="radio" name="modo" id="modo-libre" value="libre">
+                    <label for="modo-libre" class="radio-label">🧘 Sin Tiempo</label>
+                </div>
+            </div>
+
+            <div class="config-seccion" id="seccion-tiempo">
+                <label for="tiempo-limite">Tiempo Límite:</label>
+                <select id="tiempo-limite" class="select-ancho">
+                    <option value="5">5 Minutos</option>
+                    <option value="10">10 Minutos</option>
+                    <option value="15" selected>15 Minutos</option>
+                </select>
+            </div>
+
+            <div class="config-seccion">
+                <label>Rango de Tablas:</label>
+                <div class="rango-inputs">
+                    <span>Del</span>
+                    <select id="tabla-inicio">
+                        <option value="2" selected>2</option><option value="3">3</option>
+                        <option value="4">4</option><option value="5">5</option>
+                        <option value="6">6</option><option value="7">7</option>
+                        <option value="8">8</option><option value="9">9</option>
+                    </select>
+                    <span>hasta el</span>
+                    <select id="tabla-fin">
+                        <option value="2">2</option><option value="3">3</option>
+                        <option value="4">4</option><option value="5">5</option>
+                        <option value="6">6</option><option value="7">7</option>
+                        <option value="8">8</option><option value="9" selected>9</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="config-seccion">
+                <label for="cantidad-ops">Cantidad de Operaciones:</label>
+                <select id="cantidad-ops" class="select-ancho">
+                    <option value="20" selected>20 (Fácil)</option>
+                    <option value="40">40 (Intermedio)</option>
+                    <option value="60">60 (Avanzado)</option>
+                    <option value="80">80 (Experto)</option>
+                    <option value="100">100 (Maestro)</option>
+                </select>
+            </div>
+
+            <button id="btn-empezar" class="btn-gigante btn-verde mt-20">🚀 ¡EMPEZAR JUEGO!</button>
+            <button id="btn-abrir-pdf" class="btn-gigante btn-morado mt-10">📄 Descargar Tablas en PDF</button>
+        </div>
+
+        <div id="panel-juego" class="oculto">
+            
+            <div class="barra-estadisticas">
+                <div class="stat-box">✅ <span id="vivo-buenas">0</span></div>
+                <div class="stat-box">❌ <span id="vivo-malas">0</span></div>
+                <div class="stat-box tiempo-box" id="caja-tiempo">⏳ <span id="vivo-tiempo">15:00</span></div>
+            </div>
+
+            <div class="progreso-contenedor">
+                <div id="barra-progreso" class="progreso-relleno"></div>
+            </div>
+            <div class="progreso-texto">Progreso: <span id="texto-progreso">0/20</span></div>
+
+            <div id="contenedor-operaciones" class="tarjeta">
+                </div>
+
+            <button id="btn-continuar" class="btn-gigante btn-azul">Continuar ➡️</button>
+        </div>
+
+        <div id="panel-resultados" class="tarjeta oculto">
+            <h1 id="titulo-resultado">¡Reto Completado! 🎉</h1>
+            <div class="resultados-grid">
+                <div class="res-item correctas">
+                    <h2>✅ Buenas</h2>
+                    <p id="res-buenas">0</p>
+                </div>
+                <div class="res-item incorrectas">
+                    <h2>❌ Malas</h2>
+                    <p id="res-malas">0</p>
+                </div>
+            </div>
+            <div class="res-calif">Calificación: <span id="res-calif">10</span>/10</div>
+            
+            <div id="contenedor-errores" class="oculto">
+                <h3>⚠️ Operaciones a repasar:</h3>
+                <ul id="lista-errores"></ul>
+            </div>
+
+            <button id="btn-reiniciar" class="btn-gigante btn-naranja mt-20">🔄 Jugar de Nuevo</button>
+        </div>
+
+        <div id="modal-pdf" class="modal-fondo oculto">
+            <div class="modal-contenido">
+                <h2 style="color: #4338ca; margin-top: 0;">Descargar Ejercicios PDF</h2>
+                <p>Se generarán <strong>60 operaciones horizontales</strong> listas para imprimir.</p>
+                <div class="rango-inputs" style="margin: 20px 0;">
+                    <span>Del</span>
+                    <select id="pdf-inicio">
+                        <option value="2" selected>2</option><option value="3">3</option>
+                        <option value="4">4</option><option value="5">5</option>
+                        <option value="6">6</option><option value="7">7</option>
+                        <option value="8">8</option><option value="9">9</option>
+                    </select>
+                    <span>al</span>
+                    <select id="pdf-fin">
+                        <option value="2">2</option><option value="3">3</option>
+                        <option value="4">4</option><option value="5">5</option>
+                        <option value="6">6</option><option value="7">7</option>
+                        <option value="8">8</option><option value="9" selected>9</option>
+                    </select>
+                </div>
+                <button id="btn-generar-pdf" class="btn-gigante btn-verde">⬇️ Descargar Archivo</button>
+                <button id="btn-cerrar-pdf" class="btn-gigante btn-naranja mt-10">❌ Cancelar</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
