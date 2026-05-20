@@ -300,17 +300,18 @@
                     <button class="btn btn-mixed" onclick="startGame('mixto')">🌪️ Volar Sumas y Restas</button>
                 </div>
                 
-                <button class="btn btn-exit" onclick="window.location.href='../matematicas.html'">← Regresar a Aula Mágica</button>
+                <button class="btn btn-exit" onclick="window.location.href='index.html'">← Regresar a Aula Mágica</button>
             </div>
         </div>
 
         <div id="screen-gameover" class="screen hidden">
             <div class="screen-content">
-                <h1 class="title" style="color: #e74c3c;">¡Aterrizaje Forzoso!</h1>
+                <h1 class="title" id="end-title" style="color: #e74c3c;">¡Aterrizaje Forzoso!</h1>
                 
-                <div class="game-over-stats">
-                    <p style="margin: 0; font-size: 20px; font-weight: bold;">Llegaste al Nivel: <span id="final-level" style="color: var(--primary);">1</span></p>
+                <div class="game-over-stats" id="end-stats-box">
+                    <p style="margin: 0; font-size: 20px; font-weight: bold;" id="end-level-text">Llegaste al Nivel: <span id="final-level" style="color: var(--primary);">1</span></p>
                     <p style="margin: 10px 0 0 0; font-size: 20px; font-weight: bold;">Respuestas Buenas: <span id="final-score" style="color: #2ecc71;">0</span></p>
+                    <p style="margin: 10px 0 0 0; font-size: 20px; font-weight: bold; display: none;" id="end-errors-text">Vidas perdidas: <span id="final-errors" style="color: #e74c3c;">0</span></p>
                 </div>
 
                 <div class="btn-container">
@@ -426,9 +427,9 @@
                 this.x += (this.targetX - this.x) * 0.15;
                 this.y += (this.targetY - this.y) * 0.15;
                 
-                // Topes adaptables
+                // Topes adaptables mejorados (Evitar la zona de los botones arriba y que no salga por abajo)
                 this.x = Math.max(this.imgWidth / 2, Math.min(canvas.width - this.imgWidth / 2, this.x));
-                this.y = Math.max(40, Math.min(canvas.height - 40, this.y));
+                this.y = Math.max(130, Math.min(canvas.height - 60, this.y));
 
                 this.particles.push({ 
                     x: this.x - (this.imgWidth / 2) + (10 * globalScale),
@@ -605,8 +606,9 @@
             cloudSpawnTimer = 0;
             correctCloudCounter++;
 
-            // Ajustamos el rango de salida de las nubes en Y respetando los topes
-            let randomY = Math.random() * (canvas.height - 180) + 90;
+            // Ajustamos el rango de salida de las nubes en Y respetando los nuevos topes del avión
+            // Ahora salen de Y=130 hacia abajo, para que no crucen sobre el marcador
+            let randomY = Math.random() * (canvas.height - 190) + 130;
             let startX = canvas.width + 50;
 
             let numToSpawn;
@@ -654,9 +656,9 @@
         plane.targetX += deltaX; 
         plane.targetY += deltaY;
         
-        // Evitamos que el objetivo se salga de los límites de la pantalla
+        // Evitamos que el objetivo se salga de los límites de la pantalla (igual que en draw)
         plane.targetX = Math.max(plane.imgWidth / 2, Math.min(canvas.width - plane.imgWidth / 2, plane.targetX));
-        plane.targetY = Math.max(40, Math.min(canvas.height - 40, plane.targetY));
+        plane.targetY = Math.max(130, Math.min(canvas.height - 60, plane.targetY));
 
         // Actualizamos la última posición para el siguiente movimiento
         lastPointerX = currentX;
@@ -688,7 +690,7 @@
         plane.targetY += deltaY;
         
         plane.targetX = Math.max(plane.imgWidth / 2, Math.min(canvas.width - plane.imgWidth / 2, plane.targetX));
-        plane.targetY = Math.max(40, Math.min(canvas.height - 40, plane.targetY));
+        plane.targetY = Math.max(130, Math.min(canvas.height - 60, plane.targetY));
 
         lastPointerX = currentX;
         lastPointerY = currentY;
@@ -722,8 +724,15 @@
                         score++;
                         scoreDisplay.innerText = score;
                         
-                        baseSpeed = 1.5 + (level * 0.15);
-                        spawnInterval = Math.max(40, 100 - (level * 5));
+                        // Revisamos si ya completó el nivel 10 (100 puntos)
+                        if (score >= 100) {
+                            gameWin();
+                            return; // Terminamos el ciclo
+                        }
+                        
+                        // ¡NUEVO!: Aceleramos la velocidad y la frecuencia de salida de nubes de forma más agresiva en cada nivel
+                        baseSpeed = 1.5 + ((level - 1) * 0.25);
+                        spawnInterval = Math.max(30, 100 - ((level - 1) * 8));
 
                         generateMath();
                         
@@ -802,9 +811,37 @@
         isPlaying = false;
         uiHud.style.display = 'none';
         
-        document.getElementById('final-score').innerText = score;
-        document.getElementById('final-level').innerText = level;
+        // Configuración de interfaz para la derrota
+        document.getElementById('end-title').innerText = "¡Aterrizaje Forzoso!";
+        document.getElementById('end-title').style.color = "#e74c3c";
+        document.getElementById('end-stats-box').style.borderColor = "#e74c3c";
         
+        document.getElementById('end-level-text').style.display = 'block';
+        document.getElementById('final-level').innerText = level;
+        document.getElementById('final-score').innerText = score;
+        document.getElementById('end-errors-text').style.display = 'none';
+        
+        screenGameOver.classList.remove('hidden');
+    }
+
+    function gameWin() {
+        isPlaying = false;
+        uiHud.style.display = 'none';
+        
+        // Configuración de interfaz para la victoria
+        document.getElementById('end-title').innerText = "¡Misión Cumplida!";
+        document.getElementById('end-title').style.color = "#f1c40f"; // Color dorado
+        document.getElementById('end-stats-box').style.borderColor = "#f1c40f";
+        
+        document.getElementById('end-level-text').style.display = 'none'; // Ocultamos el nivel porque ya llegó al 10
+        document.getElementById('final-score').innerText = score;
+        
+        let errores = 3 - lives;
+        let errorText = errores === 0 ? "¡0! ¡Vuelo Perfecto!" : errores;
+        document.getElementById('final-errors').innerText = errorText;
+        document.getElementById('final-errors').style.color = errores === 0 ? "#2ecc71" : "#e74c3c";
+        document.getElementById('end-errors-text').style.display = 'block'; // Mostramos el texto de errores
+
         screenGameOver.classList.remove('hidden');
     }
 
