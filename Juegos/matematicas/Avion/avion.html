@@ -248,21 +248,24 @@
 
         /* === AJUSTES PARA PANTALLAS PEQUEÑAS (CELULARES EN HORIZONTAL) === */
         @media (max-height: 500px) {
-            .title { font-size: 28px; margin-bottom: 5px; }
-            .subtitle { font-size: 16px; margin-bottom: 15px; }
-            .btn { font-size: 16px; padding: 10px 20px; max-width: 240px; }
-            .btn-exit { font-size: 14px; max-width: 240px; }
-            .btn-container { gap: 10px; margin-bottom: 10px; }
-            .operation-board { font-size: 28px; padding: 5px 15px; min-width: 120px; }
-            .stats-board { font-size: 14px; padding: 5px 10px; }
-            .lives { font-size: 16px; }
+            .title { font-size: 24px; margin-bottom: 5px; } /* Título más pequeño */
+            .subtitle { font-size: 14px; margin-bottom: 10px; } /* Subtítulo más pequeño */
+            .btn { font-size: 14px; padding: 8px 15px; max-width: 200px; } /* Botones más compactos */
+            .btn-exit { font-size: 12px; max-width: 200px; }
+            .btn-container { gap: 8px; margin-bottom: 8px; }
+            
+            /* HUD MUCHO MÁS COMPACTO */
+            .hud { padding: 5px 10px; } /* Menos espacio alrededor del HUD */
+            .operation-board { font-size: 22px; padding: 3px 10px; min-width: 80px; border-width: 2px; } /* Operación más chica */
+            .stats-board { font-size: 12px; padding: 3px 8px; } /* Estadísticas más chicas */
+            .lives { font-size: 14px; margin-top: 2px; letter-spacing: 1px; } /* Corazones más chicos */
+            .btn-game-back { font-size: 12px; padding: 5px 10px; } /* Botón salir más chico */
+
             .modal-box { padding: 15px; }
-            .modal-box h2 { font-size: 20px; }
-            .modal-box p { font-size: 14px; margin-bottom: 15px; }
-            .btn-modal { padding: 10px; font-size: 16px; }
-            .game-over-stats { padding: 15px; margin-bottom: 15px; }
-            .hud { padding: 8px 15px; }
-            .btn-game-back { font-size: 14px; padding: 8px 12px; }
+            .modal-box h2 { font-size: 18px; }
+            .modal-box p { font-size: 12px; margin-bottom: 10px; }
+            .btn-modal { padding: 8px; font-size: 14px; }
+            .game-over-stats { padding: 10px; margin-bottom: 10px; }
         }
 
     </style>
@@ -385,13 +388,15 @@
         // Evitamos que se hagan microscópicos o excesivamente gigantes
         globalScale = Math.max(0.4, Math.min(globalScale, 1.2)); 
 
-        // ¡NUEVO!: Si la pantalla es bajita (celular), damos más espacio para volar
+        // ¡NUEVO!: Si la pantalla es bajita (celular), ajustamos los límites y el HUD
         if (canvas.height < 500) {
-            topBound = 85;   // Permite acercarse más al marcador
-            bottomBound = 20; // <--- Reducido para que baje casi hasta el borde del celular
+            // Límite superior más pequeño porque el HUD ahora es más compacto
+            topBound = 70;   
+            // Límite inferior AUMENTADO para que el avión NO se pierda abajo
+            bottomBound = 50; 
         } else {
             topBound = 130;
-            bottomBound = 30; // <--- Reducido para que también tenga más espacio abajo en tablets y PC
+            bottomBound = 60;
         }
     }
     window.addEventListener('resize', () => { setTimeout(resizeCanvas, 100); });
@@ -440,7 +445,7 @@
                 this.x += (this.targetX - this.x) * 0.15;
                 this.y += (this.targetY - this.y) * 0.15;
                 
-                // Topes adaptables mejorados (Evitar la zona de los botones arriba y que no salga por abajo)
+                // Topes adaptables mejorados
                 this.x = Math.max(this.imgWidth / 2, Math.min(canvas.width - this.imgWidth / 2, this.x));
                 this.y = Math.max(topBound, Math.min(canvas.height - bottomBound, this.y));
 
