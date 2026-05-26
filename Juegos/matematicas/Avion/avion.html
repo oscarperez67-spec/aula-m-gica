@@ -304,7 +304,7 @@
                 </div>
                 
                 <!-- Cambia 'tu_pagina_principal.html' por el enlace real de tu menú -->
-                <button class="btn btn-exit" onclick="window.location.href='tu_pagina_principal.html'">← Regresar a Aula Mágica</button>
+                <button class="btn btn-exit" onclick="window.location.href='../matematicas.html'">← Regresar a Aula Mágica</button>
             </div>
         </div>
 
@@ -757,9 +757,15 @@
                             return; // Terminamos el ciclo
                         }
                         
-                        // ¡NUEVO!: Aceleramos la velocidad y la frecuencia de salida de nubes de forma más agresiva en cada nivel
-                        baseSpeed = 1.5 + ((level - 1) * 0.25);
-                        spawnInterval = Math.max(30, 100 - ((level - 1) * 8));
+                        // ¡AQUÍ ESTÁ EL AJUSTE DE VELOCIDAD!
+                        // Antes: 1.5 + ((level - 1) * 0.25)
+                        // Ahora: 1.5 + ((level - 1) * 0.4) -> ¡Sube mucho más rápido por nivel!
+                        baseSpeed = 1.5 + ((level - 1) * 0.4);
+                        
+                        // También haremos que las nubes salgan aún más seguido
+                        // Antes: 100 - ((level - 1) * 8)
+                        // Ahora: 100 - ((level - 1) * 10)
+                        spawnInterval = Math.max(20, 100 - ((level - 1) * 10));
 
                         generateMath();
                         
