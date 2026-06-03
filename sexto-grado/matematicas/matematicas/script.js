@@ -24,6 +24,8 @@ document.getElementById('btn-generar').onclick = () => {
     if (document.getElementById('chk-suma').checked) operacionesActivas.push('suma');
     if (document.getElementById('chk-resta').checked) operacionesActivas.push('resta');
     if (document.getElementById('chk-multi').checked) operacionesActivas.push('multi');
+    // CORRECCIÓN: Se cambió 'division' por 'div' para que coincida con el ID del HTML
+    if (document.getElementById('chk-div').checked) operacionesActivas.push('div');
 
     if (operacionesActivas.length === 0) {
         alert("Por favor selecciona al menos una operación para empezar.");
@@ -47,7 +49,8 @@ document.getElementById('btn-generar').onclick = () => {
 function armarEncabezadoUDC(columnasTotales) {
     let html = `<div class="fila-grid">`;
     let pos = ['U', 'D', 'C', 'UM', 'DM', 'CM']; 
-    let colores = ['color-u', 'color-d', 'color-c', 'color-um', 'color-d', 'color-c'];
+    // Colores: U(Azul), D(Rojo), C(Verde), UM(Amarillo), DM(Rojo)
+    let colores = ['color-u', 'color-d', 'color-c', 'color-um', 'color-dm', 'color-cm'];
     
     for(let i = columnasTotales - 1; i >= 0; i--) {
         let letra = pos[i] || '';
@@ -80,31 +83,21 @@ function armarFilaInputs(numCajas, paddingDerecho, columnasTotales, claseFinal =
 }
 
 function generarHTML(tipo, dif, index) {
-    let a = generarNumero(dif);
-    let b;
-    
-    // --- LÓGICA COMPETITIVA Y DE VARIABILIDAD ---
-    if (tipo === 'suma' || tipo === 'resta') {
-        let maxIndex = nivelesBase.indexOf(dif);
-        // Regla: Disminuir a lo mucho 2 valores posicionales
-        let minIndex = Math.max(0, maxIndex - 2); 
-        let difBIndex = Math.floor(Math.random() * (maxIndex - minIndex + 1)) + minIndex;
-        let difB = nivelesBase[difBIndex];
-        b = generarNumero(difB);
-    } else if (tipo === 'multi' && dif === 'D') {
-        b = Math.floor(Math.random() * 99) + 1; // Unidad o Decena
-    } else {
-        b = generarNumero(dif);
-    }
-    
-    if (tipo === 'resta' && a < b) { let temp = a; a = b; b = temp; }
-
+    let a, b;
     let contenedor = document.createElement('div');
     contenedor.className = 'ejercicio-caja';
     contenedor.dataset.index = index;
     let html = '';
 
     if (tipo === 'suma' || tipo === 'resta') {
+        a = generarNumero(dif);
+        let maxIndex = nivelesBase.indexOf(dif);
+        let minIndex = Math.max(0, maxIndex - 2); 
+        let difBIndex = Math.floor(Math.random() * (maxIndex - minIndex + 1)) + minIndex;
+        b = generarNumero(nivelesBase[difBIndex]);
+        
+        if (tipo === 'resta' && a < b) { let temp = a; a = b; b = temp; }
+
         let resCorrecto = tipo === 'suma' ? a + b : a - b;
         ejerciciosGenerados.push({ res: resCorrecto, tipo: tipo });
         let numCols = Math.max(a.toString().length, b.toString().length, resCorrecto.toString().length);
@@ -118,6 +111,8 @@ function generarHTML(tipo, dif, index) {
         html += armarFilaInputs(resCorrecto.toString().length, 0, numCols, 'in-final', index);
     } 
     else if (tipo === 'multi') {
+        a = generarNumero(dif);
+        b = dif === 'D' ? (Math.floor(Math.random() * 99) + 1) : generarNumero(dif);
         let resCorrecto = a * b;
         ejerciciosGenerados.push({ res: resCorrecto, tipo: tipo });
         let strB = b.toString();
@@ -140,6 +135,43 @@ function generarHTML(tipo, dif, index) {
             html += `<div class="linea-res"></div>`;
         }
         html += armarFilaInputs(resCorrecto.toString().length, 0, numCols, 'in-final', index);
+    }
+    // CORRECCIÓN: Se cambió 'division' por 'div' aquí también
+    else if (tipo === 'div') {
+        // Lógica de División Exacta
+        let divisor = Math.floor(Math.random() * 8) + 2; // Divisor de 1 dígito (2 al 9)
+        let cociente = generarNumero(dif); // Generar cociente según dificultad seleccionada
+        let dividendo = divisor * cociente; // Asegura división exacta
+        
+        ejerciciosGenerados.push({ res: cociente, tipo: tipo });
+        
+        let strDivisor = divisor.toString();
+        let strDividendo = dividendo.toString();
+        let strCociente = cociente.toString();
+
+        let numCols = strDividendo.length + strDivisor.length;
+
+        if (numCols >= 5) contenedor.classList.add('compacto');
+
+        // Fila 1: Cuadros de texto para el Cociente (arriba de la galera)
+        let htmlInputs = `<div class="fila-grid" id="resp-${index}">`;
+        htmlInputs += `<div class="celda"></div>`; // Espacio vacío sobre el divisor
+        let paddingRes = strDividendo.length - strCociente.length;
+        for(let i=0; i<paddingRes; i++) htmlInputs += `<div class="celda"></div>`;
+        for(let i=0; i<strCociente.length; i++) {
+            htmlInputs += `<div class="celda"><input type="text" maxlength="1" class="caja-input in-final" oninput="validarNumero(this)"></div>`;
+        }
+        htmlInputs += `</div>`;
+        html += htmlInputs;
+
+        // Fila 2: Casita de División (Galera) y Dividendo
+        let htmlBracket = `<div class="fila-grid">`;
+        htmlBracket += `<div class="celda borde-div-izq">${strDivisor}</div>`; // Divisor afuera
+        for(let i=0; i<strDividendo.length; i++) {
+            htmlBracket += `<div class="celda borde-div-sup">${strDividendo[i]}</div>`; // Dividendo adentro
+        }
+        htmlBracket += `</div>`;
+        html += htmlBracket;
     }
 
     contenedor.innerHTML = html;
@@ -215,7 +247,7 @@ document.getElementById('btn-descargar-pdf').onclick = async () => {
         pdfContainer.style.top = '0';
         pdfContainer.style.width = '780px'; 
         pdfContainer.style.backgroundColor = 'white';
-        pdfContainer.style.padding = '10px'; // Padding mínimo para no perder espacio
+        pdfContainer.style.padding = '10px'; 
 
         // ENCABEZADO (Solo en la hoja 1)
         if (i === 0) {
@@ -243,13 +275,12 @@ document.getElementById('btn-descargar-pdf').onclick = async () => {
         const grid = document.createElement('div');
         grid.style.display = 'grid';
         grid.style.gridTemplateColumns = 'repeat(4, 1fr)';
-        grid.style.gap = '8px'; // Súper comprimido
+        grid.style.gap = '8px'; 
 
         chunk.forEach(caja => {
             let clone = caja.cloneNode(true);
             clone.style.padding = '5px 2px'; 
             clone.style.border = '1px solid #ccc';
-            // Comprimir márgenes internos de las filas de la operación
             clone.querySelectorAll('.fila-grid').forEach(f => f.style.marginBottom = '0px');
             clone.querySelectorAll('.linea-res').forEach(l => l.style.margin = '2px 0');
             grid.appendChild(clone);
@@ -262,21 +293,19 @@ document.getElementById('btn-descargar-pdf').onclick = async () => {
         const imgData = canvas.toDataURL('image/png');
         
         // CÁLCULO DE AUTOESCALADO
-        const pageWidth = pdf.internal.pageSize.getWidth() - 20; // 10mm márgenes laterales
-        const pageHeight = pdf.internal.pageSize.getHeight() - 20; // 10mm márgenes superior/inferior
+        const pageWidth = pdf.internal.pageSize.getWidth() - 20; 
+        const pageHeight = pdf.internal.pageSize.getHeight() - 20; 
         const imgProps = pdf.getImageProperties(imgData);
         
         let finalWidth = pageWidth;
         let finalHeight = (imgProps.height * finalWidth) / imgProps.width;
 
-        // Si la imagen sigue siendo más alta que la hoja (pasa con muchas multiplicaciones), la encogemos proporcionalmente
         if (finalHeight > pageHeight) {
             let ratio = pageHeight / finalHeight;
             finalHeight = pageHeight;
             finalWidth = finalWidth * ratio;
         }
 
-        // Centrar horizontalmente si se encogió
         let xOffset = 10 + (pageWidth - finalWidth) / 2;
 
         pdf.addImage(imgData, 'PNG', xOffset, 10, finalWidth, finalHeight);
