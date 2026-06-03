@@ -257,6 +257,7 @@ let currentProblemIndex = 0;
 let problemCount = 5;
 
 // Esta función genera los problemas
+// Esta función genera los problemas en pantalla
 function generateProblems() {
     selectedAnswers = [];
     currentProblemIndex = 0;
@@ -268,20 +269,31 @@ function generateProblems() {
     // Seleccionamos el número adecuado de problemas (5 o 10)
     for (let i = 0; i < problemCount; i++) {
         const problem = problems[i];
+        
+        // Estructuramos las opciones en formato 2x2
+        let optionsHtml = '<div class="options-grid">';
+        problem.opciones.forEach((option, index) => {
+            optionsHtml += `
+                <div>
+                    <input type="radio" name="question-${i}" value="${option}" id="q${i}a${index}">
+                    <label for="q${i}a${index}">${option}</label>
+                </div>
+            `;
+        });
+        optionsHtml += '</div>';
+
         problemHtml += `
             <div class="problem">
-                <p>${problem.pregunta}</p>
-                ${problem.opciones.map((option, index) => `
-                    <input type="radio" name="question-${i}" value="${option}" id="q${i}a${index}">
-                    <label for="q${i}a${index}">${option}</label><br>
-                `).join('')}
+                <p><strong>${i + 1}.</strong> ${problem.pregunta}</p>
+                ${optionsHtml}
             </div>
         `;
     }
     document.getElementById('problems').innerHTML = problemHtml;
-    document.getElementById('problem-count').style.display = 'none'; // Oculta los botones para seleccionar el número de problemas
-    document.getElementById('generate-btn').style.display = 'none'; // Oculta el botón "Generar problemas"
-    document.getElementById('grade-btn').style.display = 'inline'; // Muestra el botón "Calificar"
+    document.getElementById('problem-count').style.display = 'none';
+    document.getElementById('generate-btn').style.display = 'none';
+    document.getElementById('grade-btn').style.display = 'inline';
+    document.getElementById('download-pdf-btn').style.display = 'inline'; // Mostrar botón PDF
 }
 
 // Esta función verifica las respuestas y muestra los resultados
@@ -339,18 +351,19 @@ function shuffleArray(array) {
 }
 
 // Eventos para los botones
-document.getElementById('generate-btn').addEventListener('click', generateProblems);
-document.getElementById('grade-btn').addEventListener('click', gradeProblems);
+// Actualizamos el botón de regresar para ocultar también el botón de PDF
 document.getElementById('back-btn').addEventListener('click', function () {
-    document.getElementById('problem-count').style.display = 'block'; // Muestra los botones de selección nuevamente
-    document.getElementById('generate-btn').style.display = 'none'; // Oculta el botón "Generar" al regresar
-    document.getElementById('back-btn').style.display = 'none'; // Oculta el botón "Regresar" al regresar
-    document.getElementById('grade-btn').style.display = 'none'; // Oculta el botón "Calificar" al regresar
-    document.getElementById('result').innerHTML = ''; // Limpia los resultados
-    document.getElementById('incorrect-answers').innerHTML = ''; // Limpia las respuestas incorrectas
-    document.getElementById('problems').innerHTML = ''; // Limpia los problemas
+    document.getElementById('problem-count').style.display = 'block'; 
+    document.getElementById('generate-btn').style.display = 'none'; 
+    document.getElementById('back-btn').style.display = 'none'; 
+    document.getElementById('grade-btn').style.display = 'none'; 
+    document.getElementById('download-pdf-btn').style.display = 'none'; // Ocultar PDF
+    document.getElementById('result').innerHTML = ''; 
+    document.getElementById('incorrect-answers').innerHTML = ''; 
+    document.getElementById('problems').innerHTML = ''; 
 });
 
+// Eventos de selección de problemas
 document.getElementById('five-problems').addEventListener('click', function() {
     problemCount = 5;
     generateProblems();
@@ -359,4 +372,57 @@ document.getElementById('five-problems').addEventListener('click', function() {
 document.getElementById('ten-problems').addEventListener('click', function() {
     problemCount = 10;
     generateProblems();
+});
+
+// FUNCIÓN PARA GENERAR EL ARCHIVO PDF
+document.getElementById('download-pdf-btn').addEventListener('click', function() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('p', 'mm', 'letter'); // Documento vertical, tamaño carta
+    
+    // Título
+    doc.setFontSize(16);
+    doc.setFont("helvetica", "bold");
+    doc.text("Problemas Razonados", 105, 15, { align: "center" });
+    
+    // Encabezados con espacios en blanco
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "normal");
+    doc.text("Escuela: ___________________________________________________", 15, 25);
+    doc.text("Nombre: ___________________________________________________", 15, 33);
+    doc.text("Grado: ______   Grupo: _______   Fecha: ________________________", 15, 41);
+    
+    let y = 55; // Posición Y de inicio
+    
+    // Aumentamos el espacio para operaciones. 60mm para 5 problemas, 35mm para 10 problemas.
+    const spacingForOperations = (problemCount === 5) ? 60 : 35; 
+    
+    for (let i = 0; i < problemCount; i++) {
+        const problem = problems[i];
+        
+        // Dividir el texto de la pregunta para que no se desborde
+        const splitTitle = doc.splitTextToSize(`${i + 1}. ${problem.pregunta}`, 180);
+        
+        // Comprobar si cabe en la página, considerando el texto, el espacio de operaciones y la línea de respuesta
+        if (y + (splitTitle.length * 6) + spacingForOperations > 270) {
+            doc.addPage();
+            y = 20; // Reiniciar Y en la nueva hoja
+        }
+        
+        // Imprimir pregunta
+        doc.setFont("helvetica", "bold");
+        doc.text(splitTitle, 15, y);
+        
+        // Damos el salto calculando el texto de la pregunta más el espacio amplio para que el alumno escriba
+        y += (splitTitle.length * 6) + spacingForOperations; 
+        
+        // Imprimir solo la línea de respuesta alineada a la derecha
+        doc.setFont("helvetica", "normal");
+        doc.text("R: ________________", 140, y); 
+        
+        // Margen extra antes del siguiente problema
+        y += 15; 
+    }
+    
+    // Guardar el documento
+    doc.save(`Problemas_Razonados_${problemCount}.pdf`);
 });

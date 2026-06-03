@@ -95,3 +95,27 @@ button:hover {
 #problems {
     margin-top: 30px;
 }
+
+/* Cuadrícula de 2x2 para las opciones */
+.options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px 10px; /* Separación vertical y horizontal */
+    text-align: left;
+    margin: 15px auto;
+    max-width: 80%;
+}
+
+/* Ajuste para dispositivos móviles */
+@media only screen and (max-width: 600px) {
+    .options-grid {
+        grid-template-columns: 1fr 1fr; /* Mantiene 2x2 en móviles */
+        max-width: 100%;
+        font-size: 14px;
+    }
+}
+
+/* Efecto hover específico para el botón de PDF */
+#download-pdf-btn:hover {
+    background-color: #007B9E !important;
+}

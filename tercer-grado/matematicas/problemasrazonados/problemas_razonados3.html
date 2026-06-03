@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Problemas Razonados</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
@@ -19,15 +20,17 @@
     <div id="problems"></div>
     <button id="generate-btn" class="btn" style="display:none;">Generar Problemas</button>
     <button id="grade-btn" class="btn" style="display:none;">Calificar</button>
+    
+    <button id="download-pdf-btn" class="btn" style="display:none; background-color: #008CBA;">Descargar PDF</button>
+    
     <div id="result" class="result"></div>
-   <div id="incorrect-answers"></div>
+    <div id="incorrect-answers"></div>
     <button id="back-btn" class="btn" style="display:none;">Regresar</button>
 </div>
 
 <script src="script.js"></script>
 
-</footer>
-<div style="margin-top: 2em;">
+<div style="margin-top: 2em; text-align: center;">
     <a href="../matematicas.html" style="
       background-color: #4A148C;
       color: white;
@@ -42,7 +45,7 @@
     " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
       ⬅️ Regresar a Menú Principal
     </a>
-  </div>
+</div>
 
 </body>
 </html>
