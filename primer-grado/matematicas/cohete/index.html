@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>El Viaje del Cohete Numérico</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0b0b1e;
+            font-family: 'Arial Rounded MT Bold', 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+            color: white;
+            /* Previene el "pull-to-refresh" y bloquea zooms en móviles */
+            touch-action: none; 
+        }
+        
+        /* Contenedores de Pantallas */
+        #menu-pantalla, #dificultad-pantalla, #juego-pantalla, #fin-pantalla {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(to bottom, #050510, #1a0b2e);
+            z-index: 10;
+        }
+
+        #dificultad-pantalla, #juego-pantalla, #fin-pantalla {
+            display: none; 
+        }
+
+        #juego-pantalla {
+            background: transparent;
+        }
+
+        #fin-pantalla {
+            background: rgba(5, 5, 16, 0.95);
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-size: clamp(24px, 6vw, 36px);
+            text-shadow: 0 0 10px #00ffff;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .instrucciones {
+            font-size: clamp(16px, 4vw, 20px);
+            color: #a0a0d0;
+            margin-bottom: 15px;
+            text-align: center;
+            padding: 0 15px;
+        }
+
+        /* Botones responsivos */
+        .btn-nivel {
+            background-color: #3a3a78;
+            color: white;
+            border: 2px solid #00ffff;
+            padding: 10px 20px;
+            margin: 6px;
+            font-size: clamp(16px, 4vw, 20px);
+            font-family: inherit;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 255, 255, 0.2);
+            transition: all 0.2s;
+            width: 90%;
+            max-width: 300px; 
+        }
+
+        .btn-nivel:active {
+            transform: scale(0.95);
+        }
+
+        .btn-facil { border-color: #2ecc71; box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3); }
+        .btn-medio { border-color: #f1c40f; box-shadow: 0 4px 10px rgba(241, 196, 15, 0.3); }
+        .btn-dificil { border-color: #e74c3c; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
+
+        .btn-salir {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #ff0055;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            z-index: 20;
+            font-family: inherit;
+        }
+
+        .btn-regresar-menu {
+            background-color: #555;
+            border-color: #888;
+            margin-top: 15px;
+        }
+
+        /* Canvas */
+        #juegoCanvas {
+            display: block;
+            background: linear-gradient(to bottom, #050510, #1a0b2e);
+            cursor: none;
+        }
+
+        .detalle-btn {
+            font-size: 12px;
+            display: block;
+            margin-top: 5px;
+            opacity: 0.8;
+            font-weight: normal;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="menu-pantalla">
+        <h1>🚀 Misión Espacial 🌌</h1>
+        <div class="instrucciones">Selecciona tu misión:</div>
+        
+        <button class="btn-nivel" onclick="seleccionarPaso(1)">De 1 en 1</button>
+        <button class="btn-nivel" onclick="seleccionarPaso(2)">De 2 en 2</button>
+        <button class="btn-nivel" onclick="seleccionarPaso(3)">De 3 en 3</button>
+        <button class="btn-nivel" onclick="seleccionarPaso(4)">De 4 en 4</button>
+        <button class="btn-nivel" onclick="seleccionarPaso(5)">De 5 en 5</button>
+        
+        <a href="../matematicas.html" style="text-decoration: none; width: 100%; text-align: center;">
+            <button class="btn-nivel btn-regresar-menu">⬅️ Menú Principal</button>
+        </a>
+    </div>
+
+    <div id="dificultad-pantalla">
+        <h1>Nivel de Ayuda</h1>
+        <div class="instrucciones">¿Qué tan difícil lo quieres?</div>
+        
+        <button class="btn-nivel btn-facil" onclick="iniciarJuego('facil')">
+            Fácil
+            <span class="detalle-btn">Ves y escuchas el número</span>
+        </button>
+        
+        <button class="btn-nivel btn-medio" onclick="iniciarJuego('medio')">
+            Medio
+            <span class="detalle-btn">Solo escuchas el número</span>
+        </button>
+        
+        <button class="btn-nivel btn-dificil" onclick="iniciarJuego('dificil')">
+            Difícil
+            <span class="detalle-btn">Sin ayuda visual ni auditiva</span>
+        </button>
+
+        <button class="btn-nivel btn-regresar-menu" onclick="volverAlMenuPaso()">⬅️ Regresar</button>
+    </div>
+
+    <div id="juego-pantalla">
+        <button class="btn-salir" onclick="salirAlMenu()">❌ Salir</button>
+        <canvas id="juegoCanvas"></canvas>
+    </div>
+
+    <div id="fin-pantalla">
+        <h1>¡Misión Completada! 🎉</h1>
+        <button class="btn-nivel" onclick="salirAlMenu()">Volver a jugar</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('juegoCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        let esMovil = false;
+
+        function redimensionar() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            esMovil = canvas.width < 600;
+        }
+        window.addEventListener('resize', redimensionar);
+        redimensionar();
+
+        // Variables del Juego
+        let animacionFrame;
+        let jugando = false;
+        
+        let pasoSeleccionado = 1; 
+        let dificultadActual = 'facil';
+        
+        let paso = 1;
+        let nivelActual = 1; 
+        let aciertos = 0; 
+        let numeroActual = 1;
+        let vidas = 5;
+        let secuenciaVisual = []; 
+        
+        let enTransicionPlaneta = false;
+        let tiempoFinTransicion = 0;
+        let radioPlanetaAnimacion = 0;
+        
+        let tiempoOcultarTexto = 0;
+        let estrellas = [];
+        let opciones = [];
+        
+        // Cargar la imagen de tu cohete
+         const coheteImg = new Image();
+         coheteImg.src = 'img/tu_cohete.png'; // <--- ¡AQUÍ PONES LA RUTA DE TU IMAGEN!
+
+        const cohete = {
+            x: canvas.width / 2,
+            y: canvas.height - 100,
+            targetX: canvas.width / 2
+        };
+
+        for (let i = 0; i < 60; i++) {
+            estrellas.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                velocidad: Math.random() * 1.5 + 0.5,
+                tamano: Math.random() * 1.5 + 0.5
+            });
+        }
+
+        canvas.addEventListener('mousemove', (e) => {
+            if(!jugando || enTransicionPlaneta) return;
+            cohete.targetX = e.clientX;
+        });
+
+        canvas.addEventListener('touchmove', (e) => {
+            if(!jugando || enTransicionPlaneta) return;
+            if(e.touches[0]) {
+                cohete.targetX = e.touches[0].clientX;
+            }
+            e.preventDefault();
+        }, { passive: false });
+
+        function decir(texto, cancelar = true) {
+            if ('speechSynthesis' in window) {
+                if (cancelar) window.speechSynthesis.cancel(); 
+                const utterance = new SpeechSynthesisUtterance(texto);
+                utterance.lang = 'es-MX';
+                utterance.rate = 1.1;     
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function anunciarSiguienteNumero() {
+            if (dificultadActual === 'dificil') {
+                tiempoOcultarTexto = 0;
+                return; 
+            }
+            decir("Sigue el número " + numeroActual, false);
+            if (dificultadActual === 'facil') {
+                tiempoOcultarTexto = Date.now() + 3000;
+            } else {
+                tiempoOcultarTexto = 0;
+            }
+        }
+
+        function generarOpciones() {
+            opciones = [];
+            let posicionCorrecta = Math.floor(Math.random() * 3); 
+            const margen = canvas.width / 4; 
+            
+            let radioAsteroide = esMovil ? 32 : 45;
+            let baseVelocidad = canvas.height / 500; 
+            
+            for (let i = 0; i < 3; i++) {
+                let valorNumero;
+                if (i === posicionCorrecta) {
+                    valorNumero = numeroActual;
+                } else {
+                    do {
+                        let variacion = (Math.floor(Math.random() * 4) + 1) * paso;
+                        valorNumero = Math.random() > 0.5 ? numeroActual + variacion : numeroActual - variacion;
+                    } while (valorNumero === numeroActual || valorNumero <= 0);
+                }
+
+                opciones.push({
+                    x: margen * (i + 1), 
+                    y: -100 - (Math.random() * 50), 
+                    radio: radioAsteroide,
+                    numero: valorNumero,
+                    esCorrecto: i === posicionCorrecta,
+                    velocidad: baseVelocidad + Math.random() * 0.8 + (nivelActual * 0.1) 
+                });
+            }
+        }
+
+        function seleccionarPaso(n) {
+            pasoSeleccionado = n;
+            document.getElementById('menu-pantalla').style.display = 'none';
+            document.getElementById('dificultad-pantalla').style.display = 'flex';
+        }
+
+        function volverAlMenuPaso() {
+            document.getElementById('dificultad-pantalla').style.display = 'none';
+            document.getElementById('menu-pantalla').style.display = 'flex';
+        }
+
+        function iniciarJuego(dif) {
+            dificultadActual = dif;
+            paso = pasoSeleccionado;
+            nivelActual = 1;
+            aciertos = 0;
+            vidas = 5;
+            secuenciaVisual = [];
+            numeroActual = paso;
+            cohete.y = canvas.height - (esMovil ? 80 : 120);
+            enTransicionPlaneta = false;
+            
+            document.getElementById('dificultad-pantalla').style.display = 'none';
+            document.getElementById('fin-pantalla').style.display = 'none';
+            document.getElementById('juego-pantalla').style.display = 'block';
+            
+            jugando = true;
+            generarOpciones();
+            anunciarSiguienteNumero();
+            actualizarJuego();
+        }
+
+        function salirAlMenu() {
+            jugando = false;
+            cancelAnimationFrame(animacionFrame);
+            document.getElementById('juego-pantalla').style.display = 'none';
+            document.getElementById('fin-pantalla').style.display = 'none';
+            document.getElementById('menu-pantalla').style.display = 'flex';
+        }
+
+        function finDelJuegoExito() {
+            jugando = false;
+            cancelAnimationFrame(animacionFrame);
+            document.getElementById('juego-pantalla').style.display = 'none';
+            document.getElementById('fin-pantalla').style.display = 'flex';
+            decir("¡Felicidades! Has completado todos los planetas.", true);
+        }
+
+        function reiniciarNivelPorError() {
+            vidas = 5;
+            aciertos = 0;
+            secuenciaVisual = [];
+            numeroActual = ((nivelActual - 1) * 10 * paso) + paso;
+            generarOpciones();
+            decir("¡Cuidado! Reiniciando el nivel.", true);
+            setTimeout(anunciarSiguienteNumero, 2000); 
+        }
+
+function dibujarCohete() {
+    ctx.save();
+    ctx.translate(cohete.x, cohete.y);
+    
+    // Escala para que se vea bien en celular
+    let escala = esMovil ? 0.7 : 1;
+    ctx.scale(escala, escala);
+
+    // Si tu imagen ya cargó correctamente, la dibuja
+    if (coheteImg.complete && coheteImg.naturalWidth > 0) {
+        // Los valores -40, -40 centran la imagen. 80, 80 es el tamaño. 
+        // Si tu cohete se ve muy grande o muy chico, ajusta el 80, 80.
+        ctx.drawImage(coheteImg, -40, -40, 80, 80); 
+    } else {
+        // PLAN B: Si no encuentra la imagen, dibuja el cohete de código
+        ctx.fillStyle = Math.random() > 0.5 ? '#ff5500' : '#ffaa00';
+        ctx.beginPath();
+        ctx.moveTo(-10, 35);
+        ctx.lineTo(0, 55 + (enTransicionPlaneta ? Math.random() * 40 : Math.random() * 15));
+        ctx.lineTo(10, 35);
+        ctx.fill();
+
+        ctx.fillStyle = '#00ffcc';
+        ctx.beginPath();
+        ctx.moveTo(-25, 30);
+        ctx.lineTo(25, 30);
+        ctx.lineTo(0, -10);
+        ctx.fill();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(0, 10, 18, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillRect(-18, 10, 36, 25);
+
+        ctx.fillStyle = '#ff0055';
+        ctx.beginPath();
+        ctx.moveTo(-18, 10);
+        ctx.lineTo(0, -25);
+        ctx.lineTo(18, 10);
+        ctx.fill();
+
+        ctx.fillStyle = '#00aaff';
+        ctx.beginPath();
+        ctx.arc(0, 15, 8, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    ctx.restore();
+}
+
+        function actualizarJuego() {
+            if (!jugando) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#ffffff';
+            estrellas.forEach(estrella => {
+                ctx.beginPath();
+                ctx.arc(estrella.x, estrella.y, estrella.tamano, 0, Math.PI * 2);
+                ctx.fill();
+                estrella.y += enTransicionPlaneta ? estrella.velocidad * 4 : estrella.velocidad;
+                if (estrella.y > canvas.height) estrella.y = 0;
+            });
+
+            cohete.x += (cohete.targetX - cohete.x) * 0.15; 
+            let margenCohete = esMovil ? 25 : 40;
+            if (cohete.x < margenCohete) cohete.x = margenCohete;
+            if (cohete.x > canvas.width - margenCohete) cohete.x = canvas.width - margenCohete;
+
+            dibujarCohete();
+
+            if (enTransicionPlaneta) {
+                cohete.targetX = canvas.width / 2;
+
+                ctx.fillStyle = '#8e44ad'; 
+                ctx.beginPath();
+                ctx.arc(canvas.width / 2, canvas.height / 2 - 80, radioPlanetaAnimacion, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.strokeStyle = '#f1c40f';
+                ctx.lineWidth = esMovil ? 6 : 10;
+                ctx.beginPath();
+                ctx.ellipse(canvas.width / 2, canvas.height / 2 - 80, radioPlanetaAnimacion * 1.5, radioPlanetaAnimacion * 0.4, Math.PI / 8, 0, Math.PI * 2);
+                ctx.stroke();
+
+                let radioMaximo = esMovil ? 100 : 150;
+                if (radioPlanetaAnimacion < radioMaximo) {
+                    radioPlanetaAnimacion += 2; 
+                }
+
+                ctx.fillStyle = '#00ffff';
+                ctx.font = esMovil ? 'bold 24px Arial' : 'bold 36px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText("¡Planeta " + nivelActual + "!", canvas.width / 2, canvas.height / 2 + (esMovil ? 60 : 100));
+
+                if (Date.now() > tiempoFinTransicion) {
+                    enTransicionPlaneta = false;
+                    generarOpciones();
+                    anunciarSiguienteNumero();
+                }
+            } else {
+                let generarNuevos = false;
+
+                opciones.forEach((num) => {
+                    num.y += num.velocidad; 
+
+                    ctx.beginPath();
+                    ctx.arc(num.x, num.y, num.radio, 0, Math.PI * 2);
+                    ctx.fillStyle = num.esCorrecto ? '#3a2f6b' : '#4a3f5b'; 
+                    ctx.fill();
+                    ctx.lineWidth = esMovil ? 2 : 3;
+                    ctx.strokeStyle = '#00ffff';
+                    ctx.stroke();
+
+                    ctx.fillStyle = '#ffffff';
+                    ctx.font = 'bold ' + (num.radio * 0.7) + 'px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(num.numero, num.x, num.y);
+
+                    let distX = num.x - cohete.x;
+                    let distY = num.y - (cohete.y - (esMovil ? 5 : 10));
+                    let distancia = Math.sqrt(distX * distX + distY * distY);
+
+                    if (distancia < num.radio + (esMovil ? 15 : 20)) {
+                        if (num.esCorrecto) {
+                            decir("Bien", true);
+                            
+                            secuenciaVisual[aciertos] = numeroActual;
+                            aciertos++;
+                            numeroActual += paso;
+                            
+                            if (aciertos >= 10) {
+                                nivelActual++;
+                                aciertos = 0;
+                                secuenciaVisual = []; 
+                                
+                                if (nivelActual > 10) {
+                                    finDelJuegoExito();
+                                    return;
+                                } else {
+                                    opciones = []; 
+                                    enTransicionPlaneta = true;
+                                    radioPlanetaAnimacion = 0;
+                                    tiempoFinTransicion = Date.now() + 3500; 
+                                    decir("¡Excelente! Viajando al planeta " + nivelActual, false);
+                                }
+                            } else {
+                                generarNuevos = true;
+                                anunciarSiguienteNumero(); 
+                            }
+                        } else {
+                            decir("Uh", true);
+                            vidas--;
+                            if (vidas <= 0) {
+                                reiniciarNivelPorError();
+                            } else {
+                                num.y = -100; 
+                            }
+                        }
+                    }
+
+                    if (num.y > canvas.height + 50 && num.esCorrecto) {
+                        generarNuevos = true; 
+                    }
+                });
+
+                if(generarNuevos && !enTransicionPlaneta) generarOpciones();
+
+                if (Date.now() < tiempoOcultarTexto && dificultadActual === 'facil') {
+                    ctx.fillStyle = '#ffeb3b';
+                    ctx.font = esMovil ? 'bold 28px Arial' : 'bold 40px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText("Sigue el: " + numeroActual, canvas.width / 2, canvas.height / 2);
+                }
+            }
+
+            // ==========================================
+            // CORRECCIÓN DE INTERFAZ (HUD)
+            // ==========================================
+            
+            // 1. Vidas (Top-Left)
+            ctx.fillStyle = '#ffffff';
+            ctx.font = esMovil ? '18px Arial' : '24px Arial';
+            ctx.textAlign = 'left';
+            ctx.fillText('❤️'.repeat(vidas), 15, esMovil ? 30 : 40);
+            
+            // 2. Planeta movido a la izquierda (justo debajo de las vidas) para no chocar con "Salir"
+            ctx.fillStyle = '#a0a0d0';
+            ctx.font = esMovil ? '16px Arial' : '18px Arial';
+            ctx.fillText("Planeta " + nivelActual + "/10", 15, esMovil ? 55 : 70);
+
+            // 3. Secuencia Visual central y ajustada
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#00ffff';
+            ctx.font = esMovil ? 'bold 18px Arial' : 'bold 22px Arial';
+            
+            if (esMovil) {
+                // Línea 1 bajada a y=85
+                let textoLinea1 = "";
+                for (let i = 0; i < 5; i++) {
+                    textoLinea1 += (i < aciertos ? secuenciaVisual[i] : "__") + "  ";
+                }
+                ctx.fillText(textoLinea1, canvas.width / 2, 85);
+
+                // Línea 2 bajada a y=110
+                let textoLinea2 = "";
+                for (let i = 5; i < 10; i++) {
+                    textoLinea2 += (i < aciertos ? secuenciaVisual[i] : "__") + "  ";
+                }
+                ctx.fillText(textoLinea2, canvas.width / 2, 110);
+            } else {
+                // En PC lo bajamos a y=100
+                let textoSecuencia = "";
+                for (let i = 0; i < 10; i++) {
+                    textoSecuencia += (i < aciertos ? secuenciaVisual[i] : "___") + "  ";
+                }
+                ctx.fillText(textoSecuencia, canvas.width / 2, 100);
+            }
+
+            if(jugando) animacionFrame = requestAnimationFrame(actualizarJuego);
+        }
+    </script>
+</body>
+</html>
