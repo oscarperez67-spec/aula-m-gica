@@ -44,13 +44,7 @@
             position: relative;
             overflow: hidden;
             transition: transform 3s cubic-bezier(0.25, 0.1, 0.25, 1);
-            background: conic-gradient(
-                #ef4444 0deg 72deg,    /* Rojo */
-                #f59e0b 72deg 144deg,  /* Naranja */
-                #10b981 144deg 216deg, /* Verde */
-                #3b82f6 216deg 288deg, /* Azul */
-                #a855f7 288deg 360deg  /* Morado */
-            );
+            /* El fondo ahora se dibujará con JavaScript dependiendo si son 2, 3, 4 o 5 sílabas */
         }
 
         .segment-text {
@@ -69,13 +63,6 @@
         @media (min-width: 640px) {
             .segment-text { font-size: 3.5rem; padding-top: 25px; }
         }
-
-        /* Posicionar exactamente al centro de los 72 grados de cada porción */
-        .t-0 { transform: rotate(36deg); }
-        .t-1 { transform: rotate(108deg); }
-        .t-2 { transform: rotate(180deg); }
-        .t-3 { transform: rotate(252deg); }
-        .t-4 { transform: rotate(324deg); }
 
         /* Marcador (dedo) arriba */
         .pointer {
@@ -152,7 +139,7 @@
         <!-- Controles superiores -->
         <div class="w-full flex justify-between items-center mb-4 sm:mb-8">
             <button onclick="showMenu()" class="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 rounded-full shadow-md flex items-center gap-2 transition text-sm sm:text-base">
-                <span>🔙</span> Cambiar Letra
+                <span>⬅️</span> Cambiar Letra
             </button>
             <h2 id="gameTitle" class="comic-font text-2xl sm:text-4xl font-bold text-indigo-600 bg-white/80 px-6 py-2 rounded-2xl shadow-sm border-2 border-indigo-200">
                 Letra R
@@ -205,43 +192,295 @@
     </div>
 
     <script>
-        // ================= BASE DE DATOS DE SÍLABAS (Tu Diccionario) =================
+         // ================= BASE DE DATOS DE SÍLABAS (Tu Diccionario) =================
         // ¡Aquí es donde agregarás las otras 35 letras!
         const bibliotecaSilabas = {
-            'R': {
+'VOCALES': {
+          titulo: "Vocales (a, e, i, o, u)",
+          colorBoton: "bg-rose-400 hover:bg-rose-500",
+          silabas: ['a', 'e', 'i', 'o', 'u'],
+          datos: {
+            'a': { color: 'text-red-500', words: [{ word: 'anillo', icon: '💍' }, { word: 'avion', icon: '✈️' }, { word: 'arbol', icon: '🌳' }] },
+            'e': { color: 'text-yellow-500', words: [{ word: 'elefante', icon: '🐘' }, { word: 'estrella', icon: '⭐' }, { word: 'espejo', icon: '🪞' }] },
+            'i': { color: 'text-green-500', words: [{ word: 'iman', icon: '🧲' }, { word: 'isla', icon: '🏝️' }, { word: 'iglu', icon: '🧊' }] },
+            'o': { color: 'text-blue-500', words: [{ word: 'oso', icon: '🐻' }, { word: 'ojo', icon: '👁️' }, { word: 'ola', icon: '🌊' }] },
+            'u': { color: 'text-purple-500', words: [{ word: 'uva', icon: '🍇' }, { word: 'uno', icon: '1️⃣' }, { word: 'unicornio', icon: '🦄' }] }
+          }
+        },
+'R': {
                 titulo: "Letra r (ra, re, ri, ro, ru)",
                 colorBoton: "bg-red-400 hover:bg-red-500",
                 silabas: ['ra', 're', 'ri', 'ro', 'ru'],
                 datos: {
                     'ra': { color: 'text-red-500', words: [{ word: 'rana', icon: '🐸' }, { word: 'ratón', icon: '🐭' }, { word: 'rama', icon: '🌿' }] },
-                    're': { color: 'text-yellow-500', words: [{ word: 'reloj', icon: '⌚' }, { word: 'regalo', icon: '🎁' }, { word: 'rey', icon: '👑' }] },
+                    're': { color: 'text-yellow-500', words: [{ word: 'reloj', icon: '⌚' }, { word: 'regalo', icon: '🎁' }, { word: 'remo', icon: '🚣' }] },
                     'ri': { color: 'text-green-500', words: [{ word: 'río', icon: '🌊' }, { word: 'risa', icon: '😂' }, { word: 'rico', icon: '😋' }] },
                     'ro': { color: 'text-blue-500', words: [{ word: 'rosa', icon: '🌹' }, { word: 'rojo', icon: '🔴' }, { word: 'ropa', icon: '👕' }] },
-                    'ru': { color: 'text-purple-500', words: [{ word: 'rueda', icon: '🛞' }, { word: 'rubio', icon: '👱‍♂️' }, { word: 'ruido', icon: '🔊' }] }
+                    'ru': { color: 'text-purple-500', words: [ { word: 'rubio', icon: '👱‍♂️' }, { word: 'ruta', icon: '🗺️' }, { word: 'rubí', icon: '💎' }] }
                 }
             },
-            'M': {
-                titulo: "Letra m (ma, me, mi, mo, mu)",
-                colorBoton: "bg-pink-400 hover:bg-pink-500",
-                silabas: ['ma', 'me', 'mi', 'mo', 'mu'],
+'P': {
+          titulo: "Letra p (pa, pe, pi, po, pu)",
+          colorBoton: "bg-orange-400 hover:bg-orange-500",
+          silabas: ['pa', 'pe', 'pi', 'po', 'pu'],
+          datos: {
+            'pa': { color: 'text-red-500', words: [{ word: 'pato', icon: '🦆' }, { word: 'pavo', icon: '🦃' }, { word: 'papaya', icon: '🍈' }] },
+            'pe': { color: 'text-yellow-500', words: [{ word: 'perro', icon: '🐶' }, { word: 'pelota', icon: '⚽' }, { word: 'pera', icon: '🍐' }] },
+            'pi': { color: 'text-green-500', words: [{ word: 'piña', icon: '🍍' }, { word: 'pino', icon: '🌲' }, { word: 'pila', icon: '🔋' }] },
+            'po': { color: 'text-blue-500', words: [{ word: 'pollo', icon: '🐔' }, { word: 'pozo', icon: '🕳️' }, { word: 'policía', icon: '👮' }] },
+            'pu': { color: 'text-purple-500', words: [{ word: 'puma', icon: '🐆' }, { word: 'puño', icon: '👊' }, { word: 'espuma', icon: '🫧' }] }
+          }
+        },
+'M': {
+          titulo: "Letra m (ma, me, mi, mo, mu)",
+          colorBoton: "bg-fuchsia-400 hover:bg-fuchsia-500",
+          silabas: ['ma', 'me', 'mi', 'mo', 'mu'],
+          datos: {
+            'ma': { color: 'text-red-500', words: [{ word: 'mapa', icon: '🗺️' }, { word: 'mamá', icon: '👩' }, { word: 'cama', icon: '🛏️' }] },
+            'me': { color: 'text-yellow-500', words: [{ word: 'mesa', icon: '🪑' }, { word: 'melón', icon: '🍈' }, { word: 'meta', icon: '🏁' }] },
+            'mi': { color: 'text-green-500', words: [{ word: 'misa', icon: '⛪' }, { word: 'camisa', icon: '👕' }, { word: 'amigo', icon: '👦' }] },
+            'mo': { color: 'text-blue-500', words: [{ word: 'mono', icon: '🐒' }, { word: 'moño', icon: '🎀' }, { word: 'moto', icon: '🏍️' }] },
+            'mu': { color: 'text-purple-500', words: [{ word: 'mula', icon: '🐴' }, { word: 'muro', icon: '🧱' }, { word: 'muñeca', icon: '🧸' }] }
+          }
+        },
+'T': {
+          titulo: "Letra t (ta, te, ti, to, tu)",
+          colorBoton: "bg-teal-400 hover:bg-teal-500",
+          silabas: ['ta', 'te', 'ti', 'to', 'tu'],
+          datos: {
+            'ta': { color: 'text-red-500', words: [{ word: 'taza', icon: '☕' }, { word: 'taco', icon: '🌮' }, { word: 'lata', icon: '🥫' }] },
+            'te': { color: 'text-yellow-500', words: [{ word: 'tenedor', icon: '🍴' }, { word: 'tenis', icon: '👟' }, { word: 'teléfono', icon: '📱' }] },
+            'ti': { color: 'text-green-500', words: [{ word: 'tijeras', icon: '✂️' }, { word: 'tiburón', icon: '🦈' }, { word: 'tigre', icon: '🐅' }] },
+            'to': { color: 'text-blue-500', words: [{ word: 'tomate', icon: '🍅' }, { word: 'gato', icon: '🐈' }, { word: 'toro', icon: '🐂' }] },
+            'tu': { color: 'text-purple-500', words: [{ word: 'tucán', icon: '🦜' }, { word: 'tulipán', icon: '🌷' }, { word: 'túnel', icon: '🚇' }] }
+          }
+        },
+
+'L': {
+          titulo: "Letra l (la, le, li, lo, lu)",
+          colorBoton: "bg-teal-400 hover:bg-teal-500",
+          silabas: ['la', 'le', 'li', 'lo', 'lu'],
+          datos: {
+            'la': { color: 'text-red-500', words: [{ word: 'lata', icon: '🥫' }, { word: 'pala', icon: '⛏️' }, { word: 'lazo', icon: '🎀' }] },
+            'le': { color: 'text-yellow-500', words: [{ word: 'leña', icon: '🪵' }, { word: 'maleta', icon: '🧳' }, { word: 'tele', icon: '📺' }] },
+            'li': { color: 'text-green-500', words: [{ word: 'lima', icon: '🍋' }, { word: 'limón', icon: '🍋' }, { word: 'lila', icon: '🟣' }] },
+            'lo': { color: 'text-blue-500', words: [{ word: 'lobo', icon: '🐺' }, { word: 'loro', icon: '🦜' }, { word: 'palo', icon: '🪵' }] },
+            'lu': { color: 'text-purple-500', words: [{ word: 'luna', icon: '🌙' }, { word: 'lupa', icon: '🔍' }, { word: 'peluca', icon: '💇' }] }
+          }
+        },
+'N': {
+          titulo: "Letra n (na, ne, ni, no, nu)",
+          colorBoton: "bg-indigo-400 hover:bg-indigo-500",
+          silabas: ['na', 'ne', 'ni', 'no', 'nu'],
+          datos: {
+            'na': { color: 'text-red-500', words: [{ word: 'cuna', icon: '🛏️' }, { word: 'lana', icon: '🧶' }, { word: 'enano', icon: '🧙‍♂️' }] },
+            'ne': { color: 'text-yellow-500', words: [{ word: 'nene', icon: '👶' }, { word: 'cine', icon: '🍿' }, { word: 'moneda', icon: '🪙' }] },
+            'ni': { color: 'text-green-500', words: [{ word: 'nido', icon: '🪺' }, { word: 'pino', icon: '🌲' }, { word: 'anillo', icon: '💍' }] },
+            'no': { color: 'text-blue-500', words: [{ word: 'nota', icon: '🎵' }, { word: 'cono', icon: '🍦' }, { word: 'mano', icon: '✋' }] },
+            'nu': { color: 'text-purple-500', words: [{ word: 'nube', icon: '☁️' }, { word: 'nudo', icon: '🪢' }, { word: 'número', icon: '🔢' }] }
+          }
+        },
+'D': {
+          titulo: "Letra d (da, de, di, do, du)",
+          colorBoton: "bg-cyan-400 hover:bg-cyan-500",
+          silabas: ['da', 'de', 'di', 'do', 'du'],
+          datos: {
+            'da': { color: 'text-red-500', words: [{ word: 'dado', icon: '🎲' }, { word: 'medalla', icon: '🏅' }, { word: 'soda', icon: '🥤' }] },
+            'de': { color: 'text-yellow-500', words: [{ word: 'dedo', icon: '👆' }, { word: 'madera', icon: '🪵' }, { word: 'cadena', icon: '⛓️' }] },
+            'di': { color: 'text-green-500', words: [{ word: 'dibujo', icon: '🖍️' }, { word: 'dinero', icon: '💵' }, { word: 'ardilla', icon: '🐿️' }] },
+            'do': { color: 'text-blue-500', words: [{ word: 'dona', icon: '🍩' }, { word: 'dominó', icon: '🁣' }, { word: 'codo', icon: '💪' }] },
+            'du': { color: 'text-purple-500', words: [{ word: 'medusa', icon: '🪼' }, { word: 'durazno', icon: '🍑' }, { word: 'ducha', icon: '🚿' }] }
+          }
+        },
+'V': {
+          titulo: "Letra v (va, ve, vi, vo, vu)",
+          colorBoton: "bg-lime-400 hover:bg-lime-500",
+          silabas: ['va', 've', 'vi', 'vo', 'vu'],
+          datos: {
+            'va': { color: 'text-red-500', words: [{ word: 'vaca', icon: '🐄' }, { word: 'vaso', icon: '🥛' }, { word: 'uva', icon: '🍇' }] },
+            've': { color: 'text-yellow-500', words: [{ word: 'vela', icon: '🕯️' }, { word: 'ave', icon: '🦅' }, { word: 'nave', icon: '🚀' }] },
+            'vi': { color: 'text-green-500', words: [{ word: 'video', icon: '📹' }, { word: 'víbora', icon: '🐍' }, { word: 'vida', icon: '❤️' }] },
+            'vo': { color: 'text-blue-500', words: [{ word: 'pavo', icon: '🦃' }, { word: 'volante', icon: '🏎️' }, { word: 'clavo', icon: '🔨' }] },
+            'vu': { color: 'text-purple-500', words: [{ word: 'vuelo', icon: '✈️' }, { word: 'vuelta', icon: '🔄' }, { word: 'válvula', icon: '🚰' }] }
+          }
+        },
+'F': {
+          titulo: "Letra f (fa, fe, fi, fo, fu)",
+          colorBoton: "bg-amber-400 hover:bg-amber-500",
+          silabas: ['fa', 'fe', 'fi', 'fo', 'fu'],
+          datos: {
+            'fa': { color: 'text-red-500', words: [{ word: 'faro', icon: '🗼' }, { word: 'sofá', icon: '🛋️' }, { word: 'familia', icon: '👨‍👩‍👧‍👦' }] },
+            'fe': { color: 'text-yellow-500', words: [{ word: 'feliz', icon: '😁' }, { word: 'café', icon: '☕' }, { word: 'feria', icon: '🎡' }] },
+            'fi': { color: 'text-green-500', words: [{ word: 'fila', icon: '🧍' }, { word: 'fideo', icon: '🍜' }, { word: 'figura', icon: '🔺' }] },
+            'fo': { color: 'text-blue-500', words: [{ word: 'foca', icon: '🦭' }, { word: 'foto', icon: '📷' }, { word: 'foco', icon: '💡' }] },
+            'fu': { color: 'text-purple-500', words: [{ word: 'fuga', icon: '💧' }, { word: 'futuro', icon: '🚀' }, { word: 'perfume', icon: '🧴' }] }
+          }
+        },
+'B': {
+          titulo: "Letra b (ba, be, bi, bo, bu)",
+          colorBoton: "bg-violet-400 hover:bg-violet-500",
+          silabas: ['ba', 'be', 'bi', 'bo', 'bu'],
+          datos: {
+            'ba': { color: 'text-red-500', words: [{ word: 'bata', icon: '🥼' }, { word: 'banana', icon: '🍌' }, { word: 'cabaña', icon: '🛖' }] },
+            'be': { color: 'text-yellow-500', words: [{ word: 'bebé', icon: '👶' }, { word: 'beso', icon: '💋' }, { word: 'nube', icon: '☁️' }] },
+            'bi': { color: 'text-green-500', words: [{ word: 'bigote', icon: '🥸' }, { word: 'biberón', icon: '🍼' }, { word: 'rubí', icon: '💎' }] },
+            'bo': { color: 'text-blue-500', words: [{ word: 'bota', icon: '👢' }, { word: 'boca', icon: '👄' }, { word: 'lobo', icon: '🐺' }] },
+            'bu': { color: 'text-purple-500', words: [{ word: 'burro', icon: '🐴' }, { word: 'buzo', icon: '🤿' }, { word: 'tiburón', icon: '🦈' }] }
+          }
+        },
+'Y': {
+          titulo: "Letra y (ya, ye, yi, yo, yu)",
+          colorBoton: "bg-pink-400 hover:bg-pink-500",
+          silabas: ['ya', 'ye', 'yi', 'yo', 'yu'],
+          datos: {
+            'ya': { color: 'text-red-500', words: [{ word: 'yate', icon: '🛥️' }, { word: 'payaso', icon: '🤡' }, { word: 'papaya', icon: '🍈' }] },
+            'ye': { color: 'text-yellow-500', words: [{ word: 'yema', icon: '🥚' }, { word: 'yeso', icon: '🩹' }, { word: 'oye', icon: '👂' }] },
+            'yi': { color: 'text-green-500', words: [{ word: 'rayita', icon: '〰️' }, { word: 'joyita', icon: '💎' }, { word: 'hoyito', icon: '🕳️' }] },
+            'yo': { color: 'text-blue-500', words: [{ word: 'yoyo', icon: '🪀' }, { word: 'rayo', icon: '⚡' }, { word: 'yoga', icon: '🧘' }] },
+            'yu': { color: 'text-purple-500', words: [{ word: 'yuca', icon: '🥔' }, { word: 'ayuda', icon: '🆘' }, { word: 'desayuno', icon: '🍳' }] }
+          }
+        },
+'J': {
+          titulo: "Letra j (ja, je, ji, jo, ju)",
+          colorBoton: "bg-emerald-400 hover:bg-emerald-500",
+          silabas: ['ja', 'je', 'ji', 'jo', 'ju'],
+          datos: {
+            'ja': { color: 'text-red-500', words: [{ word: 'caja', icon: '📦' }, { word: 'abeja', icon: '🐝' }, { word: 'pájaro', icon: '🐦' }] },
+            'je': { color: 'text-yellow-500', words: [{ word: 'tijeras', icon: '✂️' }, { word: 'traje', icon: '👔' }, { word: 'jefe', icon: '💼' }] },
+            'ji': { color: 'text-green-500', words: [{ word: 'jirafa', icon: '🦒' }, { word: 'jinete', icon: '🏇' }, { word: 'cojín', icon: '🛋️' }] },
+            'jo': { color: 'text-blue-500', words: [{ word: 'ojo', icon: '👁️' }, { word: 'conejo', icon: '🐰' }, { word: 'rojo', icon: '🔴' }] },
+            'ju': { color: 'text-purple-500', words: [{ word: 'jugo', icon: '🧃' }, { word: 'juguete', icon: '🧸' }, { word: 'judo', icon: '🥋' }] }
+          }
+        },
+'Ñ': {
+          titulo: "Letra ñ (ña, ñe, ñi, ño, ñu)",
+          colorBoton: "bg-rose-400 hover:bg-rose-500",
+          silabas: ['ña', 'ñe', 'ñi', 'ño', 'ñu'],
+          datos: {
+            'ña': { color: 'text-red-500', words: [{ word: 'niña', icon: '👧' }, { word: 'araña', icon: '🕷️' }, { word: 'piña', icon: '🍍' }] },
+            'ñe': { color: 'text-yellow-500', words: [{ word: 'muñeca', icon: '🧸' }, { word: 'bañera', icon: '🛁' }, { word: 'muñeco', icon: '⛄' }] },
+            'ñi': { color: 'text-green-500', words: [{ word: 'meñique', icon: '🤏' }, { word: 'niñita', icon: '👧' }, { word: 'bañito', icon: '🛁' }] },
+            'ño': { color: 'text-blue-500', words: [{ word: 'niño', icon: '👦' }, { word: 'moño', icon: '🎀' }, { word: 'baño', icon: '🚽' }] },
+            'ñu': { color: 'text-purple-500', words: [{ word: 'ñu', icon: '🐃' }, { word: 'greñudo', icon: '🦁' }, { word: 'ceñudo', icon: '😠' }] }
+          }
+        },
+'CH': {
+          titulo: "Letra ch (cha, che, chi, cho, chu)",
+          colorBoton: "bg-orange-400 hover:bg-orange-500",
+          silabas: ['cha', 'che', 'chi', 'cho', 'chu'],
+          datos: {
+            'cha': { color: 'text-red-500', words: [{ word: 'hacha', icon: '🪓' }, { word: 'cuchara', icon: '🥄' }, { word: 'chaleco', icon: '🧥' }] },
+            'che': { color: 'text-yellow-500', words: [{ word: 'leche', icon: '🥛' }, { word: 'coche', icon: '🚗' }, { word: 'noche', icon: '🌃' }] },
+            'chi': { color: 'text-green-500', words: [{ word: 'chile', icon: '🌶️' }, { word: 'mochila', icon: '🎒' }, { word: 'chivo', icon: '🐐' }] },
+            'cho': { color: 'text-blue-500', words: [{ word: 'ocho', icon: '8️⃣' }, { word: 'chocolate', icon: '🍫' }, { word: 'choza', icon: '🛖' }] },
+            'chu': { color: 'text-purple-500', words: [{ word: 'lechuga', icon: '🥬' }, { word: 'chupón', icon: '🍼' }, { word: 'churro', icon: '🥖' }] }
+          }
+        },
+'LL': {
+          titulo: "Letra ll (lla, lle, lli, llo, llu)",
+          colorBoton: "bg-sky-400 hover:bg-sky-500",
+          silabas: ['lla', 'lle', 'lli', 'llo', 'llu'],
+          datos: {
+            'lla': { color: 'text-red-500', words: [{ word: 'llave', icon: '🔑' }, { word: 'silla', icon: '🪑' }, { word: 'llama', icon: '🦙' }] },
+            'lle': { color: 'text-yellow-500', words: [{ word: 'ballena', icon: '🐳' }, { word: 'calle', icon: '🛣️' }, { word: 'billete', icon: '💵' }] },
+            'lli': { color: 'text-green-500', words: [{ word: 'gallina', icon: '🐔' }, { word: 'pollito', icon: '🐥' }, { word: 'caballito', icon: '🎠' }] },
+            'llo': { color: 'text-blue-500', words: [{ word: 'caballo', icon: '🐎' }, { word: 'anillo', icon: '💍' }, { word: 'camello', icon: '🐫' }] },
+            'llu': { color: 'text-purple-500', words: [{ word: 'lluvia', icon: '🌧️' }, { word: 'lluvioso', icon: '🌦️' }, { word: 'cabelludo', icon: '💇' }] }
+          }
+        },
+'H': {
+          titulo: "Letra h (ha, he, hi, ho, hu)",
+          colorBoton: "bg-slate-400 hover:bg-slate-500",
+          silabas: ['ha', 'he', 'hi', 'ho', 'hu'],
+          datos: {
+            'ha': { color: 'text-red-500', words: [{ word: 'hada', icon: '🧚' }, { word: 'hamaca', icon: '⛺' }, { word: 'harina', icon: '🌾' }] },
+            'he': { color: 'text-yellow-500', words: [{ word: 'helado', icon: '🍦' }, { word: 'cohete', icon: '🚀' }, { word: 'helecho', icon: '🌿' }] },
+            'hi': { color: 'text-green-500', words: [{ word: 'hilo', icon: '🧵' }, { word: 'higo', icon: '🫐' }, { word: 'hipopótamo', icon: '🦛' }] },
+            'ho': { color: 'text-blue-500', words: [{ word: 'hoja', icon: '🍃' }, { word: 'búho', icon: '🦉' }, { word: 'zanahoria', icon: '🥕' }] },
+            'hu': { color: 'text-purple-500', words: [{ word: 'humo', icon: '💨' }, { word: 'humano', icon: '🧍' }, { word: 'huracán', icon: '🌀' }] }
+          }
+        },
+'S': {
+          titulo: "Letra s (sa, se, si, so, su)",
+          colorBoton: "bg-blue-400 hover:bg-blue-500",
+          silabas: ['sa', 'se', 'si', 'so', 'su'],
+          datos: {
+            'sa': { color: 'text-red-500', words: [{ word: 'sapo', icon: '🐸' }, { word: 'masa', icon: '🥟' }, { word: 'sala', icon: '🛋️' }] },
+            'se': { color: 'text-yellow-500', words: [{ word: 'sello', icon: '✉️' }, { word: 'semana', icon: '📅' }, { word: 'seta', icon: '🍄' }] },
+            'si': { color: 'text-green-500', words: [{ word: 'silla', icon: '🪑' }, { word: 'sirena', icon: '🧜‍♀️' }, { word: 'música', icon: '🎵' }] },
+            'so': { color: 'text-blue-500', words: [{ word: 'sopa', icon: '🍲' }, { word: 'oso', icon: '🐻' }, { word: 'vaso', icon: '🥛' }] },
+            'su': { color: 'text-purple-500', words: [{ word: 'suma', icon: '➕' }, { word: 'basura', icon: '🗑️' }, { word: 'sushi', icon: '🍣' }] }
+          }
+        },
+'K': {
+          titulo: "Letra k (ka, ke, ki, ko, ku)",
+          colorBoton: "bg-amber-500 hover:bg-amber-600",
+          silabas: ['ka', 'ke', 'ki', 'ko', 'ku'],
+          datos: {
+            'ka': { color: 'text-red-500', words: [{ word: 'karate', icon: '🥋' }, { word: 'kamikaze', icon: '✈️' }] },
+            'ke': { color: 'text-yellow-500', words: [] },
+            'ki': { color: 'text-green-500', words: [{ word: 'kiwi', icon: '🥝' }, { word: 'kilo', icon: '⚖️' }, { word: 'kimono', icon: '👘' }] },
+            'ko': { color: 'text-blue-500', words: [{ word: 'koala', icon: '🐨' }, { word: 'kiosko', icon: '🛖' }] },
+            'ku': { color: 'text-purple-500', words: [] }
+          }
+        },
+'Z': {
+          titulo: "Letra z (za, ze, zi, zo, zu)",
+          colorBoton: "bg-emerald-500 hover:bg-emerald-600",
+          silabas: ['za', 'ze', 'zi', 'zo', 'zu'],
+          datos: {
+            'za': { color: 'text-red-500', words: [{ word: 'zapato', icon: '👞' }, { word: 'zanahoria', icon: '🥕' }, { word: 'zafiro', icon: '💎' }] },
+            'ze': { color: 'text-yellow-500', words: [{ word: 'zeta', icon: '⚡' }, { word: 'zebra', icon: '🦓' }] },
+            'zi': { color: 'text-green-500', words: [] },
+            'zo': { color: 'text-blue-500', words: [{ word: 'zorro', icon: '🦊' }, { word: 'zócalo', icon: '🏛️' }, { word: 'zona', icon: '🛑' }] },
+            'zu': { color: 'text-purple-500', words: [{ word: 'zumo', icon: '🧃' }] }
+          }
+        },
+'C (fuerte)': {
+                titulo: "Letra c (ca, co, cu)",
+                colorBoton: "bg-orange-400 hover:bg-orange-500",
+                silabas: ['ca', 'co', 'cu'],
                 datos: {
-                    'ma': { color: 'text-red-500', words: [{ word: 'mano', icon: '🖐️' }, { word: 'manzana', icon: '🍎' }, { word: 'mapa', icon: '🗺️' }] },
-                    'me': { color: 'text-yellow-500', words: [{ word: 'mesa', icon: '🪑' }, { word: 'medusa', icon: '🪼' }, { word: 'melón', icon: '🍈' }] },
-                    'mi': { color: 'text-green-500', words: [{ word: 'miel', icon: '🍯' }, { word: 'micrófono', icon: '🎤' }, { word: 'mimo', icon: '🎭' }] },
-                    'mo': { color: 'text-blue-500', words: [{ word: 'mono', icon: '🐒' }, { word: 'moño', icon: '🎀' }, { word: 'momia', icon: '🤕' }] },
-                    'mu': { color: 'text-purple-500', words: [{ word: 'muñeca', icon: '🎎' }, { word: 'murciélago', icon: '🦇' }, { word: 'muela', icon: '🦷' }] }
+                    'ca': { color: 'text-red-500', words: [{ word: 'casa', icon: '🏠' }, { word: 'cama', icon: '🛏️' }, { word: 'caballo', icon: '🐴' }] },
+                    'co': { color: 'text-blue-500', words: [{ word: 'coco', icon: '🥥' }, { word: 'conejo', icon: '🐰' }, { word: 'corazón', icon: '❤️' }] },
+                    'cu': { color: 'text-purple-500', words: [{ word: 'cuna', icon: '👶' }, { word: 'cuchara', icon: '🥄' }, { word: 'cubo', icon: '🧊' }] }
                 }
             },
-            'S': {
-                titulo: "Letra s (sa, se, si, so, su)",
-                colorBoton: "bg-blue-400 hover:bg-blue-500",
-                silabas: ['sa', 'se', 'si', 'so', 'su'],
+'C (suave)': {
+          titulo: "Letra c (ce, ci)",
+          colorBoton: "bg-teal-400 hover:bg-teal-500",
+          silabas: ['ce', 'ci'],
+          datos: {
+            'ce': { color: 'text-yellow-500', words: [{ word: 'cepillo', icon: '🪥' }, { word: 'maceta', icon: '🪴' }, { word: 'cebolla', icon: '🧅' }] },
+            'ci': { color: 'text-green-500', words: [{ word: 'cine', icon: '🍿' }, { word: 'cocina', icon: '🍳' }, { word: 'bocina', icon: '🔊' }] }
+          }
+        },
+'G (ga, go, gu)': {
+                titulo: "Letra g (ga, go, gu)",
+                colorBoton: "bg-green-500 hover:bg-green-600",
+                silabas: ['ga', 'go', 'gu'],
                 datos: {
-                    'sa': { color: 'text-red-500', words: [{ word: 'sapo', icon: '🐸' }, { word: 'sandía', icon: '🍉' }, { word: 'sal', icon: '🧂' }] },
-                    'se': { color: 'text-yellow-500', words: [{ word: 'serpiente', icon: '🐍' }, { word: 'semilla', icon: '🌱' }, { word: 'semáforo', icon: '🚦' }] },
-                    'si': { color: 'text-green-500', words: [{ word: 'silla', icon: '🪑' }, { word: 'sirena', icon: '🧜‍♀️' }, { word: 'siete', icon: '7️⃣' }] },
-                    'so': { color: 'text-blue-500', words: [{ word: 'sol', icon: '☀️' }, { word: 'sopa', icon: '🥣' }, { word: 'sombrero', icon: '👒' }] },
-                    'su': { color: 'text-purple-500', words: [{ word: 'suma', icon: '➕' }, { word: 'submarino', icon: '🛥️' }, { word: 'suéter', icon: '🧥' }] }
+                    'ga': { color: 'text-red-500', words: [{ word: 'gato', icon: '🐱' }, { word: 'gallo', icon: '🐓' }, { word: 'galleta', icon: '🍪' }] },
+                    'go': { color: 'text-blue-500', words: [{ word: 'gorila', icon: '🦍' }, { word: 'gota', icon: '💧' }, { word: 'gorra', icon: '🧢' }] },
+                    'gu': { color: 'text-purple-500', words: [{ word: 'gusano', icon: '🐛' }, { word: 'aguja', icon: '🪡' }, { word: 'canguro', icon: '🦘' }] }
+                }
+            },
+'G (ge, gi)': {
+                titulo: "Letra g (ge, gi)",
+                colorBoton: "bg-teal-500 hover:bg-teal-600",
+                silabas: ['ge', 'gi'],
+                datos: {
+                    'ge': { color: 'text-yellow-500', words: [{ word: 'gelatina', icon: '🍮' }, { word: 'gemelos', icon: '👯‍♂️' }, { word: 'genio', icon: '🧞‍♂️' }] },
+                    'gi': { color: 'text-pink-500', words: [{ word: 'girasol', icon: '🌻' }, { word: 'gigante', icon: '🧍‍♂️' }, { word: 'mágico', icon: '🪄' }] }
+                }
+            },
+ 'G (gue, gui)': {
+                titulo: "Letra g (gue, gui)",
+                colorBoton: "bg-indigo-400 hover:bg-indigo-500",
+                silabas: ['gue', 'gui'],
+                datos: {
+                    'gue': { color: 'text-orange-500', words: [{ word: 'juguete', icon: '🧸' }, { word: 'manguera', icon: '🚿' }, { word: 'guerrero', icon: '⚔️' }] },
+                    'gui': { color: 'text-green-500', words: [{ word: 'guitarra', icon: '🎸' }, { word: 'águila', icon: '🦅' }, { word: 'guiño', icon: '😉' }] }
                 }
             }
         };
@@ -250,6 +489,7 @@
         let currentRotation = 0;
         let isSpinning = false;
         let currentSyllable = '';
+        let availableSyllables = []; // NUEVA VARIABLE PARA LA TRAMPA SECRETA
 
         // DOM Elements
         const viewMenu = document.getElementById('viewMenu');
@@ -326,7 +566,30 @@
 
         function speak(text) {
             synth.cancel(); 
-            const utterThis = new SpeechSynthesisUtterance(text);
+            
+            // --- INICIO DE LA TRAMPA PARA EL NAVEGADOR ---
+            let textoHablar = text.toLowerCase();
+            
+            // Si la palabra es exactamente la sílaba, le ponemos acento para que no lea días de la semana
+            if (textoHablar === 'lu') textoHablar = 'lú';
+            if (textoHablar === 'ma') textoHablar = 'má';
+            if (textoHablar === 'mi') textoHablar = 'mí'; // (Por si acaso lee "miércoles" o nota musical)
+            if (textoHablar === 'ju') textoHablar = 'jú';
+            if (textoHablar === 'vi') textoHablar = 'ví';
+            if (textoHablar === 'sa') textoHablar = 'sá';
+            if (textoHablar === 'do') textoHablar = 'dó';
+
+            // Puntos cardinales (Noreste, Noroeste, Sureste, Suroeste)
+            if (textoHablar === 'ne') textoHablar = 'né';
+            if (textoHablar === 'no') textoHablar = 'nó';
+            if (textoHablar === 'se') textoHablar = 'sé';
+            if (textoHablar === 'so') textoHablar = 'só';
+            if (textoHablar === 'vo') textoHablar = 'vó';
+            if (textoHablar === 'ye') textoHablar = 'llé';
+            if (textoHablar === 'yi') textoHablar = 'llí';
+            if (textoHablar === 'yu') textoHablar = 'llú';
+            if (textoHablar === 'yoyo') textoHablar = 'llollo';
+            const utterThis = new SpeechSynthesisUtterance(textoHablar);
             if (spanishVoice) utterThis.voice = spanishVoice;
             utterThis.pitch = 1.2; 
             utterThis.rate = 0.9;
@@ -362,14 +625,39 @@
             currentLetterData = bibliotecaSilabas[letterKey];
             gameTitle.textContent = currentLetterData.titulo;
             
-            // Construir las porciones de la ruleta
+            const numSlices = currentLetterData.silabas.length;
+            const sliceSize = 360 / numSlices;
+            const colors = ['#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#a855f7'];
+
+            // 1. Dibujar los colores de la ruleta automáticamente (se ajusta a 2, 3 o 5 pedazos)
+            let gradientStops = [];
+            for (let i = 0; i < numSlices; i++) {
+                let color = colors[i % colors.length];
+                let start = i * sliceSize;
+                let end = (i + 1) * sliceSize;
+                gradientStops.push(`${color} ${start}deg ${end}deg`);
+            }
+            wheel.style.background = `conic-gradient(${gradientStops.join(', ')})`;
+
+            // 2. Colocar los textos perfectamente en el centro de su rebanada
             wheel.innerHTML = '';
             currentLetterData.silabas.forEach((silaba, index) => {
                 const div = document.createElement('div');
-                div.className = `segment-text t-${index}`;
+                div.className = 'segment-text';
+                div.style.transform = `rotate(${index * sliceSize + (sliceSize / 2)}deg)`;
                 div.textContent = silaba;
                 wheel.appendChild(div);
             });
+
+            // 3. Reiniciar la trampa (metemos todas las sílabas a la "bolsa" disponibles)
+            availableSyllables = [...currentLetterData.silabas];
+
+            // Resetear rotación
+            currentRotation = 0;
+            wheel.style.transition = 'none';
+            wheel.style.transform = `rotate(0deg)`;
+            void wheel.offsetWidth; // Forzar aplicación de estilos
+            wheel.style.transition = 'transform 3s cubic-bezier(0.25, 0.1, 0.25, 1)';
 
             // Cambiar vistas
             viewMenu.classList.add('hidden-view');
@@ -392,29 +680,48 @@
 
             speak('¡A girar!');
 
-            const extraSpins = (Math.floor(Math.random() * 4) + 3) * 360; 
-            const randomAngle = Math.floor(Math.random() * 360);
-            currentRotation += extraSpins + randomAngle;
+            // ================= INICIO DE LA TRAMPA =================
+            // Si ya salieron todas las sílabas, volvemos a rellenar la "bolsa" secreta
+            if (availableSyllables.length === 0) {
+                availableSyllables = [...currentLetterData.silabas];
+            }
 
-            startRouletteSound(3000); // El sonido durará exactamente 3 segundos
+            // 1. Elegimos una sílaba al azar de la bolsa secreta
+            const randomIndex = Math.floor(Math.random() * availableSyllables.length);
+            const targetSyllable = availableSyllables[randomIndex];
+
+            // 2. La quitamos de la bolsa para que no vuelva a salir hasta que se acaben
+            availableSyllables.splice(randomIndex, 1);
+
+            // 3. Buscamos qué posición ocupa esa sílaba en la ruleta original
+            const targetIndex = currentLetterData.silabas.indexOf(targetSyllable);
+            // ================= FIN DE LA TRAMPA =================
+
+            const numSlices = currentLetterData.silabas.length;
+            const sliceSize = 360 / numSlices;
+
+            // Calculamos exactamente dónde debe frenar la ruleta usando matemáticas
+            const minAngle = targetIndex * sliceSize + 10; 
+            const maxAngle = (targetIndex + 1) * sliceSize - 10;
+            const randomAngleInSlice = minAngle + Math.random() * (maxAngle - minAngle);
+
+            const targetRotationMod = (360 - randomAngleInSlice) % 360;
+            const currentMod = currentRotation % 360;
+            let diff = targetRotationMod - currentMod;
+            if (diff < 0) diff += 360;
+
+            const extraSpins = (Math.floor(Math.random() * 4) + 3) * 360; 
+            currentRotation += extraSpins + diff; // Aplicamos los grados forzados
+
+            startRouletteSound(3000); 
 
             wheel.style.transform = `rotate(${currentRotation}deg)`;
             
             setTimeout(() => {
                 isSpinning = false;
-                const normalizedAngle = currentRotation % 360;
                 
-                // Con el marcador ARRIBA (0 grados)
-                let pointerAngle = (360 - normalizedAngle) % 360;
-
-                let winningIndex = 0;
-                if (pointerAngle >= 0 && pointerAngle < 72) winningIndex = 0;       
-                else if (pointerAngle >= 72 && pointerAngle < 144) winningIndex = 1;  
-                else if (pointerAngle >= 144 && pointerAngle < 216) winningIndex = 2; 
-                else if (pointerAngle >= 216 && pointerAngle < 288) winningIndex = 3; 
-                else if (pointerAngle >= 288 && pointerAngle < 360) winningIndex = 4; 
-
-                currentSyllable = currentLetterData.silabas[winningIndex];
+                // Como hicimos trampa, ya sabemos exactamente quién ganó
+                currentSyllable = targetSyllable;
                 showResults(currentSyllable);
                 createConfetti();
 
