@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Identifica los Números - Aula Mágica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Nunito:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #fdf4ff; /* Fondo rosa/morado muy claro */
+            background-image: radial-gradient(#fbcfe8 2px, transparent 2px);
+            background-size: 30px 30px;
+            overflow-x: hidden;
+            max-width: 100vw;
+        }
+
+        h1, h2, h3, .comic-font {
+            font-family: 'Comic Neue', cursive;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            80% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .pop-animation { animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .bounce-animation { animation: bounce 1s infinite; }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        .shake-animation { animation: shake 0.3s; }
+
+        /* Frutas */
+        .fruit-icon {
+            opacity: 0; /* Empiezan invisibles para la animación pop */
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            transition: all 0.2s ease;
+        }
+        
+        .fruit-counted {
+            opacity: 0.4 !important;
+            transform: scale(0.85) !important;
+            filter: grayscale(30%);
+            pointer-events: none;
+        }
+
+        /* Botones de Números */
+        .number-btn {
+            transition: all 0.2s ease;
+        }
+        .number-btn:hover { transform: scale(1.05); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+        .number-btn:active { transform: scale(0.95); }
+        .number-btn:disabled { pointer-events: none; }
+
+        .correct-answer { background-color: #22c55e !important; color: white !important; transform: scale(1.1); z-index: 10; border-color: #16a34a !important; }
+        .wrong-answer { background-color: #ef4444 !important; color: white !important; animation: shake 0.4s; border-color: #dc2626 !important; }
+
+        .hidden-view { display: none !important; }
+        .confetti { position: fixed; width: 10px; height: 10px; opacity: 0; z-index: 1000; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col p-4 sm:p-6">
+
+    <!-- Barra Superior -->
+    <div class="w-full max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 mb-4">
+        <a href="../matematicas.html" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full shadow-md flex items-center gap-2 transition text-sm sm:text-base self-start sm:self-center">
+            <span>⬅️</span> Regresar a Aula Mágica
+        </a>
+
+        <!-- Marcador de Estrellitas -->
+        <div id="scoreBoard" class="hidden-view bg-white px-6 py-2 rounded-full shadow-md border-4 border-yellow-300 flex items-center gap-3">
+            <span class="text-xl sm:text-2xl">⭐</span>
+            <span class="text-lg sm:text-xl font-bold text-gray-700 font-['Comic_Neue']">Ronda: <span id="roundText" class="text-blue-600">1</span>/10</span>
+            <div class="w-px h-6 bg-gray-300 mx-1"></div>
+            <span class="text-lg sm:text-xl font-bold text-gray-700 font-['Comic_Neue']">Puntos: <span id="scoreText" class="text-green-600">0</span></span>
+        </div>
+    </div>
+
+    <!-- ================= ZONA DE JUEGO ================= -->
+    <main id="gameScreen" class="w-full max-w-5xl mx-auto flex flex-col items-center flex-1 hidden-view">
+        
+        <header class="text-center mb-6 w-full">
+            <h1 class="text-3xl sm:text-5xl text-purple-600 font-extrabold drop-shadow-md mb-2">¡Encuentra el Número!</h1>
+            <button onclick="speakInstruction()" class="bg-yellow-100 hover:bg-yellow-200 border-2 border-yellow-400 text-gray-700 px-6 py-3 rounded-full shadow-sm text-lg sm:text-2xl font-bold flex items-center justify-center gap-3 mx-auto transition-transform active:scale-95">
+                <span>🔊</span> Cuenta las frutas y elige el número abajo
+            </button>
+        </header>
+
+        <!-- Contenedor de Frutas -->
+        <div class="w-full max-w-3xl bg-white rounded-3xl p-6 sm:p-8 shadow-xl border-4 border-pink-300 mb-8 relative min-h-[200px] flex flex-col items-center justify-center">
+            <div id="fruitsContainer" class="flex flex-wrap justify-center items-center gap-4 sm:gap-6">
+                <!-- Frutas generadas por JS -->
+            </div>
+            <p id="countHint" class="absolute bottom-2 text-xs sm:text-sm text-gray-400 font-bold opacity-0 transition-opacity">👆 ¡Toca las frutas para contarlas!</p>
+        </div>
+
+        <!-- Teclado de Números -->
+        <div class="w-full max-w-3xl bg-blue-50 p-4 sm:p-6 rounded-3xl border-4 border-blue-200">
+            <h2 class="text-xl sm:text-2xl text-center text-blue-600 font-bold mb-4 font-['Comic_Neue']">¿Qué número es?</h2>
+            
+            <div class="grid grid-cols-5 gap-3 sm:gap-4" id="numbersGrid">
+                <!-- Botones 1 al 10 generados por JS -->
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ================= PANTALLA FINAL ================= -->
+    <div id="endScreen" class="w-full max-w-3xl mx-auto flex flex-col items-center justify-center flex-1 hidden-view">
+        <div class="bg-white rounded-3xl p-8 sm:p-12 shadow-2xl border-8 border-yellow-400 text-center relative overflow-hidden w-full">
+            <div class="text-7xl sm:text-9xl mb-4 bounce-animation">🏆</div>
+            <h1 class="text-4xl sm:text-6xl text-purple-600 font-extrabold drop-shadow-md mb-4 font-['Comic_Neue']">¡Juego Terminado!</h1>
+            
+            <p class="text-2xl sm:text-4xl text-gray-700 font-bold mb-6">
+                Lograste <span id="finalScore" class="text-green-500 font-black text-5xl sm:text-6xl mx-2">0</span> de 10
+            </p>
+            
+            <p id="endMessage" class="text-xl sm:text-2xl text-blue-500 font-bold mb-8 font-['Comic_Neue']">
+                ¡Eres un campeón!
+            </p>
+
+            <button onclick="initGame()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 sm:px-12 rounded-full shadow-lg transform transition hover:scale-105 active:scale-95 text-2xl flex items-center justify-center gap-3 mx-auto border-4 border-green-300">
+                <span>🔄</span> ¡Jugar otra vez!
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- BASE DE DATOS ---
+        const fruitsData = {
+            1: { icon: '🍎', name: 'manzana', bgColor: 'bg-red-50' },
+            2: { icon: '🍌', name: 'plátanos', bgColor: 'bg-yellow-50' },
+            3: { icon: '🍇', name: 'uvas', bgColor: 'bg-purple-50' },
+            4: { icon: '🍓', name: 'fresas', bgColor: 'bg-pink-50' },
+            5: { icon: '🍊', name: 'naranjas', bgColor: 'bg-orange-50' },
+            6: { icon: '🍉', name: 'sandías', bgColor: 'bg-red-50' },
+            7: { icon: '🍍', name: 'piñas', bgColor: 'bg-yellow-50' },
+            8: { icon: '🥭', name: 'mangos', bgColor: 'bg-orange-50' },
+            9: { icon: '🍒', name: 'cerezas', bgColor: 'bg-red-50' },
+            10: { icon: '🥝', name: 'kiwis', bgColor: 'bg-green-50' }
+        };
+
+        // --- VARIABLES DE ESTADO ---
+        let bag = [];
+        let currentRound = 0;
+        let score = 0;
+        let currentTargetNumber = 0;
+        let countedFruits = 0;
+        let isWaitingForNextRound = false;
+
+        // Elementos DOM
+        const gameScreen = document.getElementById('gameScreen');
+        const endScreen = document.getElementById('endScreen');
+        const scoreBoard = document.getElementById('scoreBoard');
+        const fruitsContainer = document.getElementById('fruitsContainer');
+        const numbersGrid = document.getElementById('numbersGrid');
+        const roundText = document.getElementById('roundText');
+        const scoreText = document.getElementById('scoreText');
+        const countHint = document.getElementById('countHint');
+
+        // --- SÍNTESIS DE VOZ ---
+        const synth = window.speechSynthesis;
+        let spanishVoice = null;
+
+        function initVoice() {
+            const voices = synth.getVoices();
+            spanishVoice = voices.find(voice => voice.lang.includes('es-MX')) || 
+                           voices.find(voice => voice.lang.includes('es-ES')) ||
+                           voices.find(voice => voice.lang.includes('es'));
+        }
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = initVoice;
+        } else {
+            initVoice();
+        }
+
+        function speak(text) {
+            synth.cancel(); 
+            const utterThis = new SpeechSynthesisUtterance(text.toString());
+            if (spanishVoice) utterThis.voice = spanishVoice;
+            utterThis.pitch = 1.3; 
+            utterThis.rate = 0.9;
+            synth.speak(utterThis);
+        }
+
+        function speakInstruction() {
+            speak("Cuenta las frutas y elige el número abajo.");
+        }
+
+        // --- LÓGICA DEL JUEGO ---
+        
+        function initGame() {
+            // Reiniciar estado
+            bag = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+            // Revolver la bolsa aleatoriamente (Shuffle)
+            bag.sort(() => Math.random() - 0.5); 
+            
+            currentRound = 0;
+            score = 0;
+            
+            updateScoreBoard();
+            buildNumbersGrid();
+            
+            // Cambiar vistas
+            endScreen.classList.add('hidden-view');
+            gameScreen.classList.remove('hidden-view');
+            scoreBoard.classList.remove('hidden-view');
+            scoreBoard.classList.add('flex');
+
+            nextRound();
+        }
+
+        function buildNumbersGrid() {
+            numbersGrid.innerHTML = '';
+            for (let i = 1; i <= 10; i++) {
+                const btn = document.createElement('button');
+                btn.className = `number-btn bg-white border-4 border-blue-300 text-blue-600 font-black text-3xl sm:text-5xl py-3 sm:py-4 rounded-2xl shadow-sm font-['Comic_Neue'] flex items-center justify-center`;
+                btn.textContent = i;
+                btn.id = `btn-num-${i}`;
+                btn.onclick = () => checkAnswer(i);
+                numbersGrid.appendChild(btn);
+            }
+        }
+
+        function nextRound() {
+            if (currentRound >= 10) {
+                showEndScreen();
+                return;
+            }
+
+            isWaitingForNextRound = false;
+            currentRound++;
+            updateScoreBoard();
+            
+            // Sacar el siguiente número de la bolsa revuelta
+            currentTargetNumber = bag.pop();
+            countedFruits = 0;
+
+            renderFruits(currentTargetNumber);
+            
+            // Limpiar estilos de los botones
+            for (let i = 1; i <= 10; i++) {
+                const btn = document.getElementById(`btn-num-${i}`);
+                if (btn) {
+                    btn.className = `number-btn bg-white border-4 border-blue-300 text-blue-600 font-black text-3xl sm:text-5xl py-3 sm:py-4 rounded-2xl shadow-sm font-['Comic_Neue'] flex items-center justify-center`;
+                    btn.disabled = false;
+                }
+            }
+
+            // Anunciar ronda
+            setTimeout(() => {
+                countHint.style.opacity = '1';
+                speakInstruction();
+            }, 500);
+        }
+
+        function renderFruits(num) {
+            const data = fruitsData[num];
+            fruitsContainer.innerHTML = '';
+            
+            // Cambiar levemente el color de fondo para variedad
+            fruitsContainer.parentElement.className = `w-full max-w-3xl ${data.bgColor} rounded-3xl p-6 sm:p-8 shadow-xl border-4 border-pink-300 mb-8 relative min-h-[200px] flex flex-col items-center justify-center transition-colors duration-500`;
+
+            for (let i = 0; i < num; i++) {
+                const fruit = document.createElement('div');
+                fruit.className = 'fruit-icon text-5xl sm:text-7xl drop-shadow-md cursor-pointer transform hover:scale-110';
+                fruit.textContent = data.icon;
+                fruit.style.animationDelay = `${i * 0.1}s`;
+                
+                // Función de conteo
+                fruit.onclick = function() {
+                    if (this.classList.contains('fruit-counted') || isWaitingForNextRound) return;
+                    
+                    countedFruits++;
+                    speak(countedFruits);
+                    
+                    this.classList.add('fruit-counted');
+                    
+                    // Si ya contó todas, lo felicitamos
+                    if (countedFruits === currentTargetNumber) {
+                        countHint.style.opacity = '0';
+                        setTimeout(() => speak(`¡Son ${currentTargetNumber}! Ahora elige el número.`), 1000);
+                    }
+                };
+                
+                fruitsContainer.appendChild(fruit);
+            }
+        }
+
+        function checkAnswer(selectedNumber) {
+            if (isWaitingForNextRound) return;
+            isWaitingForNextRound = true; // Bloquear teclado temporalmente
+
+            const selectedBtn = document.getElementById(`btn-num-${selectedNumber}`);
+            const correctBtn = document.getElementById(`btn-num-${currentTargetNumber}`);
+
+            countHint.style.opacity = '0';
+
+            // Deshabilitar todos los botones para que no haga doble clic
+            for (let i = 1; i <= 10; i++) {
+                document.getElementById(`btn-num-${i}`).disabled = true;
+            }
+
+            if (selectedNumber === currentTargetNumber) {
+                // RESPUESTA CORRECTA
+                score++;
+                updateScoreBoard();
+                selectedBtn.classList.add('correct-answer');
+                createConfetti();
+                speak(`¡Muy bien! Es el número ${currentTargetNumber}`);
+            } else {
+                // RESPUESTA INCORRECTA
+                selectedBtn.classList.add('wrong-answer');
+                correctBtn.classList.add('correct-answer'); // Mostrar cuál era el correcto
+                speak(`¡Casi! Era el número ${currentTargetNumber}`);
+            }
+
+            // Pasar a la siguiente ronda después de 2.5 segundos
+            setTimeout(() => {
+                nextRound();
+            }, 2500);
+        }
+
+        function updateScoreBoard() {
+            roundText.textContent = currentRound;
+            scoreText.textContent = score;
+        }
+
+        function showEndScreen() {
+            gameScreen.classList.add('hidden-view');
+            scoreBoard.classList.add('hidden-view');
+            scoreBoard.classList.remove('flex');
+            
+            endScreen.classList.remove('hidden-view');
+            endScreen.classList.add('flex');
+            
+            document.getElementById('finalScore').textContent = score;
+
+            let endMsg = document.getElementById('endMessage');
+            if (score === 10) {
+                endMsg.textContent = "¡Perfecto! Eres súper inteligente. 🌟";
+                speak("¡Felicidades! Lograste 10 de 10. ¡Eres súper inteligente!");
+                createConfetti(100); // Mucho confeti
+            } else if (score >= 6) {
+                endMsg.textContent = "¡Muy buen trabajo! Lo hiciste genial. 👍";
+                speak(`Muy buen trabajo. Lograste ${score} de 10.`);
+                createConfetti();
+            } else {
+                endMsg.textContent = "¡Sigue practicando, vas muy bien! 💪";
+                speak(`Lograste ${score} de 10. ¡Sigue practicando, vas muy bien!`);
+            }
+        }
+
+        // --- EFECTOS VISUALES ---
+        function createConfetti(amount = 50) {
+            const colors = ['#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#a855f7', '#ec4899'];
+            for (let i = 0; i < amount; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti rounded-full pointer-events-none';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                const startX = window.innerWidth / 2;
+                const startY = window.innerHeight / 2;
+                
+                const tx = (Math.random() - 0.5) * 600; 
+                const ty = (Math.random() - 0.5) * 600; 
+                
+                confetti.style.left = startX + 'px';
+                confetti.style.top = startY + 'px';
+                
+                const animation = confetti.animate([
+                    { transform: `translate(0,0) rotate(0deg) scale(1)`, opacity: 1 },
+                    { transform: `translate(${tx}px, ${ty}px) rotate(${Math.random() * 360}deg) scale(0)`, opacity: 0 }
+                ], {
+                    duration: 1000 + Math.random() * 1000,
+                    easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                });
+                
+                document.body.appendChild(confetti);
+                animation.onfinish = () => confetti.remove();
+            }
+        }
+
+        // Iniciar el juego al cargar la página
+        window.onload = initGame;
+    </script>
+</body>
+</html>
