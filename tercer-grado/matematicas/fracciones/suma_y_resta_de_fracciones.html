@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Suma y Resta de Fracciones - Aula Mágica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f0fdfa;
+            touch-action: manipulation;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        .fraction-btn {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .fraction-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 0px 0 0 transparent !important;
+        }
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        .animate-pop {
+            animation: pop 0.4s ease-out;
+        }
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <header class="w-full bg-white p-4 shadow-sm flex justify-between items-center relative z-10">
+        <div class="flex items-center gap-2 text-emerald-600 font-black text-xl">
+            <span class="text-2xl">🪄</span> Aula Mágica
+        </div>
+        <div class="flex gap-2">
+            <button onclick="goToSetup()" class="text-sm font-bold text-slate-600 hover:text-indigo-600 transition-colors border-2 border-slate-200 hover:border-indigo-200 rounded-lg px-3 py-1 bg-slate-50 flex items-center gap-1">
+                <span>🏠</span> Menú
+            </button>
+            <button onclick="returnToMainSite()" class="text-sm font-bold text-rose-600 hover:text-rose-700 transition-colors border-2 border-rose-200 hover:border-rose-300 rounded-lg px-3 py-1 bg-rose-50 flex items-center gap-1">
+                <span>🚪</span> Salir
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center p-4 w-full max-w-xl mx-auto">
+        
+        <div id="setup-screen" class="bg-white rounded-3xl shadow-xl p-6 sm:p-8 border-4 border-indigo-100 transition-all duration-300 w-full">
+            <h2 class="text-3xl sm:text-4xl font-black text-indigo-500 mb-2 text-center">Suma y Resta de Fracciones</h2>
+            <p class="text-base text-slate-600 mb-6 font-bold text-center">Configura tu práctica de operaciones.</p>
+            
+            <!-- 1. Tipo de Operación -->
+            <h3 class="text-lg font-bold text-slate-700 mb-2">1. Elige la operación:</h3>
+            <div class="grid grid-cols-3 gap-2 mb-5">
+                <button id="op-add" onclick="setOperation('add')" class="bg-indigo-500 text-white border-2 border-indigo-500 text-sm font-bold py-3 px-2 rounded-xl shadow-sm transition-colors">
+                    Suma ➕
+                </button>
+                <button id="op-sub" onclick="setOperation('sub')" class="bg-white text-slate-500 border-2 border-slate-200 text-sm font-bold py-3 px-2 rounded-xl hover:bg-slate-50 transition-colors">
+                    Resta ➖
+                </button>
+                <button id="op-mix" onclick="setOperation('mix')" class="bg-white text-slate-500 border-2 border-slate-200 text-sm font-bold py-3 px-2 rounded-xl hover:bg-slate-50 transition-colors">
+                    Mixtas 🔀
+                </button>
+            </div>
+
+            <!-- 2. Nivel de Dificultad -->
+            <h3 class="text-lg font-bold text-slate-700 mb-2">2. Nivel de Dificultad:</h3>
+            <div class="flex gap-2 mb-5">
+                <button id="diff-easy" onclick="setDifficulty('easy')" class="flex-1 bg-emerald-500 text-white border-2 border-emerald-500 text-sm font-bold py-2.5 px-2 rounded-xl shadow-sm transition-colors">
+                    Fácil
+                </button>
+                <button id="diff-med" onclick="setDifficulty('medium')" class="flex-1 bg-white text-slate-500 border-2 border-slate-200 text-sm font-bold py-2.5 px-2 rounded-xl hover:bg-slate-50 transition-colors">
+                    Medio
+                </button>
+                <button id="diff-hard" onclick="setDifficulty('hard')" class="flex-1 bg-white text-slate-500 border-2 border-slate-200 text-sm font-bold py-2.5 px-2 rounded-xl hover:bg-slate-50 transition-colors">
+                    Difícil
+                </button>
+            </div>
+
+            <!-- 3. Términos Reducidos -->
+            <div class="bg-indigo-50 border-2 border-indigo-100 rounded-2xl p-4 mb-5 flex items-center justify-between">
+                <div>
+                    <h4 class="font-extrabold text-slate-800 text-base">Términos Reducidos</h4>
+                    <p class="text-xs text-slate-500">Obligar a simplificar la respuesta a su mínima expresión.</p>
+                </div>
+                <button id="btn-reduce-toggle" onclick="toggleReduction()" class="w-14 h-8 bg-slate-300 rounded-full transition-colors relative p-1 shadow-inner">
+                    <div id="reduce-dot" class="w-6 h-6 bg-white rounded-full shadow-md transform translate-x-0 transition-transform"></div>
+                </button>
+            </div>
+
+            <!-- 4. Cantidad de Operaciones -->
+            <h3 class="text-lg font-bold text-slate-700 mb-3 text-center">¿Cuántas operaciones deseas resolver?</h3>
+            <div class="flex justify-center gap-4 mb-2">
+                <button onclick="startGame(10)" class="fraction-btn bg-emerald-400 hover:bg-emerald-500 text-white text-xl font-black py-3 px-6 rounded-2xl shadow-[0_4px_0_0_#059669]">
+                    10
+                </button>
+                <button onclick="startGame(20)" class="fraction-btn bg-amber-400 hover:bg-amber-500 text-white text-xl font-black py-3 px-6 rounded-2xl shadow-[0_4px_0_0_#d97706]">
+                    20
+                </button>
+                <button onclick="startGame(50)" class="fraction-btn bg-rose-400 hover:bg-rose-500 text-white text-xl font-black py-3 px-6 rounded-2xl shadow-[0_4px_0_0_#e11d48]">
+                    50
+                </button>
+            </div>
+        </div>
+
+        <div id="game-screen" class="hidden flex-col items-center w-full max-w-lg">
+            
+            <div class="flex justify-between items-center w-full bg-white p-4 rounded-2xl shadow-md border-2 border-slate-100 mb-6">
+                <div class="text-lg font-bold text-slate-500">Operación <span id="question-counter" class="text-indigo-500 font-black text-2xl">1/10</span></div>
+                <div class="flex gap-4">
+                    <div class="flex items-center gap-1 text-emerald-500 font-black text-xl">
+                        <span>✔️</span> <span id="score-correct">0</span>
+                    </div>
+                    <div class="flex items-center gap-1 text-rose-500 font-black text-xl">
+                        <span>❌</span> <span id="score-wrong">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta principal de Operación -->
+            <div class="bg-white w-full p-8 rounded-3xl shadow-lg border-4 border-indigo-50 mb-6 flex flex-col items-center justify-center relative">
+                
+                <div id="expression-container" class="flex items-center justify-center gap-3 sm:gap-5 flex-wrap text-slate-800">
+                    <!-- Fracción 1 -->
+                    <div class="flex flex-col items-center">
+                        <span id="num1" class="text-3xl sm:text-4xl font-black">3</span>
+                        <div class="w-12 sm:w-16 h-1 bg-slate-800 my-1 rounded-full"></div>
+                        <span id="den1" class="text-3xl sm:text-4xl font-black">6</span>
+                    </div>
+
+                    <!-- Operador (+ o -) -->
+                    <span id="op-symbol" class="text-3xl sm:text-4xl font-black text-indigo-500">+</span>
+
+                    <!-- Fracción 2 -->
+                    <div class="flex flex-col items-center">
+                        <span id="num2" class="text-3xl sm:text-4xl font-black">4</span>
+                        <div class="w-12 sm:w-16 h-1 bg-slate-800 my-1 rounded-full"></div>
+                        <span id="den2" class="text-3xl sm:text-4xl font-black">6</span>
+                    </div>
+
+                    <!-- Signo Igual -->
+                    <span class="text-3xl sm:text-4xl font-black text-slate-400">=</span>
+
+                    <!-- Respuesta -->
+                    <div class="flex items-center gap-3">
+                        <div class="flex flex-col items-center bg-slate-50 p-2 rounded-2xl border-2 border-indigo-200 shadow-inner">
+                            <input type="text" inputmode="numeric" pattern="[0-9]*" id="ans-num" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="w-16 h-12 text-center text-2xl font-black text-indigo-600 bg-white border-2 border-slate-200 rounded-xl focus:border-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-100 transition-all mb-1" placeholder="?">
+                            <div class="w-20 h-1 bg-slate-800 my-1 rounded-full"></div>
+                            <input type="text" inputmode="numeric" pattern="[0-9]*" id="ans-den" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="w-16 h-12 text-center text-2xl font-black text-indigo-600 bg-white border-2 border-slate-200 rounded-xl focus:border-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-100 transition-all mt-1" placeholder="?">
+                        </div>
+                        <button onclick="checkAnswer()" class="bg-indigo-500 hover:bg-indigo-600 text-white font-black text-lg py-4 px-4 rounded-xl shadow-[0_4px_0_0_#4338ca] transition-all active:shadow-none active:translate-y-1">
+                            OK
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+            
+            <div id="feedback-message" class="text-xl sm:text-2xl font-black h-8 transition-opacity duration-300 opacity-0 text-center w-full">
+                ¡Correcto!
+            </div>
+        </div>
+
+        <div id="end-screen" class="hidden bg-white rounded-3xl shadow-xl p-8 text-center border-4 border-emerald-100 w-full">
+            <h2 class="text-4xl font-black text-emerald-500 mb-4">¡Práctica Concluida! 🎉</h2>
+            
+            <div class="flex justify-center items-center gap-8 my-8">
+                <div class="flex flex-col items-center">
+                    <span class="text-5xl font-black text-emerald-500 mb-2" id="final-correct">0</span>
+                    <span class="text-slate-500 font-bold text-lg">Correctas ✔️</span>
+                </div>
+                <div class="w-1 h-16 bg-slate-200 rounded-full"></div>
+                <div class="flex flex-col items-center">
+                    <span class="text-5xl font-black text-rose-500 mb-2" id="final-wrong">0</span>
+                    <span class="text-slate-500 font-bold text-lg">Incorrectas ❌</span>
+                </div>
+            </div>
+
+            <p id="final-message" class="text-xl font-bold text-indigo-600 mb-8">¡Excelente trabajo!</p>
+
+            <div class="flex flex-col sm:flex-row gap-3">
+                <button onclick="goToSetup()" class="fraction-btn bg-indigo-500 hover:bg-indigo-600 text-white text-xl font-black py-4 px-6 rounded-2xl shadow-[0_6px_0_0_#4338ca] flex-1">
+                    Cambiar Configuración ⚙️
+                </button>
+                <button onclick="startGame(totalQuestions)" class="fraction-btn bg-emerald-500 hover:bg-emerald-600 text-white text-xl font-black py-4 px-6 rounded-2xl shadow-[0_6px_0_0_#059669] flex-1">
+                    Repetir 🔄
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        let totalQuestions = 10;
+        let currentQuestion = 0;
+        let scoreCorrect = 0;
+        let scoreWrong = 0;
+        let operationType = 'add'; // 'add', 'sub', 'mix'
+        let difficulty = 'easy'; // 'easy', 'medium', 'hard'
+        let requireReduced = false; // Apagado por defecto
+
+        let currentN1, currentD1, currentN2, currentD2, currentOp;
+        let correctNum, correctDen;
+        let canAnswer = true;
+
+        const setupScreen = document.getElementById('setup-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const endScreen = document.getElementById('end-screen');
+        const feedbackMessage = document.getElementById('feedback-message');
+
+        function setOperation(op) {
+            operationType = op;
+            ['add', 'sub', 'mix'].forEach(item => {
+                const btn = document.getElementById(`op-${item}`);
+                if (item === op) {
+                    btn.className = 'bg-indigo-500 text-white border-2 border-indigo-500 text-sm font-bold py-3 px-2 rounded-xl shadow-sm transition-colors';
+                } else {
+                    btn.className = 'bg-white text-slate-500 border-2 border-slate-200 text-sm font-bold py-3 px-2 rounded-xl hover:bg-slate-50 transition-colors';
+                }
+            });
+        }
+
+        function setDifficulty(diff) {
+            difficulty = diff;
+            
+            const diffMap = {
+                'easy': 'diff-easy',
+                'medium': 'diff-med',
+                'hard': 'diff-hard'
+            };
+
+            ['easy', 'medium', 'hard'].forEach(item => {
+                const btn = document.getElementById(diffMap[item]);
+                if (item === diff) {
+                    btn.className = 'flex-1 bg-emerald-500 text-white border-2 border-emerald-500 text-sm font-bold py-2.5 px-2 rounded-xl shadow-sm transition-colors';
+                } else {
+                    btn.className = 'flex-1 bg-white text-slate-500 border-2 border-slate-200 text-sm font-bold py-2.5 px-2 rounded-xl hover:bg-slate-50 transition-colors';
+                }
+            });
+        }
+
+        function toggleReduction() {
+            requireReduced = !requireReduced;
+            const dot = document.getElementById('reduce-dot');
+            const btn = document.getElementById('btn-reduce-toggle');
+            if (requireReduced) {
+                dot.classList.add('translate-x-6');
+                btn.classList.add('bg-indigo-500');
+                btn.classList.remove('bg-slate-300');
+            } else {
+                dot.classList.remove('translate-x-6');
+                btn.classList.remove('bg-indigo-500');
+                btn.classList.add('bg-slate-300');
+            }
+        }
+
+        function goToSetup() {
+            endScreen.classList.add('hidden');
+            gameScreen.classList.add('hidden');
+            gameScreen.classList.remove('flex');
+            setupScreen.classList.remove('hidden');
+        }
+
+        function returnToMainSite() {
+            window.location.href = "../matematicas.html";
+        }
+
+        function startGame(count) {
+            totalQuestions = count;
+            currentQuestion = 0;
+            scoreCorrect = 0;
+            scoreWrong = 0;
+
+            setupScreen.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+            gameScreen.classList.add('flex');
+
+            nextQuestion();
+        }
+
+        function updateScoreboard() {
+            document.getElementById('question-counter').textContent = `${currentQuestion}/${totalQuestions}`;
+            document.getElementById('score-correct').textContent = scoreCorrect;
+            document.getElementById('score-wrong').textContent = scoreWrong;
+        }
+
+        function mcd(a, b) {
+            return b === 0 ? Math.abs(a) : mcd(b, a % b);
+        }
+
+        function simplify(n, d) {
+            if (d === 0) return { n: 0, d: 1 };
+            let sign = 1;
+            if (n * d < 0) sign = -1;
+            n = Math.abs(n);
+            d = Math.abs(d);
+            const divisor = mcd(n, d);
+            return { n: sign * (n / divisor), d: d / divisor };
+        }
+
+        function nextQuestion() {
+            if (currentQuestion >= totalQuestions) {
+                showEndScreen();
+                return;
+            }
+
+            currentQuestion++;
+            updateScoreboard();
+            canAnswer = true;
+            feedbackMessage.style.opacity = '0';
+
+            const ansNum = document.getElementById('ans-num');
+            const ansDen = document.getElementById('ans-den');
+            ansNum.value = '';
+            ansDen.value = '';
+            ansNum.classList.remove('border-emerald-500', 'border-red-400', 'text-emerald-600', 'text-red-500');
+            ansDen.classList.remove('border-emerald-500', 'border-red-400', 'text-emerald-600', 'text-red-500');
+
+            if (operationType === 'mix') {
+                currentOp = Math.random() < 0.5 ? '+' : '-';
+            } else {
+                currentOp = operationType === 'add' ? '+' : '-';
+            }
+
+            if (difficulty === 'easy') {
+                // FÁCIL: Mismo denominador (homogéneas), resultados menores a 1 y positivos
+                currentD1 = Math.floor(Math.random() * 8) + 2; // 2 a 9
+                currentD2 = currentD1;
+
+                if (currentOp === '-') {
+                    currentN1 = Math.floor(Math.random() * (currentD1 - 1)) + 1;
+                    currentN2 = Math.floor(Math.random() * (currentD1 - 1)) + 1;
+                    
+                    // Evitar que sean exactamente iguales para que no dé cero
+                    while (currentN1 === currentN2) {
+                        currentN2 = Math.floor(Math.random() * (currentD1 - 1)) + 1;
+                    }
+                    
+                    // Evitar negativos
+                    if (currentN1 < currentN2) {
+                        let temp = currentN1; currentN1 = currentN2; currentN2 = temp;
+                    }
+                } else {
+                    currentN1 = Math.floor(Math.random() * (currentD1 - 1)) + 1;
+                    currentN2 = Math.floor(Math.random() * (currentD1 - 1)) + 1;
+                    while (currentN1 + currentN2 >= currentD1) {
+                        currentN1 = Math.floor(Math.random() * (currentD1 - 1)) + 1;
+                        currentN2 = Math.floor(Math.random() * (currentD1 - 1)) + 1;
+                    }
+                }
+
+            } else if (difficulty === 'medium') {
+                // MEDIO: Diferente denominador (heterogéneas), resultados menores a 1 y positivos
+                let valid = false;
+                let safety = 0;
+
+                while (!valid && safety < 100) {
+                    safety++;
+                    currentD1 = Math.floor(Math.random() * 8) + 3;
+                    do {
+                        currentD2 = Math.floor(Math.random() * 8) + 3;
+                    } while (currentD2 === currentD1);
+
+                    currentN1 = Math.floor(Math.random() * (currentD1 - 1)) + 1;
+                    currentN2 = Math.floor(Math.random() * (currentD2 - 1)) + 1;
+
+                    let resN, resD;
+                    if (currentOp === '+') {
+                        resN = (currentN1 * currentD2) + (currentN2 * currentD1);
+                        resD = currentD1 * currentD2;
+                    } else {
+                        resN = (currentN1 * currentD2) - (currentN2 * currentD1);
+                        resD = currentD1 * currentD2;
+                    }
+
+                    if (resN > 0 && resN < resD) {
+                        valid = true;
+                    }
+                }
+
+                // Fallback de seguridad si no encontró en 100 intentos
+                if (!valid) {
+                    currentD1 = 4; currentD2 = 6;
+                    currentN1 = 1; currentN2 = 1;
+                    currentOp = '+';
+                }
+
+            } else {
+                // DIFÍCIL: Denominadores variados y resultados libres
+                let valid = false;
+                while (!valid) {
+                    currentD1 = Math.floor(Math.random() * 10) + 2;
+                    currentD2 = Math.floor(Math.random() * 10) + 2;
+
+                    currentN1 = Math.floor(Math.random() * (currentD1 * 1.5)) + 1;
+                    currentN2 = Math.floor(Math.random() * (currentD2 * 1.5)) + 1;
+
+                    if (currentOp === '-') {
+                        let val1 = currentN1 / currentD1;
+                        let val2 = currentN2 / currentD2;
+                        
+                        // Evitar negativos invirtiendo
+                        if (val1 < val2) {
+                            let tempN = currentN1; currentN1 = currentN2; currentN2 = tempN;
+                            let tempD = currentD1; currentD1 = currentD2; currentD2 = tempD;
+                        }
+                        
+                        // Evitar que dé exactamente cero (que sean equivalentes)
+                        val1 = currentN1 / currentD1;
+                        val2 = currentN2 / currentD2;
+                        if (val1 !== val2) {
+                            valid = true;
+                        }
+                    } else {
+                        valid = true;
+                    }
+                }
+            }
+
+            // Calcular resultado correcto exacto
+            let resNum, resDen;
+            if (currentOp === '+') {
+                resNum = (currentN1 * currentD2) + (currentN2 * currentD1);
+                resDen = currentD1 * currentD2;
+            } else {
+                resNum = (currentN1 * currentD2) - (currentN2 * currentD1);
+                resDen = currentD1 * currentD2;
+            }
+
+            correctNum = resNum;
+            correctDen = resDen;
+
+            // Mostrar en pantalla
+            document.getElementById('num1').textContent = currentN1;
+            document.getElementById('den1').textContent = currentD1;
+            document.getElementById('op-symbol').textContent = currentOp;
+            document.getElementById('num2').textContent = currentN2;
+            document.getElementById('den2').textContent = currentD2;
+
+            setTimeout(() => ansNum.focus(), 100);
+        }
+
+        function checkAnswer() {
+            if (!canAnswer) return;
+
+            const ansNumInput = document.getElementById('ans-num');
+            const ansDenInput = document.getElementById('ans-den');
+
+            const userN = parseInt(ansNumInput.value);
+            const userD = parseInt(ansDenInput.value);
+
+            if (isNaN(userN) || isNaN(userD)) {
+                feedbackMessage.textContent = 'Escribe solo números ✍️';
+                feedbackMessage.className = 'mt-4 text-2xl font-black h-8 transition-opacity duration-300 opacity-100 text-amber-500';
+                return;
+            }
+
+            if (userD === 0) {
+                feedbackMessage.textContent = 'El denominador no puede ser cero 🚫';
+                feedbackMessage.className = 'mt-4 text-2xl font-black h-8 transition-opacity duration-300 opacity-100 text-rose-500';
+                return;
+            }
+
+            canAnswer = false;
+
+            const isMathematicallyEquivalent = (userN * correctDen === correctNum * userD);
+
+            let isCorrect = false;
+            if (isMathematicallyEquivalent) {
+                if (requireReduced) {
+                    const simplifiedUser = simplify(userN, userD);
+                    const simplifiedCorrect = simplify(correctNum, correctDen);
+                    if (simplifiedUser.n === simplifiedCorrect.n && simplifiedUser.d === simplifiedCorrect.d) {
+                        isCorrect = true;
+                    } else {
+                        isCorrect = false;
+                    }
+                } else {
+                    isCorrect = true;
+                }
+            }
+
+            if (isCorrect) {
+                scoreCorrect++;
+                ansNumInput.classList.add('border-emerald-500', 'text-emerald-600');
+                ansDenInput.classList.add('border-emerald-500', 'text-emerald-600');
+                
+                feedbackMessage.textContent = requireReduced ? '¡Excelente en su mínima expresión! ⭐' : '¡Correcto! ⭐';
+                feedbackMessage.className = 'mt-4 text-2xl font-black h-8 transition-opacity duration-300 opacity-100 text-emerald-500';
+                document.getElementById('expression-container').classList.add('animate-pop');
+            } else {
+                scoreWrong++;
+                ansNumInput.classList.add('border-red-400', 'text-red-500');
+                ansDenInput.classList.add('border-red-400', 'text-red-500');
+
+                let simp = simplify(correctNum, correctDen);
+                let correctStr = requireReduced ? `${simp.n}/${simp.d}` : `${correctNum}/${correctDen}`;
+                
+                feedbackMessage.textContent = `Incorrecto. El resultado era ${correctStr} 💡`;
+                feedbackMessage.className = 'mt-4 text-xl sm:text-2xl font-black h-8 transition-opacity duration-300 opacity-100 text-red-500';
+            }
+
+            updateScoreboard();
+
+            setTimeout(() => {
+                document.getElementById('expression-container').classList.remove('animate-pop');
+                nextQuestion();
+            }, 2800);
+        }
+    </script>
+</body>
+</html>
