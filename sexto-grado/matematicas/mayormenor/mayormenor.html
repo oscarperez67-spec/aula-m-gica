@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Comparar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', 'Nunito', sans-serif;
+            background-color: #dbeafe; /* blue-100 */
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+        .bounce-anim {
+            animation: bounce 1s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(-5%); }
+            50% { transform: translateY(0); }
+        }
+        .pulse-anim {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+    </style>
+</head>
+<body class="relative">
+
+    <div id="toast" class="fixed top-20 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-full shadow-lg z-50 transition-opacity duration-300 opacity-0 pointer-events-none">
+        Mensaje
+    </div>
+
+    <div class="flex justify-between w-full p-4 absolute top-0 left-0 right-0 z-10">
+        <!-- El botón Menú ahora usa goToSetup() para volver a la configuración inicial -->
+        <button onclick="goToSetup()" class="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-500 text-yellow-900 px-4 py-2 rounded-full font-bold shadow-md transition-transform active:scale-95">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            <span class="hidden sm:inline">Menú</span>
+        </button>
+        
+        <!-- AQUI PONES EL LINK DEL AULA MAGICA: Cambia 'tu_pagina_aula_magica.html' por tu enlace real -->
+        <button onclick="window.location.href='../matematicas.html'" class="flex items-center gap-2 bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-full font-bold shadow-md transition-transform active:scale-95">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            <span class="hidden sm:inline">Aula Mágica</span>
+        </button>
+    </div>
+
+    <div class="w-full max-w-2xl px-4 py-20 mx-auto flex flex-col items-center flex-grow z-0">
+        
+        <!-- PANTALLA DE CONFIGURACIÓN -->
+        <div id="setup-screen" class="bg-white p-6 sm:p-8 rounded-3xl shadow-xl w-full text-center border-4 border-blue-400">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-600 mb-6 drop-shadow-sm">¡Aprende a Comparar!</h1>
+            
+            <div class="mb-6 text-left">
+                <h2 class="text-xl font-bold text-gray-700 mb-3 text-center">¿Con qué quieres jugar?</h2>
+                <div id="ops-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <!-- Botones de operaciones generados por JS -->
+                </div>
+            </div>
+
+            <div class="mb-6 text-left">
+                <h2 class="text-xl font-bold text-gray-700 mb-3 text-center">Nivel de Dificultad</h2>
+                <div id="diff-container" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <!-- Botones de dificultad generados por JS -->
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <h2 class="text-xl font-bold text-gray-700 mb-3 text-center">¿Cuántas veces quieres jugar?</h2>
+                <div id="rounds-container" class="flex flex-wrap justify-center gap-3">
+                    <!-- Botones de rondas generados por JS -->
+                </div>
+            </div>
+
+            <button onclick="startGame()" class="bg-green-500 hover:bg-green-600 text-white text-2xl font-black py-4 px-10 rounded-full shadow-lg transform transition-all active:scale-95 hover:scale-105 pulse-anim">
+                ¡COMENZAR!
+            </button>
+        </div>
+
+        <!-- PANTALLA DE JUEGO -->
+        <div id="game-screen" class="w-full hidden">
+            <!-- Header del juego -->
+            <div class="flex justify-between items-center bg-white p-4 rounded-2xl shadow-md mb-8 border-2 border-gray-200">
+                <div id="round-counter" class="text-xl font-bold text-blue-600">Ronda 1 / 10</div>
+                <div class="flex gap-4">
+                    <div class="flex items-center gap-1 text-green-500 font-bold text-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        <span id="score-correct">0</span>
+                    </div>
+                    <div class="flex items-center gap-1 text-red-500 font-bold text-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        <span id="score-incorrect">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Área de la pregunta -->
+            <div class="bg-white p-6 sm:p-10 rounded-3xl shadow-xl border-4 border-blue-300 flex flex-col items-center">
+                <div class="flex flex-col sm:flex-row w-full justify-between items-center gap-6 sm:gap-4 mb-10">
+                    <!-- Izquierda (Se ajustó el texto a text-3xl sm:text-4xl y px-2 para que no desborde) -->
+                    <div id="left-expression" class="bg-blue-100 text-blue-800 text-3xl sm:text-4xl font-black py-6 px-2 rounded-2xl w-full sm:w-2/5 text-center shadow-inner border-2 border-blue-200 flex items-center justify-center min-h-[120px] break-words">
+                        -
+                    </div>
+
+                    <!-- Centro (Signo de interrogación o escogido) -->
+                    <div id="center-symbol" class="text-gray-400 font-black text-5xl sm:text-6xl flex-shrink-0 transition-all duration-300 pulse-anim mx-2">
+                        ?
+                    </div>
+
+                    <!-- Derecha (Se ajustó el texto a text-3xl sm:text-4xl y px-2 para que no desborde) -->
+                    <div id="right-expression" class="bg-orange-100 text-orange-800 text-3xl sm:text-4xl font-black py-6 px-2 rounded-2xl w-full sm:w-2/5 text-center shadow-inner border-2 border-orange-200 flex items-center justify-center min-h-[120px] break-words">
+                        -
+                    </div>
+                </div>
+
+                <!-- Botones de respuesta -->
+                <h3 class="text-xl font-bold text-gray-500 mb-4">¿Cuál es correcto?</h3>
+                <div class="flex gap-4 sm:gap-8 justify-center w-full">
+                    <button onclick="handleAnswer('<')" class="answer-btn bg-pink-500 hover:bg-pink-600 w-20 h-20 sm:w-28 sm:h-28 rounded-2xl text-4xl sm:text-6xl font-black text-white shadow-lg transition-transform transform active:scale-90 hover:-translate-y-2"><</button>
+                    <button onclick="handleAnswer('=')" class="answer-btn bg-purple-500 hover:bg-purple-600 w-20 h-20 sm:w-28 sm:h-28 rounded-2xl text-4xl sm:text-6xl font-black text-white shadow-lg transition-transform transform active:scale-90 hover:-translate-y-2">=</button>
+                    <button onclick="handleAnswer('>')" class="answer-btn bg-teal-500 hover:bg-teal-600 w-20 h-20 sm:w-28 sm:h-28 rounded-2xl text-4xl sm:text-6xl font-black text-white shadow-lg transition-transform transform active:scale-90 hover:-translate-y-2">></button>
+                </div>
+
+                <!-- Mensaje de Retroalimentación -->
+                <div id="feedback-message" class="mt-8 h-16 flex items-center justify-center w-full rounded-xl transition-all opacity-0">
+                    <span id="feedback-text" class="text-2xl font-bold flex items-center gap-2"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANTALLA DE RESULTADOS -->
+        <div id="result-screen" class="bg-white p-8 rounded-3xl shadow-xl w-full text-center border-4 border-yellow-400 hidden">
+            <svg class="w-24 h-24 text-yellow-500 mx-auto mb-4 bounce-anim" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
+            
+            <h1 class="text-4xl font-extrabold text-blue-600 mb-2">¡Juego Terminado!</h1>
+            <p class="text-xl font-bold text-gray-600 mb-8">Aquí están tus resultados:</p>
+            
+            <div class="flex justify-center gap-8 mb-10">
+                <div class="bg-green-100 border-4 border-green-400 p-6 rounded-2xl flex flex-col items-center min-w-[120px]">
+                    <svg class="text-green-500 w-12 h-12 mb-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span class="text-green-700 font-bold text-lg">Buenas</span>
+                    <span id="final-correct" class="text-4xl font-black text-green-600">0</span>
+                </div>
+                <div class="bg-red-100 border-4 border-red-400 p-6 rounded-2xl flex flex-col items-center min-w-[120px]">
+                    <svg class="text-red-500 w-12 h-12 mb-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    <span class="text-red-700 font-bold text-lg">Malas</span>
+                    <span id="final-incorrect" class="text-4xl font-black text-red-600">0</span>
+                </div>
+            </div>
+
+            <button onclick="goToSetup()" class="flex items-center justify-center gap-3 bg-blue-500 hover:bg-blue-600 text-white text-xl font-bold py-4 px-8 rounded-full mx-auto shadow-lg transform transition-all active:scale-95 hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                Volver a jugar
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // CONFIGURACIONES
+        const OPERATIONS = [
+            { id: 'int', label: 'Enteros' },
+            { id: 'add', label: 'Sumas (+)' },
+            { id: 'sub', label: 'Restas (-)' },
+            { id: 'mul', label: 'Multiplicación (×)' },
+            { id: 'div', label: 'División (÷)' }
+        ];
+        const ROUND_OPTIONS = [10, 20, 30, 40, 50];
+        const DIFFICULTY_OPTIONS = [
+            { id: 'facil', label: 'Fácil', max: 20 },
+            { id: 'medio', label: 'Medio', max: 100 },
+            { id: 'dificil', label: 'Difícil', max: 1000 }
+        ];
+
+        // ESTADO DEL JUEGO
+        let selectedOps = ['int'];
+        let totalRounds = 10;
+        let difficulty = 'medio';
+        
+        let currentRound = 1;
+        let scoreCorrect = 0;
+        let scoreIncorrect = 0;
+        let currentQuestion = null;
+        let isWaiting = false;
+
+        // ELEMENTOS DEL DOM
+        const screens = {
+            setup: document.getElementById('setup-screen'),
+            game: document.getElementById('game-screen'),
+            result: document.getElementById('result-screen')
+        };
+
+        // INICIALIZACIÓN
+        function init() {
+            renderSetupOptions();
+        }
+
+        function renderSetupOptions() {
+            // Render Operaciones
+            const opsContainer = document.getElementById('ops-container');
+            opsContainer.innerHTML = OPERATIONS.map(op => `
+                <button onclick="toggleOp('${op.id}')" id="op-btn-${op.id}" class="p-3 rounded-xl font-bold text-lg transition-all transform active:scale-95 border-2 ${selectedOps.includes(op.id) ? 'bg-green-400 border-green-500 text-white shadow-inner' : 'bg-gray-100 border-gray-300 text-gray-600 hover:bg-gray-200'}">
+                    ${op.label}
+                </button>
+            `).join('');
+
+            // Render Dificultad
+            const diffContainer = document.getElementById('diff-container');
+            diffContainer.innerHTML = DIFFICULTY_OPTIONS.map(diff => `
+                <button onclick="setDifficulty('${diff.id}')" id="diff-btn-${diff.id}" class="p-3 rounded-xl font-bold text-lg transition-all transform active:scale-95 border-2 ${difficulty === diff.id ? 'bg-purple-500 border-purple-600 text-white shadow-inner scale-105' : 'bg-white border-purple-300 text-purple-600 hover:bg-purple-50'}">
+                    ${diff.label}
+                </button>
+            `).join('');
+
+            // Render Rondas
+            const roundsContainer = document.getElementById('rounds-container');
+            roundsContainer.innerHTML = ROUND_OPTIONS.map(num => `
+                <button onclick="setTotalRounds(${num})" id="round-btn-${num}" class="w-14 h-14 rounded-full font-bold text-xl transition-all transform active:scale-95 border-2 ${totalRounds === num ? 'bg-blue-500 border-blue-600 text-white scale-110 shadow-md' : 'bg-white border-blue-300 text-blue-500 hover:bg-blue-50'}">
+                    ${num}
+                </button>
+            `).join('');
+        }
+
+        // FUNCIONES DE CONFIGURACIÓN
+        function toggleOp(id) {
+            if (selectedOps.includes(id)) {
+                selectedOps = selectedOps.filter(op => op !== id);
+            } else {
+                selectedOps.push(id);
+            }
+            renderSetupOptions();
+        }
+
+        function setDifficulty(id) {
+            difficulty = id;
+            renderSetupOptions();
+        }
+
+        function setTotalRounds(num) {
+            totalRounds = num;
+            renderSetupOptions();
+        }
+
+        // FLUJO DEL JUEGO
+        function startGame() {
+            if (selectedOps.length === 0) {
+                showToast("¡Selecciona al menos una operación!");
+                return;
+            }
+            scoreCorrect = 0;
+            scoreIncorrect = 0;
+            currentRound = 1;
+            
+            showScreen('game');
+            updateScoreUI();
+            generateQuestion();
+        }
+
+        function goToSetup() {
+            showScreen('setup');
+        }
+
+        function showScreen(screenName) {
+            screens.setup.classList.add('hidden');
+            screens.game.classList.add('hidden');
+            screens.result.classList.add('hidden');
+            screens[screenName].classList.remove('hidden');
+        }
+
+        function generateExpression(type, diffMax) {
+            let text, value;
+            switch (type) {
+                case 'int':
+                    value = Math.floor(Math.random() * diffMax) + 1;
+                    text = value.toString();
+                    break;
+                case 'add':
+                    const a1 = Math.floor(Math.random() * (diffMax - 1)) + 1;
+                    const a2 = Math.floor(Math.random() * (diffMax - a1)) + 1;
+                    value = a1 + a2;
+                    text = `${a1} + ${a2}`;
+                    break;
+                case 'sub':
+                    const s1 = Math.floor(Math.random() * (diffMax - 1)) + 2; 
+                    const s2 = Math.floor(Math.random() * (s1 - 1)) + 1; 
+                    value = s1 - s2;
+                    text = `${s1} - ${s2}`;
+                    break;
+                case 'mul':
+                    let maxFactor = diffMax === 20 ? 10 : diffMax === 100 ? 20 : 50;
+                    const m1 = Math.floor(Math.random() * maxFactor) + 1;
+                    const m2 = Math.floor(Math.random() * Math.floor(diffMax / m1)) + 1;
+                    value = m1 * m2;
+                    text = `${m1} × ${m2}`;
+                    break;
+                case 'div':
+                    let maxDivisor = diffMax === 20 ? 10 : diffMax === 100 ? 20 : 50;
+                    const divisor = Math.floor(Math.random() * maxDivisor) + 1;
+                    const cociente = Math.floor(Math.random() * Math.floor(diffMax / divisor)) + 1;
+                    const dividendo = divisor * cociente;
+                    value = cociente;
+                    text = `${dividendo} ÷ ${divisor}`;
+                    break;
+                default:
+                    value = 1; text = '1';
+            }
+            return { text, value };
+        }
+
+        function generateQuestion() {
+            isWaiting = false;
+            
+            const diffConfig = DIFFICULTY_OPTIONS.find(d => d.id === difficulty);
+            const diffMax = diffConfig ? diffConfig.max : 20;
+            
+            const typeLeft = selectedOps[Math.floor(Math.random() * selectedOps.length)];
+            const typeRight = selectedOps[Math.floor(Math.random() * selectedOps.length)];
+
+            const leftExp = generateExpression(typeLeft, diffMax);
+            const rightExp = generateExpression(typeRight, diffMax);
+
+            let correctSymbol = '=';
+            if (leftExp.value > rightExp.value) correctSymbol = '>';
+            if (leftExp.value < rightExp.value) correctSymbol = '<';
+
+            currentQuestion = {
+                leftText: leftExp.text,
+                rightText: rightExp.text,
+                correctSymbol: correctSymbol
+            };
+
+            // Actualizar DOM
+            document.getElementById('left-expression').innerText = currentQuestion.leftText;
+            document.getElementById('right-expression').innerText = currentQuestion.rightText;
+            
+            const centerSymbol = document.getElementById('center-symbol');
+            centerSymbol.innerText = '?';
+            centerSymbol.className = "text-gray-400 font-black text-5xl sm:text-6xl flex-shrink-0 transition-all duration-300 pulse-anim";
+
+            document.getElementById('round-counter').innerText = `Ronda ${currentRound} / ${totalRounds}`;
+            resetFeedback();
+        }
+
+        function handleAnswer(selectedSym) {
+            if (isWaiting) return;
+            isWaiting = true;
+
+            const isCorrect = selectedSym === currentQuestion.correctSymbol;
+            
+            // Actualizar símbolo central
+            const centerSymbol = document.getElementById('center-symbol');
+            centerSymbol.innerText = selectedSym;
+            centerSymbol.classList.remove('pulse-anim', 'text-gray-400');
+            
+            if (isCorrect) {
+                scoreCorrect++;
+                centerSymbol.classList.add('text-green-500', 'scale-125');
+                showFeedback('correct');
+            } else {
+                scoreIncorrect++;
+                centerSymbol.classList.add('text-red-500', 'scale-125');
+                showFeedback('incorrect');
+            }
+
+            updateScoreUI();
+
+            setTimeout(() => {
+                if (currentRound < totalRounds) {
+                    currentRound++;
+                    generateQuestion();
+                } else {
+                    endGame();
+                }
+            }, 1500);
+        }
+
+        function showFeedback(type) {
+            const feedbackContainer = document.getElementById('feedback-message');
+            const feedbackText = document.getElementById('feedback-text');
+            
+            feedbackContainer.classList.remove('opacity-0');
+            
+            if (type === 'correct') {
+                feedbackContainer.className = "mt-8 h-16 flex items-center justify-center w-full rounded-xl transition-all bg-green-100 text-green-600 scale-110";
+                feedbackText.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> ¡Excelente!`;
+            } else {
+                feedbackContainer.className = "mt-8 h-16 flex items-center justify-center w-full rounded-xl transition-all bg-red-100 text-red-600 scale-110";
+                feedbackText.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> ¡Uy! Intenta en la siguiente`;
+            }
+
+            // Deshabilitar botones de respuesta visualmente
+            document.querySelectorAll('.answer-btn').forEach(btn => {
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+                btn.classList.remove('hover:-translate-y-2');
+            });
+        }
+
+        function resetFeedback() {
+            const feedbackContainer = document.getElementById('feedback-message');
+            feedbackContainer.className = "mt-8 h-16 flex items-center justify-center w-full rounded-xl transition-all opacity-0";
+            
+            // Habilitar botones de respuesta visualmente
+            document.querySelectorAll('.answer-btn').forEach(btn => {
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                btn.classList.add('hover:-translate-y-2');
+            });
+        }
+
+        function updateScoreUI() {
+            document.getElementById('score-correct').innerText = scoreCorrect;
+            document.getElementById('score-incorrect').innerText = scoreIncorrect;
+        }
+
+        function endGame() {
+            showScreen('result');
+            document.getElementById('final-correct').innerText = scoreCorrect;
+            document.getElementById('final-incorrect').innerText = scoreIncorrect;
+        }
+
+        // UTILERÍAS
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+
+        function handleNavigation(destination) {
+            showToast(`Navegando a: ${destination}... (Simulación)`);
+        }
+
+        // Iniciar
+        window.onload = init;
+    </script>
+</body>
+</html>
