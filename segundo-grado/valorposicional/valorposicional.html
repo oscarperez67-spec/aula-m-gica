@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego Valor Posicional</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        /* Animaciones personalizadas que usaba Tailwind en React */
+        @keyframes spin-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+            animation: spin-slow 3s linear infinite;
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        /* Clase para ocultar pantallas */
+        .hidden-screen {
+            display: none !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-sky-100 font-sans text-gray-800 p-4 flex flex-col items-center">
+
+    <!-- Header (Botones superiores) -->
+    <div class="w-full max-w-4xl flex justify-between items-center mb-6">
+        <button onclick="returnToAulaMagica()" class="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-full font-bold shadow-md transition-colors">
+            <i data-lucide="home" class="w-5 h-5"></i>
+            <span class="hidden sm:inline">Aula Mágica</span>
+        </button>
+
+        <button id="btn-volver-seleccion" onclick="goToMenu()" class="hidden-screen flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-full font-bold shadow-md transition-colors">
+            <i data-lucide="refresh-ccw" class="w-5 h-5"></i>
+            <span class="hidden sm:inline">Volver a Selección</span>
+        </button>
+    </div>
+
+    <!-- PANTALLA DE MENÚ -->
+    <div id="screen-menu" class="bg-white p-8 rounded-3xl shadow-xl w-full max-w-4xl text-center border-4 border-white outline-dashed outline-4 outline-sky-300">
+        <h1 class="text-4xl md:text-5xl font-extrabold text-blue-600 mb-6 tracking-tight">¡Aventura Numérica!</h1>
+        <p class="text-lg text-gray-600 mb-8 font-medium">Aprende las Unidades, Decenas y Centenas</p>
+
+        <div class="grid md:grid-cols-3 gap-6 text-left mb-8">
+            <!-- Dificultad -->
+            <div class="bg-orange-50 p-5 rounded-2xl border-2 border-orange-200">
+                <h2 class="text-xl font-bold text-orange-600 mb-4 flex items-center gap-2">
+                    <i data-lucide="star" class="w-6 h-6"></i> Nivel
+                </h2>
+                <div class="flex flex-col gap-3">
+                    <label class="flex items-center gap-3 cursor-pointer p-2 rounded hover:bg-orange-100 transition">
+                        <input type="radio" name="difficulty" value="facil" checked class="w-5 h-5 text-orange-500">
+                        <span class="font-semibold text-gray-700">Fácil (Unidades)</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer p-2 rounded hover:bg-orange-100 transition">
+                        <input type="radio" name="difficulty" value="medio" class="w-5 h-5 text-orange-500">
+                        <span class="font-semibold text-gray-700">Medio (Decenas)</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer p-2 rounded hover:bg-orange-100 transition">
+                        <input type="radio" name="difficulty" value="dificil" class="w-5 h-5 text-orange-500">
+                        <span class="font-semibold text-gray-700">Difícil (Centenas)</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Modo de Tablero -->
+            <div class="bg-blue-50 p-5 rounded-2xl border-2 border-blue-200">
+                <h2 class="text-xl font-bold text-blue-600 mb-4 flex items-center gap-2">
+                    <i data-lucide="play" class="w-6 h-6"></i> Tablero
+                </h2>
+                <div class="flex flex-col gap-3">
+                    <label class="flex items-center gap-3 cursor-pointer p-2 rounded hover:bg-blue-100 transition">
+                        <input type="radio" name="boardMode" value="separado" checked class="w-5 h-5 text-blue-500">
+                        <span class="font-semibold text-gray-700">Clásico (3 cajitas)</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer p-2 rounded hover:bg-blue-100 transition">
+                        <input type="radio" name="boardMode" value="unico" class="w-5 h-5 text-blue-500">
+                        <span class="font-semibold text-gray-700">Experto (1 cajita)</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Cantidad de Problemas -->
+            <div class="bg-green-50 p-5 rounded-2xl border-2 border-green-200">
+                <h2 class="text-xl font-bold text-green-600 mb-4 flex items-center gap-2">
+                    <i data-lucide="check" class="w-6 h-6"></i> Problemas
+                </h2>
+                <div class="flex flex-col gap-3">
+                    <label class="flex items-center gap-3 cursor-pointer p-2 rounded hover:bg-green-100 transition">
+                        <input type="radio" name="questions" value="10" checked class="w-5 h-5 text-green-500">
+                        <span class="font-semibold text-gray-700">10 ejercicios</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer p-2 rounded hover:bg-green-100 transition">
+                        <input type="radio" name="questions" value="20" class="w-5 h-5 text-green-500">
+                        <span class="font-semibold text-gray-700">20 ejercicios</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer p-2 rounded hover:bg-green-100 transition">
+                        <input type="radio" name="questions" value="30" class="w-5 h-5 text-green-500">
+                        <span class="font-semibold text-gray-700">30 ejercicios</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <button onclick="startGame()" class="w-full py-4 bg-green-500 hover:bg-green-600 text-white rounded-2xl font-black text-2xl shadow-[0_6px_0_#16a34a] active:shadow-none active:translate-y-[6px] transition-all flex justify-center items-center gap-2">
+            <i data-lucide="play" class="w-7 h-7" style="fill: currentColor;"></i> ¡Jugar Ahora!
+        </button>
+    </div>
+
+    <!-- PANTALLA DE JUEGO -->
+    <div id="screen-playing" class="hidden-screen w-full max-w-4xl flex flex-col items-center">
+        <!-- Barra de progreso -->
+        <div class="w-full bg-white rounded-full h-6 mb-6 shadow-sm border-2 border-gray-200 relative overflow-hidden">
+            <div id="progress-bar-fill" class="bg-green-400 h-full transition-all duration-500 rounded-full" style="width: 10%;"></div>
+            <span id="progress-text" class="absolute top-0 left-0 w-full text-center text-sm font-bold text-gray-700 leading-6">Ejercicio 1 de 10</span>
+        </div>
+
+        <div class="bg-white p-6 md:p-8 rounded-3xl shadow-xl w-full border-b-8 border-gray-200 relative">
+            
+            <!-- Feedback overlay -->
+            <div id="feedback-overlay" class="hidden-screen absolute inset-0 z-10 rounded-3xl flex flex-col items-center justify-center bg-white/90 backdrop-blur-sm fade-in">
+                <!-- Contenido insertado por JS -->
+            </div>
+
+            <div class="text-center mb-8">
+                <h2 class="text-2xl text-gray-500 font-bold mb-2">Representa el número:</h2>
+                <div id="target-number-display" class="text-6xl md:text-8xl font-black text-sky-600 drop-shadow-md">0</div>
+            </div>
+
+            <!-- Contenedor dinámico del tablero -->
+            <div id="board-container" class="mb-10 w-full"></div>
+
+            <button id="btn-comprobar" onclick="checkAnswer()" class="w-full max-w-md mx-auto block py-4 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 text-white rounded-2xl font-black text-2xl shadow-[0_6px_0_#2563eb] active:shadow-none active:translate-y-[6px] transition-all">
+                ¡Comprobar!
+            </button>
+        </div>
+    </div>
+
+    <!-- PANTALLA DE RESULTADOS -->
+    <div id="screen-result" class="hidden-screen bg-white p-8 md:p-12 rounded-3xl shadow-xl w-full max-w-2xl text-center border-4 border-yellow-400 relative overflow-hidden">
+        <i data-lucide="award" class="text-yellow-400 w-32 h-32 mx-auto mb-6 drop-shadow-lg" style="fill: currentColor;"></i>
+        
+        <h1 class="text-4xl md:text-5xl font-black text-gray-800 mb-4">¡Juego Terminado!</h1>
+        
+        <div class="text-2xl font-bold text-gray-600 mb-8">
+            Tu puntuación es:
+            <div id="final-score" class="text-6xl font-black text-blue-600 mt-4">0 / 10</div>
+        </div>
+
+        <div id="result-message" class="mb-8"></div>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <button onclick="goToMenu()" class="px-6 py-4 bg-sky-500 hover:bg-sky-600 text-white rounded-xl font-bold text-lg shadow-[0_4px_0_#0284c7] active:shadow-none active:translate-y-[4px] transition-all flex items-center justify-center gap-2">
+                <i data-lucide="refresh-ccw" class="w-5 h-5"></i> Volver a Seleccionar
+            </button>
+            
+            <button onclick="returnToAulaMagica()" class="px-6 py-4 bg-purple-500 hover:bg-purple-600 text-white rounded-xl font-bold text-lg shadow-[0_4px_0_#7e22ce] active:shadow-none active:translate-y-[4px] transition-all flex items-center justify-center gap-2">
+                <i data-lucide="arrow-right" class="w-5 h-5"></i> Ir a Aula Mágica
+            </button>
+        </div>
+    </div>
+
+    <!-- LÓGICA JAVASCRIPT -->
+    <script>
+        // Inicializar iconos de Lucide
+        lucide.createIcons();
+
+        // Variables de Estado Global
+        let difficulty = 'facil';
+        let boardMode = 'separado';
+        let totalQuestions = 10;
+        let currentQuestion = 1;
+        let score = 0;
+        let targetNumber = 0;
+        
+        let selectedU = Array(9).fill(false);
+        let selectedD = Array(9).fill(false);
+        let selectedC = Array(9).fill(false);
+        let expertGrid = Array(27).fill(null);
+        let activeBrush = 'U';
+        
+        let feedbackActive = false;
+
+        // Configuración de Colores
+        const colors = {
+            U: { active: 'bg-blue-500', border: 'border-blue-600', text: 'text-blue-600', name: 'Unidades' },
+            D: { active: 'bg-red-500', border: 'border-red-600', text: 'text-red-600', name: 'Decenas' },
+            C: { active: 'bg-green-500', border: 'border-green-600', text: 'text-green-600', name: 'Centenas' }
+        };
+
+        // Utilidades de Pantalla
+        function showScreen(screenId) {
+            document.getElementById('screen-menu').classList.add('hidden-screen');
+            document.getElementById('screen-playing').classList.add('hidden-screen');
+            document.getElementById('screen-result').classList.add('hidden-screen');
+            document.getElementById(screenId).classList.remove('hidden-screen');
+
+            // Mostrar u ocultar botón de volver
+            const btnVolver = document.getElementById('btn-volver-seleccion');
+            if (screenId === 'screen-playing') {
+                btnVolver.classList.remove('hidden-screen');
+            } else {
+                btnVolver.classList.add('hidden-screen');
+            }
+        }
+
+        function goToMenu() {
+            showScreen('screen-menu');
+        }
+
+        function returnToAulaMagica() {
+         window.location.href = '../matematicas.html';
+        }
+
+        function generateNumber(diff) {
+            let min, max;
+            if (diff === 'facil') {
+                min = 1; max = 9;
+            } else if (diff === 'medio') {
+                min = 10; max = 99;
+            } else {
+                min = 100; max = 999;
+            }
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function resetArrays() {
+            selectedU = Array(9).fill(false);
+            selectedD = Array(9).fill(false);
+            selectedC = Array(9).fill(false);
+            expertGrid = Array(27).fill(null);
+            activeBrush = 'U';
+            feedbackActive = false;
+        }
+
+        // Lógica Principal del Juego
+        function startGame() {
+            // Leer configuraciones seleccionadas
+            difficulty = document.querySelector('input[name="difficulty"]:checked').value;
+            boardMode = document.querySelector('input[name="boardMode"]:checked').value;
+            totalQuestions = parseInt(document.querySelector('input[name="questions"]:checked').value);
+            
+            score = 0;
+            currentQuestion = 1;
+            setupNextQuestion();
+            showScreen('screen-playing');
+        }
+
+        function setupNextQuestion() {
+            targetNumber = generateNumber(difficulty);
+            resetArrays();
+            
+            // Actualizar UI
+            document.getElementById('target-number-display').innerText = targetNumber;
+            document.getElementById('progress-text').innerText = `Ejercicio ${currentQuestion} de ${totalQuestions}`;
+            document.getElementById('progress-bar-fill').style.width = `${(currentQuestion / totalQuestions) * 100}%`;
+            
+            document.getElementById('feedback-overlay').classList.add('hidden-screen');
+            document.getElementById('btn-comprobar').disabled = false;
+            
+            renderBoard();
+        }
+
+        function handleCircleClick(type, index) {
+            if (feedbackActive) return;
+            
+            if (type === 'U') selectedU[index] = !selectedU[index];
+            if (type === 'D') selectedD[index] = !selectedD[index];
+            if (type === 'C') selectedC[index] = !selectedC[index];
+            
+            renderBoard(); // Re-renderizar tablero
+        }
+
+        function handleExpertCircleClick(index) {
+            if (feedbackActive) return;
+            
+            if (expertGrid[index] === activeBrush) {
+                expertGrid[index] = null;
+            } else {
+                expertGrid[index] = activeBrush;
+            }
+            
+            renderBoard(); // Re-renderizar tablero
+        }
+
+        function setActiveBrush(type) {
+            activeBrush = type;
+            renderBoard();
+        }
+
+        function checkAnswer() {
+            feedbackActive = true;
+            document.getElementById('btn-comprobar').disabled = true;
+
+            let countC = 0, countD = 0, countU = 0;
+
+            if (boardMode === 'unico') {
+                countC = expertGrid.filter(v => v === 'C').length;
+                countD = expertGrid.filter(v => v === 'D').length;
+                countU = expertGrid.filter(v => v === 'U').length;
+            } else {
+                countC = selectedC.filter(Boolean).length;
+                countD = selectedD.filter(Boolean).length;
+                countU = selectedU.filter(Boolean).length;
+            }
+            
+            const userAnswer = (countC * 100) + (countD * 10) + countU;
+            const isCorrect = (userAnswer === targetNumber);
+            
+            const overlay = document.getElementById('feedback-overlay');
+            
+            if (isCorrect) {
+                score++;
+                overlay.innerHTML = `
+                    <div class="bg-green-100 p-6 rounded-full mb-4">
+                        <i data-lucide="star" class="text-green-500 w-24 h-24" style="fill: currentColor; animation: bounce 1s infinite;"></i>
+                    </div>
+                    <h2 class="text-4xl font-black text-green-500">¡Correcto!</h2>
+                `;
+            } else {
+                overlay.innerHTML = `
+                    <div class="bg-red-100 p-6 rounded-full mb-4">
+                        <i data-lucide="refresh-ccw" class="text-red-500 w-24 h-24 animate-spin-slow"></i>
+                    </div>
+                    <h2 class="text-4xl font-black text-red-500">¡Casi! Era el ${targetNumber}</h2>
+                `;
+            }
+
+            overlay.classList.remove('hidden-screen');
+            lucide.createIcons();
+
+            setTimeout(() => {
+                if (currentQuestion < totalQuestions) {
+                    currentQuestion++;
+                    setupNextQuestion();
+                } else {
+                    showResult();
+                }
+            }, 2000);
+        }
+
+        function showResult() {
+            document.getElementById('final-score').innerText = `${score} / ${totalQuestions}`;
+            const resultMsg = document.getElementById('result-message');
+            
+            if (score === totalQuestions) {
+                resultMsg.innerHTML = `<p class="text-2xl text-green-500 font-bold flex justify-center items-center gap-2"><i data-lucide="smile" class="w-8 h-8"></i> ¡Calificación Perfecta! Eres un genio.</p>`;
+            } else if (score >= totalQuestions / 2) {
+                resultMsg.innerHTML = `<p class="text-2xl text-yellow-500 font-bold flex justify-center items-center gap-2"><i data-lucide="star" class="w-8 h-8"></i> ¡Muy bien hecho! Sigue así.</p>`;
+            } else {
+                resultMsg.innerHTML = `<p class="text-2xl text-orange-500 font-bold flex justify-center items-center gap-2"><i data-lucide="frown" class="w-8 h-8"></i> ¡Buen intento! Práctica un poco más.</p>`;
+            }
+            
+            showScreen('screen-result');
+            lucide.createIcons();
+        }
+
+        // Renderizado del DOM
+        function renderBoard() {
+            const container = document.getElementById('board-container');
+            container.innerHTML = ''; // Limpiar contenedor
+            
+            if (boardMode === 'separado') {
+                const flexContainer = document.createElement('div');
+                flexContainer.className = 'flex flex-col md:flex-row justify-center gap-6 md:gap-12';
+                
+                const sections = [
+                    { type: 'C', arr: selectedC, hiddenCheck: difficulty !== 'dificil' },
+                    { type: 'D', arr: selectedD, hiddenCheck: difficulty === 'facil' },
+                    { type: 'U', arr: selectedU, hiddenCheck: false }
+                ];
+
+                sections.forEach(sec => {
+                    const col = document.createElement('div');
+                    col.className = `flex flex-col items-center ${sec.hiddenCheck ? 'opacity-30 pointer-events-none' : ''}`;
+                    
+                    const title = document.createElement('h3');
+                    title.className = `text-xl font-bold mb-3 ${colors[sec.type].text}`;
+                    title.innerText = colors[sec.type].name;
+                    col.appendChild(title);
+                    
+                    const grid = document.createElement('div');
+                    grid.className = 'grid grid-cols-3 gap-2 p-3 bg-gray-50 rounded-xl shadow-inner';
+                    
+                    for (let i = 0; i < 9; i++) {
+                        const btn = document.createElement('button');
+                        const isFilled = sec.arr[i];
+                        btn.className = `w-10 h-10 md:w-12 md:h-12 rounded-full border-4 shadow-sm transition-all duration-200 transform hover:scale-110 active:scale-95 ${
+                            isFilled ? `${colors[sec.type].active} ${colors[sec.type].border}` : 'bg-white border-gray-300'
+                        }`;
+                        btn.onclick = () => handleCircleClick(sec.type, i);
+                        grid.appendChild(btn);
+                    }
+                    col.appendChild(grid);
+                    flexContainer.appendChild(col);
+                });
+
+                container.appendChild(flexContainer);
+
+            } else {
+                // Modo Único
+                const expertContainer = document.createElement('div');
+                expertContainer.className = 'flex flex-col items-center';
+                
+                const instruction = document.createElement('p');
+                instruction.className = 'text-gray-600 font-bold mb-4';
+                instruction.innerText = 'Selecciona un color y llena los círculos:';
+                expertContainer.appendChild(instruction);
+                
+                // Selector de Pincel
+                const brushRow = document.createElement('div');
+                brushRow.className = 'flex flex-wrap justify-center gap-4 mb-6';
+                
+                ['U', 'D', 'C'].forEach(type => {
+                    // Ocultar opciones según dificultad
+                    if ((difficulty === 'facil' && type !== 'U') || (difficulty === 'medio' && type === 'C')) return;
+
+                    const btn = document.createElement('button');
+                    const isActive = activeBrush === type;
+                    btn.className = `flex items-center gap-2 px-4 py-2 rounded-xl font-bold transition-all ${
+                        isActive 
+                        ? `ring-4 ${colors[type].border} bg-white shadow-md transform scale-105` 
+                        : 'bg-gray-100 opacity-70 hover:opacity-100'
+                    }`;
+                    btn.onclick = () => setActiveBrush(type);
+                    
+                    const icon = document.createElement('span');
+                    icon.className = `block w-6 h-6 rounded-full ${colors[type].active} border-2 ${colors[type].border}`;
+                    
+                    const text = document.createElement('span');
+                    text.className = colors[type].text;
+                    text.innerText = colors[type].name;
+                    
+                    btn.appendChild(icon);
+                    btn.appendChild(text);
+                    brushRow.appendChild(btn);
+                });
+                expertContainer.appendChild(brushRow);
+
+                // Grid Experto de 27 Círculos
+                const expertGridContainer = document.createElement('div');
+                expertGridContainer.className = 'flex flex-wrap justify-center gap-3 p-4 bg-gray-50 rounded-xl shadow-inner max-w-2xl';
+                
+                for (let i = 0; i < 27; i++) {
+                    const val = expertGrid[i];
+                    const btn = document.createElement('button');
+                    const activeClass = val !== null ? colors[val].active : 'bg-white';
+                    const borderClass = val !== null ? colors[val].border : 'border-gray-300';
+                    
+                    btn.className = `w-10 h-10 md:w-12 md:h-12 rounded-full border-4 shadow-sm transition-all duration-200 transform hover:scale-110 active:scale-95 ${activeClass} ${borderClass}`;
+                    btn.onclick = () => handleExpertCircleClick(i);
+                    expertGridContainer.appendChild(btn);
+                }
+                
+                expertContainer.appendChild(expertGridContainer);
+                container.appendChild(expertContainer);
+            }
+        }
+    </script>
+</body>
+</html>
