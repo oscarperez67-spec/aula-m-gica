@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Encuentra al Intruso - Aula Mágica</title>
+    <!-- Tailwind CSS para diseño responsivo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Librería para el efecto de confeti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        /* Evitar zoom al tocar rápido en tablets */
+        body { touch-action: manipulation; }
+        
+        /* Animación "pop" con efecto de resorte para las tarjetas */
+        .tarjeta { 
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.1s, background-color 0.3s; 
+        }
+        .tarjeta:active { transform: scale(0.95) !important; }
+        
+        /* Estados de respuesta */
+        .correcto { box-shadow: 0 0 0 8px #22c55e; background-color: #dcfce7; }
+        .incorrecto { box-shadow: 0 0 0 8px #ef4444; background-color: #fee2e2; }
+        .desvanecido { opacity: 0.4; filter: grayscale(100%); transform: scale(0.9) !important; }
+    </style>
+</head>
+
+<!-- Fondo Mágico con Gradiente -->
+<body class="bg-gradient-to-br from-indigo-100 via-purple-50 to-blue-100 min-h-screen font-sans flex flex-col font-bold text-gray-800">
+
+    <!-- Encabezado de Navegación -->
+    <header class="bg-blue-600 text-white p-4 flex justify-between items-center shadow-md relative z-10">
+        <!-- Botón de regreso a Aula Mágica -->
+        <button onclick="window.location.href='../lenguaje.html'" class="bg-white text-blue-600 px-4 py-2 rounded-xl border-b-4 border-blue-200 hover:bg-blue-50 active:border-b-0 active:translate-y-1 text-sm md:text-base">
+            ◀ Volver
+        </button>
+        <h1 class="text-xl md:text-2xl tracking-wide">Aula Mágica</h1>
+        <div class="w-20 md:w-24"></div> <!-- Espaciador para centrar -->
+    </header>
+
+    <!-- Contenedor Principal -->
+    <main class="flex-grow flex flex-col items-center justify-center p-4 max-w-2xl mx-auto w-full">
+        
+<!-- Pantalla de Inicio Mejorada -->
+        <div id="pantalla-inicio" class="text-center bg-white p-8 md:p-12 rounded-[3rem] shadow-2xl w-full border-8 border-blue-200 relative overflow-hidden max-w-lg mx-auto">
+            
+            <!-- Luces mágicas de fondo (círculos difuminados) -->
+            <div class="absolute -top-10 -left-10 w-40 h-40 bg-yellow-300 rounded-full mix-blend-multiply filter blur-2xl opacity-40 animate-pulse"></div>
+            <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-purple-300 rounded-full mix-blend-multiply filter blur-2xl opacity-40 animate-pulse" style="animation-delay: 1s;"></div>
+
+            <!-- Ícono principal (Lupa en SVG animada) -->
+            <div class="flex justify-center mb-6 relative z-10">
+                <div class="bg-blue-100 p-5 rounded-full shadow-inner">
+                    <svg class="w-20 h-20 text-blue-500 transform -rotate-12 hover:rotate-0 transition-transform duration-300 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Título llamativo con gradiente -->
+            <h2 class="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-500 to-blue-600 mb-6 drop-shadow-sm relative z-10 leading-tight">
+                ¡Encuentra <br> al Intruso!
+            </h2>
+            
+            <!-- Instrucciones destacadas -->
+            <div class="bg-blue-50 rounded-3xl p-4 mb-10 inline-block border-4 border-blue-100 border-dashed relative z-10 shadow-sm w-full">
+                <p class="text-xl md:text-2xl text-gray-700 font-bold">
+                    Toca el dibujo que <span class="text-red-500 font-black text-3xl inline-block mx-1 transform -rotate-3">NO</span> pertenece al grupo.
+                </p>
+            </div>
+            
+            <!-- Botón Jugar (Estilo videojuego 3D) -->
+            <div class="relative z-10">
+                <button onclick="iniciarJuego()" class="bg-gradient-to-b from-green-400 to-green-500 text-white text-3xl font-black px-12 py-5 rounded-full shadow-[0_8px_0_rgb(21,128,61)] hover:shadow-[0_4px_0_rgb(21,128,61)] hover:translate-y-1 active:shadow-[0_0px_0_rgb(21,128,61)] active:translate-y-2 transition-all w-full tracking-wider">
+                    ▶ ¡JUGAR!
+                </button>
+            </div>
+        </div>
+
+        <!-- Pantalla de Juego -->
+        <div id="pantalla-juego" class="hidden w-full flex flex-col items-center">
+            
+            <!-- Controles Superiores: Barra de Progreso y Reinicio -->
+            <div class="flex flex-col md:flex-row justify-between items-center w-full mb-6 gap-4">
+                
+                <!-- Barra de Progreso -->
+                <div class="w-full md:w-2/3 bg-white rounded-full h-8 border-4 border-blue-200 relative overflow-hidden shadow-inner">
+                    <div id="barra-progreso" class="bg-gradient-to-r from-blue-400 to-blue-600 h-full transition-all duration-500 ease-out" style="width: 10%"></div>
+                    <span id="texto-progreso" class="absolute inset-0 flex items-center justify-center text-sm md:text-base font-black text-gray-700 drop-shadow-md mix-blend-overlay text-white">1 / 10</span>
+                </div>
+
+                <!-- Botón Reiniciar -->
+                <button onclick="iniciarJuego()" class="bg-red-400 text-white px-4 py-2 rounded-xl border-b-4 border-red-600 hover:bg-red-300 active:border-b-0 active:translate-y-1 text-sm shrink-0">
+                    ↻ Empezar de nuevo
+                </button>
+            </div>
+
+            <!-- Mensaje de Feedback -->
+            <div id="mensaje-feedback" class="h-12 text-2xl md:text-3xl mb-4 transition-opacity duration-300 opacity-0 text-center flex items-center justify-center"></div>
+
+            <!-- Cuadrícula 2x2 para las opciones -->
+            <div id="cuadricula-opciones" class="grid grid-cols-2 gap-4 md:gap-6 w-full max-w-md aspect-square">
+                <!-- Tarjetas inyectadas por JS -->
+            </div>
+        </div>
+
+        <!-- Pantalla de Resultados -->
+        <div id="pantalla-resultados" class="hidden text-center bg-white/90 backdrop-blur-sm p-8 rounded-3xl shadow-xl w-full border-4 border-white z-10">
+            <h2 id="titulo-resultado" class="text-4xl text-blue-600 mb-4 drop-shadow-sm">¡Completado!</h2>
+            <p class="text-xl md:text-2xl text-gray-600 mb-2 font-medium">Tu calificación final es:</p>
+            <div id="puntaje-final" class="text-7xl font-black text-green-500 mb-8 drop-shadow-md">10/10</div>
+            <button onclick="iniciarJuego()" class="bg-blue-500 text-white text-2xl px-10 py-4 rounded-2xl border-b-8 border-blue-700 hover:bg-blue-400 active:border-b-0 active:translate-y-2 w-full md:w-auto transition-all">
+                Volver a Jugar
+            </button>
+        </div>
+
+    </main>
+
+    <script>
+        // Configuración Base
+        const categorias = ['animales', 'frutas', 'instrumentos', 'ropa', 'transporte', 'utiles'];
+        const totalItemsPorCategoria = 8;
+        const totalPreguntas = 10;
+        
+        // Variables de Estado
+        let preguntaActual = 0;
+        let puntaje = 0;
+        let listaPreguntas = [];
+        let bloqueado = false; 
+
+        // Referencias del DOM
+        const pInicio = document.getElementById('pantalla-inicio');
+        const pJuego = document.getElementById('pantalla-juego');
+        const pResultados = document.getElementById('pantalla-resultados');
+        const cuadricula = document.getElementById('cuadricula-opciones');
+        const barraProgreso = document.getElementById('barra-progreso');
+        const textoProgreso = document.getElementById('texto-progreso');
+        const feedback = document.getElementById('mensaje-feedback');
+        const puntajeFinal = document.getElementById('puntaje-final');
+        const tituloResultado = document.getElementById('titulo-resultado');
+
+        // Función para mezclar arreglos (Fisher-Yates)
+        function mezclarArreglo(arreglo) {
+            for (let i = arreglo.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arreglo[i], arreglo[j]] = [arreglo[j], arreglo[i]];
+            }
+            return arreglo;
+        }
+
+        // Obtener números aleatorios sin repetir
+        function obtenerNumerosAleatorios(cantidad, maximo) {
+            let numeros = [];
+            while(numeros.length < cantidad){
+                let r = Math.floor(Math.random() * maximo) + 1;
+                if(numeros.indexOf(r) === -1) numeros.push(r);
+            }
+            return numeros;
+        }
+
+        function generarPreguntas() {
+            listaPreguntas = [];
+            for (let i = 0; i < totalPreguntas; i++) {
+                let categoriasMezcladas = mezclarArreglo([...categorias]);
+                let catBase = categoriasMezcladas[0];
+                let catIntruso = categoriasMezcladas[1];
+
+                let numsBase = obtenerNumerosAleatorios(3, totalItemsPorCategoria);
+                let numIntruso = obtenerNumerosAleatorios(1, totalItemsPorCategoria)[0];
+
+                let opciones = [
+                    { ruta: `dibujos/${catBase}/${numsBase[0]}.png`, esIntruso: false },
+                    { ruta: `dibujos/${catBase}/${numsBase[1]}.png`, esIntruso: false },
+                    { ruta: `dibujos/${catBase}/${numsBase[2]}.png`, esIntruso: false },
+                    { ruta: `dibujos/${catIntruso}/${numIntruso}.png`, esIntruso: true }
+                ];
+
+                listaPreguntas.push(mezclarArreglo(opciones));
+            }
+        }
+
+        function iniciarJuego() {
+            puntaje = 0;
+            preguntaActual = 0;
+            bloqueado = false;
+            generarPreguntas();
+            
+            pInicio.classList.add('hidden');
+            pResultados.classList.add('hidden');
+            pJuego.classList.remove('hidden');
+            pJuego.classList.add('flex');
+            
+            mostrarPregunta();
+        }
+
+        function mostrarPregunta() {
+            bloqueado = false;
+            feedback.style.opacity = '0';
+            
+            // Actualizar Barra de Progreso
+            textoProgreso.innerText = `${preguntaActual + 1} / ${totalPreguntas}`;
+            barraProgreso.style.width = `${((preguntaActual + 1) / totalPreguntas) * 100}%`;
+            
+            cuadricula.innerHTML = '';
+            const opciones = listaPreguntas[preguntaActual];
+
+            opciones.forEach((opcion, index) => {
+                const btn = document.createElement('button');
+                // Inicializamos con scale-0 para la animación de entrada
+                btn.className = 'tarjeta scale-0 bg-white rounded-3xl p-4 shadow-xl border-4 border-white w-full h-full flex items-center justify-center hover:bg-gray-50';
+                btn.onclick = () => verificarRespuesta(opcion.esIntruso, btn);
+                
+                const img = document.createElement('img');
+                img.src = opcion.ruta;
+                img.className = 'max-w-full max-h-full object-contain pointer-events-none drop-shadow-sm';
+                img.alt = 'Dibujo';
+                
+                // Si falta la imagen, muestra una X para que no se rompa la interfaz
+                img.onerror = function() { this.style.display='none'; btn.innerHTML += '<span class="text-gray-200 text-5xl">?</span>'; };
+
+                btn.appendChild(img);
+                cuadricula.appendChild(btn);
+
+                // Animación escalonada (Pop-in effect)
+                setTimeout(() => {
+                    btn.classList.remove('scale-0');
+                    btn.classList.add('scale-100');
+                }, index * 100);
+            });
+        }
+
+        function verificarRespuesta(esIntruso, botonClickeado) {
+            if (bloqueado) return;
+            bloqueado = true;
+
+            const todosLosBotones = cuadricula.querySelectorAll('button');
+
+            if (esIntruso) {
+                puntaje++;
+                botonClickeado.classList.add('correcto');
+                botonClickeado.classList.remove('border-white', 'hover:bg-gray-50');
+                
+                feedback.innerHTML = '<span class="text-green-500 font-black drop-shadow-md">¡EXCELENTE! ✨</span>';
+                feedback.style.opacity = '1';
+
+                todosLosBotones.forEach(btn => {
+                    if (btn !== botonClickeado) btn.classList.add('desvanecido');
+                });
+            } else {
+                botonClickeado.classList.add('incorrecto');
+                botonClickeado.classList.remove('border-white', 'hover:bg-gray-50');
+                
+                feedback.innerHTML = '<span class="text-red-500 font-black drop-shadow-md">¡Uy! Fíjate bien.</span>';
+                feedback.style.opacity = '1';
+
+                const opciones = listaPreguntas[preguntaActual];
+                todosLosBotones.forEach((btn, idx) => {
+                    if (opciones[idx].esIntruso) {
+                        btn.classList.add('correcto');
+                    } else if (btn !== botonClickeado) {
+                        btn.classList.add('desvanecido');
+                    }
+                });
+            }
+
+            // Espera de 2 segundos antes de la siguiente pregunta
+            setTimeout(() => {
+                preguntaActual++;
+                if (preguntaActual < totalPreguntas) {
+                    mostrarPregunta();
+                } else {
+                    mostrarResultados();
+                }
+            }, 2000);
+        }
+
+        function mostrarResultados() {
+            pJuego.classList.add('hidden');
+            pJuego.classList.remove('flex');
+            pResultados.classList.remove('hidden');
+            
+            puntajeFinal.innerText = `${puntaje} / ${totalPreguntas}`;
+            
+            if(puntaje >= 8) {
+                tituloResultado.innerText = '¡Trabajo Mágico!';
+                tituloResultado.className = 'text-4xl text-green-500 mb-4 drop-shadow-sm font-black';
+                puntajeFinal.className = 'text-7xl font-black text-green-500 mb-8 drop-shadow-md';
+                
+                // Efecto de Confeti festivo
+                confetti({
+                    particleCount: 150,
+                    spread: 90,
+                    origin: { y: 0.6 },
+                    colors: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6']
+                });
+            } else if (puntaje >= 6) {
+                tituloResultado.innerText = '¡Casi lo logras!';
+                tituloResultado.className = 'text-4xl text-yellow-500 mb-4 drop-shadow-sm font-black';
+                puntajeFinal.className = 'text-7xl font-black text-yellow-500 mb-8 drop-shadow-md';
+                // Confeti más suave
+                confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 }});
+            } else {
+                tituloResultado.innerText = '¡Sigue practicando!';
+                tituloResultado.className = 'text-4xl text-blue-500 mb-4 drop-shadow-sm font-black';
+                puntajeFinal.className = 'text-7xl font-black text-red-500 mb-8 drop-shadow-md';
+            }
+        }
+    </script>
+</body>
+</html>
