@@ -10,7 +10,7 @@
     <style>
         body {
             font-family: 'Nunito', sans-serif;
-            background-color: #fdf4ff; /* Fondo rosa/morado muy claro */
+            background-color: #fdf4ff;
             background-image: radial-gradient(#fbcfe8 2px, transparent 2px);
             background-size: 30px 30px;
             overflow-x: hidden;
@@ -41,9 +41,9 @@
         }
         .shake-animation { animation: shake 0.3s; }
 
-        /* Frutas */
+        /* Imágenes en PNG */
         .fruit-icon {
-            opacity: 0; /* Empiezan invisibles para la animación pop */
+            opacity: 0; 
             animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
             transition: all 0.2s ease;
         }
@@ -51,7 +51,7 @@
         .fruit-counted {
             opacity: 0.4 !important;
             transform: scale(0.85) !important;
-            filter: grayscale(30%);
+            filter: grayscale(50%);
             pointer-events: none;
         }
 
@@ -74,43 +74,65 @@
 
     <!-- Barra Superior -->
     <div class="w-full max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 mb-4">
-        <a href="../matematicas.html" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full shadow-md flex items-center gap-2 transition text-sm sm:text-base self-start sm:self-center">
-            <span>⬅️</span> Regresar a Aula Mágica
-        </a>
+        
+        <!-- Contenedor para botones de regreso (se alternan mediante JS) -->
+        <div class="flex items-center self-start sm:self-center">
+            <!-- Botón para regresar al inicio de Aula Mágica (Visible en Menú) -->
+            <a href="../matematicas.html" id="btnBackToAula" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full shadow-md flex items-center gap-2 transition text-sm sm:text-base">
+                <span>⬅️</span> Regresar a Aula Mágica
+            </a>
 
-        <!-- Marcador de Estrellitas -->
-        <div id="scoreBoard" class="hidden-view bg-white px-6 py-2 rounded-full shadow-md border-4 border-yellow-300 flex items-center gap-3">
-            <span class="text-xl sm:text-2xl">⭐</span>
-            <span class="text-lg sm:text-xl font-bold text-gray-700 font-['Comic_Neue']">Ronda: <span id="roundText" class="text-blue-600">1</span>/10</span>
+            <!-- Botón para regresar a elegir nivel (Visible dentro del juego) -->
+            <button onclick="goToMenu()" id="btnBackToLevels" class="hidden-view bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full shadow-md flex items-center gap-2 transition text-sm sm:text-base">
+                <span>⬅️</span> Elegir Nivel
+            </button>
+        </div>
+
+        <!-- Marcador de Progreso -->
+        <div id="scoreBoard" class="hidden-view bg-white px-4 py-2 sm:px-6 rounded-full shadow-md border-4 border-yellow-300 flex items-center gap-3">
+            <span class="text-lg sm:text-xl font-bold text-gray-700 font-['Comic_Neue']">Avance: <span id="roundText" class="text-blue-600">1</span>/<span id="totalRoundsText">10</span></span>
             <div class="w-px h-6 bg-gray-300 mx-1"></div>
-            <span class="text-lg sm:text-xl font-bold text-gray-700 font-['Comic_Neue']">Puntos: <span id="scoreText" class="text-green-600">0</span></span>
+            <span class="text-lg sm:text-xl font-bold text-green-600 font-['Comic_Neue']">✅ <span id="correctText">0</span></span>
+            <span class="text-lg sm:text-xl font-bold text-red-500 font-['Comic_Neue'] ml-2">❌ <span id="incorrectText">0</span></span>
         </div>
     </div>
+
+    <!-- ================= PANTALLA DE SELECCIÓN DE NIVEL ================= -->
+    <main id="levelScreen" class="w-full max-w-4xl mx-auto flex flex-col items-center justify-center flex-1">
+        <h1 class="text-4xl sm:text-6xl text-purple-600 font-extrabold drop-shadow-md mb-8 font-['Comic_Neue'] text-center">¡Elige un Nivel!</h1>
+        <div class="flex flex-col sm:flex-row gap-6 w-full justify-center px-4">
+            <button onclick="startGame(10)" class="bg-green-400 hover:bg-green-500 text-white font-bold py-8 px-8 rounded-3xl shadow-lg border-b-8 border-green-600 transform transition hover:-translate-y-2 text-3xl w-full sm:w-1/2 flex flex-col items-center">
+                <span>Nivel 1</span>
+                <span class="text-xl font-normal mt-2">Hasta el 10</span>
+            </button>
+            <button onclick="startGame(20)" class="bg-blue-400 hover:bg-blue-500 text-white font-bold py-8 px-8 rounded-3xl shadow-lg border-b-8 border-blue-600 transform transition hover:-translate-y-2 text-3xl w-full sm:w-1/2 flex flex-col items-center">
+                <span>Nivel 2</span>
+                <span class="text-xl font-normal mt-2">Hasta el 20</span>
+            </button>
+        </div>
+    </main>
 
     <!-- ================= ZONA DE JUEGO ================= -->
     <main id="gameScreen" class="w-full max-w-5xl mx-auto flex flex-col items-center flex-1 hidden-view">
         
         <header class="text-center mb-6 w-full">
-            <h1 class="text-3xl sm:text-5xl text-purple-600 font-extrabold drop-shadow-md mb-2">¡Encuentra el Número!</h1>
             <button onclick="speakInstruction()" class="bg-yellow-100 hover:bg-yellow-200 border-2 border-yellow-400 text-gray-700 px-6 py-3 rounded-full shadow-sm text-lg sm:text-2xl font-bold flex items-center justify-center gap-3 mx-auto transition-transform active:scale-95">
-                <span>🔊</span> Cuenta las frutas y elige el número abajo
+                <span>🔊</span> Cuenta y elige el número correcto
             </button>
         </header>
 
-        <!-- Contenedor de Frutas -->
-        <div class="w-full max-w-3xl bg-white rounded-3xl p-6 sm:p-8 shadow-xl border-4 border-pink-300 mb-8 relative min-h-[200px] flex flex-col items-center justify-center">
-            <div id="fruitsContainer" class="flex flex-wrap justify-center items-center gap-4 sm:gap-6">
-                <!-- Frutas generadas por JS -->
+        <!-- Contenedor de Dibujos -->
+        <div class="w-full max-w-3xl bg-white rounded-3xl p-6 sm:p-8 shadow-xl border-4 border-pink-300 mb-8 relative min-h-[200px] flex flex-col items-center justify-center transition-colors duration-500" id="fruitBox">
+            <div id="fruitsContainer" class="flex flex-wrap justify-center items-center gap-2 sm:gap-4">
+                <!-- Imágenes generadas por JS -->
             </div>
-            <p id="countHint" class="absolute bottom-2 text-xs sm:text-sm text-gray-400 font-bold opacity-0 transition-opacity">👆 ¡Toca las frutas para contarlas!</p>
+            <p id="countHint" class="absolute bottom-2 text-xs sm:text-sm text-gray-500 font-bold opacity-0 transition-opacity">👆 ¡Toca los dibujos para contarlos!</p>
         </div>
 
         <!-- Teclado de Números -->
-        <div class="w-full max-w-3xl bg-blue-50 p-4 sm:p-6 rounded-3xl border-4 border-blue-200">
-            <h2 class="text-xl sm:text-2xl text-center text-blue-600 font-bold mb-4 font-['Comic_Neue']">¿Qué número es?</h2>
-            
-            <div class="grid grid-cols-5 gap-3 sm:gap-4" id="numbersGrid">
-                <!-- Botones 1 al 10 generados por JS -->
+        <div class="w-full max-w-4xl bg-blue-50 p-4 sm:p-6 rounded-3xl border-4 border-blue-200">
+            <div class="grid grid-cols-5 gap-2 sm:gap-4" id="numbersGrid">
+                <!-- Botones generados por JS -->
             </div>
         </div>
 
@@ -120,54 +142,57 @@
     <div id="endScreen" class="w-full max-w-3xl mx-auto flex flex-col items-center justify-center flex-1 hidden-view">
         <div class="bg-white rounded-3xl p-8 sm:p-12 shadow-2xl border-8 border-yellow-400 text-center relative overflow-hidden w-full">
             <div class="text-7xl sm:text-9xl mb-4 bounce-animation">🏆</div>
-            <h1 class="text-4xl sm:text-6xl text-purple-600 font-extrabold drop-shadow-md mb-4 font-['Comic_Neue']">¡Juego Terminado!</h1>
+            <h1 class="text-4xl sm:text-6xl text-purple-600 font-extrabold drop-shadow-md mb-4 font-['Comic_Neue']">¡Terminaste!</h1>
             
-            <p class="text-2xl sm:text-4xl text-gray-700 font-bold mb-6">
-                Lograste <span id="finalScore" class="text-green-500 font-black text-5xl sm:text-6xl mx-2">0</span> de 10
-            </p>
+            <div class="flex justify-center items-center gap-8 mb-6">
+                <p class="text-2xl sm:text-4xl text-gray-700 font-bold flex flex-col items-center">
+                    <span class="text-green-500 font-black text-5xl sm:text-6xl">✅ <span id="finalCorrect">0</span></span>
+                    Buenas
+                </p>
+                <p class="text-2xl sm:text-4xl text-gray-700 font-bold flex flex-col items-center">
+                    <span class="text-red-500 font-black text-5xl sm:text-6xl">❌ <span id="finalIncorrect">0</span></span>
+                    Malas
+                </p>
+            </div>
             
-            <p id="endMessage" class="text-xl sm:text-2xl text-blue-500 font-bold mb-8 font-['Comic_Neue']">
-                ¡Eres un campeón!
+            <p id="endMessage" class="text-xl sm:text-3xl text-blue-500 font-bold mb-8 font-['Comic_Neue']">
+                ¡Gran esfuerzo!
             </p>
 
-            <button onclick="initGame()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 sm:px-12 rounded-full shadow-lg transform transition hover:scale-105 active:scale-95 text-2xl flex items-center justify-center gap-3 mx-auto border-4 border-green-300">
-                <span>🔄</span> ¡Jugar otra vez!
+            <button onclick="goToMenu()" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-4 px-8 sm:px-12 rounded-full shadow-lg transform transition hover:scale-105 active:scale-95 text-2xl flex items-center justify-center gap-3 mx-auto border-4 border-indigo-300">
+                <span>🏠</span> Volver a elegir nivel
             </button>
         </div>
     </div>
 
     <script>
-        // --- BASE DE DATOS ---
-        const fruitsData = {
-            1: { icon: '🍎', name: 'manzana', bgColor: 'bg-red-50' },
-            2: { icon: '🍌', name: 'plátanos', bgColor: 'bg-yellow-50' },
-            3: { icon: '🍇', name: 'uvas', bgColor: 'bg-purple-50' },
-            4: { icon: '🍓', name: 'fresas', bgColor: 'bg-pink-50' },
-            5: { icon: '🍊', name: 'naranjas', bgColor: 'bg-orange-50' },
-            6: { icon: '🍉', name: 'sandías', bgColor: 'bg-red-50' },
-            7: { icon: '🍍', name: 'piñas', bgColor: 'bg-yellow-50' },
-            8: { icon: '🥭', name: 'mangos', bgColor: 'bg-orange-50' },
-            9: { icon: '🍒', name: 'cerezas', bgColor: 'bg-red-50' },
-            10: { icon: '🥝', name: 'kiwis', bgColor: 'bg-green-50' }
-        };
-
         // --- VARIABLES DE ESTADO ---
         let bag = [];
+        let maxRounds = 10;
         let currentRound = 0;
-        let score = 0;
+        let correctCount = 0;
+        let incorrectCount = 0;
         let currentTargetNumber = 0;
         let countedFruits = 0;
         let isWaitingForNextRound = false;
 
+        const bgColors = ['bg-red-50', 'bg-blue-50', 'bg-green-50', 'bg-yellow-50', 'bg-purple-50', 'bg-pink-50', 'bg-orange-50'];
+
         // Elementos DOM
+        const levelScreen = document.getElementById('levelScreen');
         const gameScreen = document.getElementById('gameScreen');
         const endScreen = document.getElementById('endScreen');
         const scoreBoard = document.getElementById('scoreBoard');
         const fruitsContainer = document.getElementById('fruitsContainer');
+        const fruitBox = document.getElementById('fruitBox');
         const numbersGrid = document.getElementById('numbersGrid');
         const roundText = document.getElementById('roundText');
-        const scoreText = document.getElementById('scoreText');
+        const totalRoundsText = document.getElementById('totalRoundsText');
+        const correctText = document.getElementById('correctText');
+        const incorrectText = document.getElementById('incorrectText');
         const countHint = document.getElementById('countHint');
+        const btnBackToAula = document.getElementById('btnBackToAula');
+        const btnBackToLevels = document.getElementById('btnBackToLevels');
 
         // --- SÍNTESIS DE VOZ ---
         const synth = window.speechSynthesis;
@@ -195,37 +220,60 @@
         }
 
         function speakInstruction() {
-            speak("Cuenta las frutas y elige el número abajo.");
+            speak("Cuenta los dibujos y elige el número.");
         }
 
         // --- LÓGICA DEL JUEGO ---
         
-        function initGame() {
-            // Reiniciar estado
-            bag = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-            // Revolver la bolsa aleatoriamente (Shuffle)
+        function goToMenu() {
+            // Ocultar zonas de juego y resultados
+            endScreen.classList.add('hidden-view');
+            gameScreen.classList.add('hidden-view');
+            scoreBoard.classList.add('hidden-view');
+            scoreBoard.classList.remove('flex');
+            
+            // Mostrar la selección de nivel
+            levelScreen.classList.remove('hidden-view');
+
+            // Ajustar los botones de regreso
+            btnBackToLevels.classList.add('hidden-view');
+            btnBackToAula.classList.remove('hidden-view');
+        }
+
+        function startGame(limit) {
+            maxRounds = limit;
+            
+            // Llenar la bolsa del 1 al límite y revolverla
+            bag = Array.from({length: maxRounds}, (_, i) => i + 1);
             bag.sort(() => Math.random() - 0.5); 
             
             currentRound = 0;
-            score = 0;
+            correctCount = 0;
+            incorrectCount = 0;
             
+            totalRoundsText.textContent = maxRounds;
             updateScoreBoard();
             buildNumbersGrid();
             
-            // Cambiar vistas
+            // Ajustar visibilidad de las pantallas
+            levelScreen.classList.add('hidden-view');
             endScreen.classList.add('hidden-view');
             gameScreen.classList.remove('hidden-view');
             scoreBoard.classList.remove('hidden-view');
             scoreBoard.classList.add('flex');
+
+            // Ajustar los botones de regreso
+            btnBackToAula.classList.add('hidden-view');
+            btnBackToLevels.classList.remove('hidden-view');
 
             nextRound();
         }
 
         function buildNumbersGrid() {
             numbersGrid.innerHTML = '';
-            for (let i = 1; i <= 10; i++) {
+            for (let i = 1; i <= maxRounds; i++) {
                 const btn = document.createElement('button');
-                btn.className = `number-btn bg-white border-4 border-blue-300 text-blue-600 font-black text-3xl sm:text-5xl py-3 sm:py-4 rounded-2xl shadow-sm font-['Comic_Neue'] flex items-center justify-center`;
+                btn.className = `number-btn bg-white border-4 border-blue-300 text-blue-600 font-black text-2xl sm:text-4xl py-2 sm:py-4 rounded-xl sm:rounded-2xl shadow-sm font-['Comic_Neue'] flex items-center justify-center`;
                 btn.textContent = i;
                 btn.id = `btn-num-${i}`;
                 btn.onclick = () => checkAnswer(i);
@@ -234,7 +282,7 @@
         }
 
         function nextRound() {
-            if (currentRound >= 10) {
+            if (currentRound >= maxRounds) {
                 showEndScreen();
                 return;
             }
@@ -243,22 +291,19 @@
             currentRound++;
             updateScoreBoard();
             
-            // Sacar el siguiente número de la bolsa revuelta
             currentTargetNumber = bag.pop();
             countedFruits = 0;
 
             renderFruits(currentTargetNumber);
             
-            // Limpiar estilos de los botones
-            for (let i = 1; i <= 10; i++) {
+            for (let i = 1; i <= maxRounds; i++) {
                 const btn = document.getElementById(`btn-num-${i}`);
                 if (btn) {
-                    btn.className = `number-btn bg-white border-4 border-blue-300 text-blue-600 font-black text-3xl sm:text-5xl py-3 sm:py-4 rounded-2xl shadow-sm font-['Comic_Neue'] flex items-center justify-center`;
+                    btn.className = `number-btn bg-white border-4 border-blue-300 text-blue-600 font-black text-2xl sm:text-4xl py-2 sm:py-4 rounded-xl sm:rounded-2xl shadow-sm font-['Comic_Neue'] flex items-center justify-center`;
                     btn.disabled = false;
                 }
             }
 
-            // Anunciar ronda
             setTimeout(() => {
                 countHint.style.opacity = '1';
                 speakInstruction();
@@ -266,20 +311,22 @@
         }
 
         function renderFruits(num) {
-            const data = fruitsData[num];
             fruitsContainer.innerHTML = '';
             
-            // Cambiar levemente el color de fondo para variedad
-            fruitsContainer.parentElement.className = `w-full max-w-3xl ${data.bgColor} rounded-3xl p-6 sm:p-8 shadow-xl border-4 border-pink-300 mb-8 relative min-h-[200px] flex flex-col items-center justify-center transition-colors duration-500`;
+            // Variar el color de fondo en cada ronda
+            const randomBg = bgColors[num % bgColors.length];
+            fruitBox.className = `w-full max-w-3xl ${randomBg} rounded-3xl p-6 sm:p-8 shadow-xl border-4 border-pink-300 mb-8 relative min-h-[200px] flex flex-col items-center justify-center transition-colors duration-500`;
 
             for (let i = 0; i < num; i++) {
-                const fruit = document.createElement('div');
-                fruit.className = 'fruit-icon text-5xl sm:text-7xl drop-shadow-md cursor-pointer transform hover:scale-110';
-                fruit.textContent = data.icon;
-                fruit.style.animationDelay = `${i * 0.1}s`;
+                const img = document.createElement('img');
+                // Se busca la imagen PNG por el número objetivo (1.png a 20.png).
+                img.src = `frutas/${num}.png`; 
+                img.alt = `Dibujo ${num}`;
+                // Ajustamos el tamaño para que quepan hasta 20 imágenes
+                img.className = 'fruit-icon w-12 h-12 sm:w-20 sm:h-20 drop-shadow-md cursor-pointer transform hover:scale-110 object-contain m-1 sm:m-2';
+                img.style.animationDelay = `${i * 0.05}s`;
                 
-                // Función de conteo
-                fruit.onclick = function() {
+                img.onclick = function() {
                     if (this.classList.contains('fruit-counted') || isWaitingForNextRound) return;
                     
                     countedFruits++;
@@ -287,46 +334,43 @@
                     
                     this.classList.add('fruit-counted');
                     
-                    // Si ya contó todas, lo felicitamos
                     if (countedFruits === currentTargetNumber) {
                         countHint.style.opacity = '0';
                         setTimeout(() => speak(`¡Son ${currentTargetNumber}! Ahora elige el número.`), 1000);
                     }
                 };
                 
-                fruitsContainer.appendChild(fruit);
+                fruitsContainer.appendChild(img);
             }
         }
 
         function checkAnswer(selectedNumber) {
             if (isWaitingForNextRound) return;
-            isWaitingForNextRound = true; // Bloquear teclado temporalmente
+            isWaitingForNextRound = true; 
 
             const selectedBtn = document.getElementById(`btn-num-${selectedNumber}`);
             const correctBtn = document.getElementById(`btn-num-${currentTargetNumber}`);
 
             countHint.style.opacity = '0';
 
-            // Deshabilitar todos los botones para que no haga doble clic
-            for (let i = 1; i <= 10; i++) {
+            for (let i = 1; i <= maxRounds; i++) {
                 document.getElementById(`btn-num-${i}`).disabled = true;
             }
 
             if (selectedNumber === currentTargetNumber) {
-                // RESPUESTA CORRECTA
-                score++;
-                updateScoreBoard();
+                correctCount++;
                 selectedBtn.classList.add('correct-answer');
-                createConfetti();
+                createConfetti(30);
                 speak(`¡Muy bien! Es el número ${currentTargetNumber}`);
             } else {
-                // RESPUESTA INCORRECTA
+                incorrectCount++;
                 selectedBtn.classList.add('wrong-answer');
-                correctBtn.classList.add('correct-answer'); // Mostrar cuál era el correcto
+                correctBtn.classList.add('correct-answer'); 
                 speak(`¡Casi! Era el número ${currentTargetNumber}`);
             }
 
-            // Pasar a la siguiente ronda después de 2.5 segundos
+            updateScoreBoard();
+
             setTimeout(() => {
                 nextRound();
             }, 2500);
@@ -334,7 +378,8 @@
 
         function updateScoreBoard() {
             roundText.textContent = currentRound;
-            scoreText.textContent = score;
+            correctText.textContent = correctCount;
+            incorrectText.textContent = incorrectCount;
         }
 
         function showEndScreen() {
@@ -342,23 +387,30 @@
             scoreBoard.classList.add('hidden-view');
             scoreBoard.classList.remove('flex');
             
+            // Ocultar botón de regresar nivel en la pantalla final
+            btnBackToLevels.classList.add('hidden-view');
+            btnBackToAula.classList.add('hidden-view');
+            
             endScreen.classList.remove('hidden-view');
             endScreen.classList.add('flex');
             
-            document.getElementById('finalScore').textContent = score;
+            document.getElementById('finalCorrect').textContent = correctCount;
+            document.getElementById('finalIncorrect').textContent = incorrectCount;
 
             let endMsg = document.getElementById('endMessage');
-            if (score === 10) {
-                endMsg.textContent = "¡Perfecto! Eres súper inteligente. 🌟";
-                speak("¡Felicidades! Lograste 10 de 10. ¡Eres súper inteligente!");
-                createConfetti(100); // Mucho confeti
-            } else if (score >= 6) {
+            
+            // Premiar si sacó todas correctas sin errores
+            if (correctCount === maxRounds) {
+                endMsg.textContent = "¡Perfecto! Eres un genio de las matemáticas. 🌟";
+                speak(`¡Felicidades! Lograste todas correctas. ¡Eres súper inteligente!`);
+                createConfetti(150); 
+            } else if (correctCount >= (maxRounds * 0.7)) {
                 endMsg.textContent = "¡Muy buen trabajo! Lo hiciste genial. 👍";
-                speak(`Muy buen trabajo. Lograste ${score} de 10.`);
-                createConfetti();
+                speak(`Muy buen trabajo. Tuviste ${correctCount} buenas.`);
+                createConfetti(50);
             } else {
                 endMsg.textContent = "¡Sigue practicando, vas muy bien! 💪";
-                speak(`Lograste ${score} de 10. ¡Sigue practicando, vas muy bien!`);
+                speak(`Obtuviste ${correctCount} buenas. ¡Sigue practicando!`);
             }
         }
 
@@ -391,9 +443,6 @@
                 animation.onfinish = () => confetti.remove();
             }
         }
-
-        // Iniciar el juego al cargar la página
-        window.onload = initGame;
     </script>
 </body>
 </html>
