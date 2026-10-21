@@ -348,10 +348,7 @@ Lucas y Sofía entendieron que el bosque no era mágico por un mineral de la tie
 
     iniciarPágina();
 
-   async function calificarExamen() {
-  // 📌 PEGA TU API KEY DIRECTAMENTE AQUÍ ENTRE LAS COMILLAS:
-  const apiKey = "AQ.Ab8RN6KpV12FPTHYXlPmkIvwP_HmmM9mlYqo_wERPMH0cdqcYA"; 
-
+  async function calificarExamen() {
   const respuestasUsuario = [];
   seleccionadas.forEach(q => {
     const txt = document.getElementById(`resp_${q.id}`).value.trim();
@@ -369,67 +366,21 @@ Lucas y Sofía entendieron que el bosque no era mágico por un mineral de la tie
 
   const textoLectura = document.getElementById('textoLectura').innerText;
 
-  const prompt = `
-    Eres un profesor de educación primaria evaluando la comprensión lectora de un estudiante de 5.º GRADO DE PRIMARIA (10-11 años).
-    
-    Lectura:
-    "${textoLectura}"
-
-    Preguntas y respuestas del estudiante:
-    ${JSON.stringify(respuestasUsuario, null, 2)}
-
-    CRITERIOS DE EVALUACIÓN PARA 5.º DE PRIMARIA:
-    1. Para preguntas "Directa" e "Inferencia":
-       - Marca esCorrecta: true o false según corresponda.
-       - nivelArgumento debe ser null.
-
-    2. Para preguntas "Argumentativa":
-       - Ajusta tu expectativa al desarrollo cognitivo de un niño de 10-11 años.
-       - Marca esCorrecta: true SI la respuesta demuestra comprensión.
-       - Clasifica la calidad de la argumentación en "nivelArgumento" (número del 1 al 3):
-         * 1 = "Muy bien (Excelente argumento)": Explica su postura con razones claras basadas en la historia.
-         * 2 = "Bien (Le faltó argumento)": Expresa una idea correcta acorde a su grado, pero la explicación es breve.
-         * 3 = "Bien (Sin argumentación)": Responde únicamente con una afirmación directa sin razones.
-       - Si es completamente incoherente, marca esCorrecta: false y nivelArgumento: 3.
-
-    3. Ortografía:
-       - NO restes puntos por errores de ortografía. Agrégalos en "notaOrtografia" como sugerencia.
-
-    4. "retroalimentacion":
-       - Mensaje cercano y motivador para un niño de 10-11 años.
-
-    Responde exclusivamente en JSON estricto:
-    {
-      "evaluaciones": [
-        {
-          "id": 17,
-          "esCorrecta": true,
-          "nivelArgumento": 1,
-          "retroalimentacion": "¡Gran trabajo!",
-          "notaOrtografia": null
-        }
-      ]
-    }
-  `;
-
   try {
-    // Petición usando la API Key quemada directo en el código
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`, {
+    // La barra '/' inicial busca desde la raíz del sitio, sin importar la subcarpeta
+    const response = await fetch('/api/evaluar', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { responseMimeType: "application/json" }
+        textoLectura: textoLectura,
+        respuestasUsuario: respuestasUsuario
       })
     });
 
     const data = await response.json();
-    if (data.error) throw new Error(data.error.message);
+    if (data.error) throw new Error(data.error);
 
-    const jsonTexto = data.candidates[0].content.parts[0].text;
-    const resultadoIA = JSON.parse(jsonTexto);
-
-    mostrarResultados(resultadoIA.evaluaciones, respuestasUsuario);
+    mostrarResultados(data.evaluaciones, respuestasUsuario);
 
   } catch (error) {
     alert("Error al evaluar: " + error.message);
@@ -438,6 +389,8 @@ Lucas y Sofía entendieron que el bosque no era mágico por un mineral de la tie
     document.getElementById('loading').style.display = 'none';
   }
 }
+
+
     function mostrarResultados(evaluaciones, respuestasUsuario) {
       const resultadosCard = document.getElementById('resultadosCard');
       const detallesDiv = document.getElementById('detallesRetroalimentacion');
