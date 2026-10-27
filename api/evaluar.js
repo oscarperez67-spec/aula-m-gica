@@ -3,16 +3,15 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Método no permitido' });
   }
 
-  // Vercel leerá la clave de sus variables de entorno privadas
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    return res.status(500).json({ error: 'API Key no configurada en el servidor de Vercel.' });
+    return res.status(500).json({ error: 'API Key no configurada en Vercel.' });
   }
 
-  const { textoLectura, respuestasUsuario } = req.body;
+  const { textoLectura, respuestasUsuario, grado } = req.body;
 
   const prompt = `
-    Eres un profesor de educación primaria evaluando la comprensión lectora de un estudiante de 5.º GRADO DE PRIMARIA (10-11 años).
+    Eres un profesor de educación primaria evaluando la comprensión lectora y matemática de un estudiante de ${grado}º GRADO DE PRIMARIA.
     
     Lectura:
     "${textoLectura}"
@@ -20,28 +19,33 @@ export default async function handler(req, res) {
     Preguntas y respuestas del estudiante:
     ${JSON.stringify(respuestasUsuario, null, 2)}
 
-    CRITERIOS DE EVALUACIÓN PARA 5.º DE PRIMARIA:
-    1. Para preguntas "Directa" e "Inferencia":
+    CRITERIOS DE EVALUACIÓN PARA ${grado}º DE PRIMARIA:
+    1. Preguntas "Directa" e "Inferencia":
        - Marca esCorrecta: true o false según corresponda.
        - nivelArgumento debe ser null.
 
-    2. Para preguntas "Argumentativa":
-       - Ajusta tu expectativa al desarrollo cognitivo de un niño de 10-11 años.
-       - Marca esCorrecta: true SI la respuesta demuestra comprensión.
+    2. Preguntas "Argumentativa":
+       - Ajusta tu expectativa analítica al desarrollo cognitivo de ${grado}º grado.
+       - Marca esCorrecta: true SI demuestra comprensión.
        - Clasifica la argumentación en "nivelArgumento" (1, 2 o 3):
-         * 1 = "Muy bien (Excelente argumento)"
-         * 2 = "Bien (Le faltó argumento)"
-         * 3 = "Bien (Sin argumentación)"
+         * 1 = "Muy bien": Excelente argumento basado en el texto.
+         * 2 = "Bien": Expresa una idea correcta acorde a su grado, pero breve.
+         * 3 = "Bien": Responde con una afirmación directa sin dar razones.
        - Si es incoherente, marca esCorrecta: false y nivelArgumento: 3.
 
-    3. Ortografía: NO restes puntos. Agrégalos en "notaOrtografia" como sugerencia.
-    4. "retroalimentacion": Mensaje cercano y motivador para 5.º grado.
+    3. Preguntas "Razonamiento matemático":
+       - Evalúa si el alumno identificó la operación lógica, deductiva o el patrón correcto. 
+       - Si el razonamiento lógico es sólido y adecuado para ${grado}º grado, marca esCorrecta: true, tolerando errores aritméticos simples.
+       - nivelArgumento debe ser null.
+
+    4. Ortografía: NO restes puntos. Agrégalos en "notaOrtografia" como sugerencia.
+    5. "retroalimentacion": Mensaje cercano y motivador para un niño de ${grado}º grado.
 
     Responde exclusivamente en JSON estricto:
     {
       "evaluaciones": [
         {
-          "id": 17,
+          "id": 1,
           "esCorrecta": true,
           "nivelArgumento": 1,
           "retroalimentacion": "...",
@@ -51,23 +55,34 @@ export default async function handler(req, res) {
     }
   `;
 
-  try {
-const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { responseMimeType: "application/json" }
-      })
-    });
+  // Arreglo de modelos de respaldo. Se probarán en orden.
+  const modelos = ["gemini-3.8-flash", "gemini-2.0-flash", "gemini-1.5-flash"];
+  let ultimoError = null;
 
-    const data = await response.json();
-    if (data.error) throw new Error(data.error.message);
+  for (const modelo of modelos) {
+    try {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { responseMimeType: "application/json" }
+        })
+      });
 
-    const jsonTexto = data.candidates[0].content.parts[0].text;
-    return res.status(200).json(JSON.parse(jsonTexto));
+      const data = await response.json();
+      if (data.error) throw new Error(data.error.message);
 
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
+      const jsonTexto = data.candidates[0].content.parts[0].text;
+      return res.status(200).json(JSON.parse(jsonTexto));
+
+    } catch (error) {
+      console.warn(`Intento fallido con ${modelo}:`, error.message);
+      ultimoError = error.message;
+      // El ciclo continúa con el siguiente modelo si este falla
+    }
   }
+
+  // Si todos los modelos fallan, se devuelve el error final
+  return res.status(500).json({ error: "No se pudo conectar con ningún modelo de IA. Detalle: " + ultimoError });
 }
