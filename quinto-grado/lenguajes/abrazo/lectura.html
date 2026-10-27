@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comprensión Lectora - Aula Mágica</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary: #4F46E5;
+      --primary-hover: #4338CA;
+      --bg-color: #F3F4F6;
+      --card-bg: #FFFFFF;
+      --text-color: #1F2937;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --error: #EF4444;
+      --border-radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      padding-bottom: 50px;
+    }
+
+    header {
+      background-color: var(--card-bg);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .btn-regresar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: transform 0.2s;
+    }
+
+    .btn-regresar:hover {
+      transform: translateX(-4px);
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    .config-card {
+      background: #FEF3C7;
+      border: 2px dashed #F59E0B;
+      padding: 1.2rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 2rem;
+    }
+
+    .config-card input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      border: 1px solid #CBD5E1;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    .lectura-card {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 2rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      margin-bottom: 2rem;
+    }
+
+    .lectura-imagen {
+      width: 100%;
+      max-height: 380px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+    }
+
+    .lectura-titulo {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .lectura-texto {
+      font-size: 1.2rem;
+      color: #374151;
+      text-align: justify;
+      white-space: pre-line;
+    }
+
+    .preguntas-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .pregunta-card {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    }
+
+    .pregunta-num {
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .pregunta-texto {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: 12px;
+      border: 2px solid #E2E8F0;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 1rem;
+      resize: vertical;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .btn-enviar {
+      display: block;
+      width: 100%;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 1rem;
+      font-size: 1.2rem;
+      font-weight: 700;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      margin-top: 2rem;
+    }
+
+    .btn-enviar:disabled {
+      background-color: #9CA3AF;
+      cursor: not-allowed;
+    }
+
+    .resultados-card {
+      display: none;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 2rem;
+      margin-top: 2rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+
+    .puntaje-badge {
+      display: inline-block;
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 1rem 0;
+    }
+
+    .retro-pregunta {
+      text-align: left;
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 10px;
+      border-left: 5px solid #CBD5E1;
+    }
+
+    .retro-pregunta.correcta {
+      background-color: #ECFDF5;
+      border-left-color: var(--success);
+    }
+
+    .retro-pregunta.parcial {
+      background-color: #FEF3C7;
+      border-left-color: var(--warning);
+    }
+
+    .retro-pregunta.incorrecta {
+      background-color: #FEF2F2;
+      border-left-color: var(--error);
+    }
+
+    .badge-nivel {
+      display: inline-block;
+      font-size: 0.85rem;
+      font-weight: bold;
+      padding: 2px 8px;
+      border-radius: 6px;
+      margin-top: 4px;
+    }
+    .badge-nivel.nivel-1 { background: #D1FAE5; color: #065F46; }
+    .badge-nivel.nivel-2 { background: #FEF3C7; color: #92400E; }
+    .badge-nivel.nivel-3 { background: #FEE2E2; color: #991B1B; }
+
+    .loading-spinner {
+      display: none;
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 1.2rem;
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Flecha a Aula Mágica -->
+  <header>
+    <a href="../lenguaje.html" class="btn-regresar">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+      Volver a Aula Mágica
+    </a>
+  </header>
+
+  <div class="container">
+
+    <!-- Lectura e Imagen -->
+    <div class="lectura-card">
+      <img id="imagenLectura" src="imagenes/abrazo.png" alt="Dibujo ilustrativo" class="lectura-imagen">
+      <h1 id="tituloLectura" class="lectura-titulo">El Abrazo De 250 Millones De Años</h1>
+      
+      <div id="textoLectura" class="lectura-texto">
+El Abrazo De 250 Millones De Años
+
+Hace unos 250 millones de años, cuando la Tierra atravesaba una de las extinciones más devastadoras de su historia, un pequeño anfibio herido buscaba un lugar donde refugiarse. Tenía varias costillas fracturadas y necesitaba encontrar un rincón seguro donde descansar, lejos de los peligros de aquel mundo.
+Después de llegar a una madriguera, encontró algo inesperado: allí dormía un Thrinaxodon, un antiguo pariente de los mamíferos. A pesar de que el anfibio podía convertirse en su presa, el pequeño visitante terminó quedándose junto a él, acurrucado en aquel refugio.
+El Broomistega, como se llamaba el anfibio, estaba herido y necesitaba protección. El otro animal permaneció allí sin atacarlo. No hubo señales claras de una lucha ni de que uno hubiera intentado alimentarse del otro. En medio de un mundo hostil, dos criaturas que podrían haber sido enemigas terminaron compartiendo el mismo escondite.
+Pero ninguno sabía lo que estaba por suceder.
+Una inundación hizo que el barro invadiera la madriguera y los sepultara. Los dos animales quedaron atrapados allí, juntos, y sus cuerpos permanecieron ocultos durante millones de años. Nunca se pudo determinar con certeza si el Thrinaxodon ya había muerto cuando llegó el anfibio o si ambos murieron durante el mismo acontecimiento.
+En 2013, científicos descubrieron sus restos fosilizados en Sudáfrica. Al estudiar la roca, encontraron los esqueletos de aquellas dos criaturas conservados uno junto al otro, como una pequeña escena detenida en el tiempo.
+Quizá para ellos solo fue un refugio compartido. Pero hoy, después de tanto tiempo, su historia nos permite imaginar a un pequeño animal herido que encontró un lugar junto a otro ser vivo y terminó permaneciendo a su lado mucho más allá de su propia existencia.
+El mundo que conocieron desapareció, sus huellas se borraron y casi todo lo que los rodeaba dejó de existir. Sin embargo, ellos permanecieron juntos bajo la tierra durante 250 millones de años, hasta que alguien los encontró.
+Y todavía hoy, en el silencio de aquella roca, parece conservarse el recuerdo de dos vidas que coincidieron en el momento más inesperado y quedaron unidas para siempre.
+      </div>
+    </div>
+
+    <!-- Preguntas -->
+    <form id="quizForm">
+      <div id="preguntasContainer" class="preguntas-container"></div>
+      <button type="button" id="btnCalificar" class="btn-enviar" onclick="calificarExamen()">Enviar Respuestas</button>
+    </form>
+
+    <div id="loading" class="loading-spinner">
+      ⏳ La IA está leyendo y evaluando tus respuestas... ¡Espere un momento!
+    </div>
+
+    <!-- Calificación y Retroalimentación -->
+    <div id="resultadosCard" class="resultados-card">
+      <h2>Resultados de la Evaluación 🎉</h2>
+      <div id="puntajeBadge" class="puntaje-badge">0 / 10</div>
+      <div id="detallesRetroalimentacion"></div>
+    </div>
+
+  </div>
+
+  <script>
+    // 📌 3. PEGA O EDITA TUS 4 BANCOS DE PREGUNTAS AQUÍ
+
+    // Banco 1: 4 Preguntas Directas (Búsqueda textual)
+    const bancoDirectas = [
+      { id: 1, tipo: "Directa", pregunta: "¿En qué país descubrieron los científicos los restos fosilizados de estas dos criaturas en el año 2013?" },
+      { id: 2, tipo: "Directa", pregunta: "¿A qué grupo de animales pertenecía el Thrinaxodon, según nos explica la lectura?" },
+      { id: 3, tipo: "Directa", pregunta: "¿Cómo se llamaba el anfibio que entró herido buscando un lugar donde descansar?" },
+      { id: 4, tipo: "Directa", pregunta: "¿Qué suceso natural provocó que la madriguera se llenara de barro y atrapara a los animales?" }
+    ];
+
+    // Banco 2: 6 Preguntas de Inferencia (Conclusión breve)
+    const bancoInferencia = [
+      { id: 5, tipo: "Inferencia", pregunta: "Al leer que el mundo atravesaba una ´extinción devastadora´, ¿cómo te imaginas que era el clima o el ambiente afuera de la madriguera para los animales?" },
+      { id: 6, tipo: "Inferencia", pregunta: "Si el anfibio era pequeño y estaba herido, ¿por qué crees que decidió quedarse junto a un animal que podía comérselo?" },
+      { id: 7, tipo: "Inferencia", pregunta: "El texto menciona que los cuerpos se conservaron como una ´escena detenida en el tiempo´. ¿Qué crees que significa esta frase para los científicos que los encontraron?" },
+      { id: 8, tipo: "Inferencia", pregunta: "Ya que no había ´señales claras de una lucha´, ¿qué actitud crees que tomó el Thrinaxodon cuando el anfibio entró a su escondite?" },
+      { id: 9, tipo: "Inferencia", pregunta: "El texto dice que nunca se pudo saber si el Thrinaxodon ya estaba muerto cuando el anfibio llegó. ¿Por qué crees que es tan difícil para los científicos averiguar este detalle?" },
+      { id: 10, tipo: "Inferencia", pregunta: "¿Qué crees que sintió el pequeño anfibio al encontrar un lugar silencioso y a otro animal después de huir con las costillas rotas?" }
+    ];
+
+    // Banco 3: 6 Preguntas Argumentativas (Explicación y opinión con justificación)
+    const bancoArgumentativas = [
+      { id: 11, tipo: "Argumentativa", pregunta: "¿Crees que fue una buena decisión para el anfibio arriesgarse a quedarse en la madriguera del Thrinaxodon? Explica por qué." },
+      { id: 12, tipo: "Argumentativa", pregunta: "¿Estás de acuerdo en que dos animales de especies diferentes pueden acompañarse pacíficamente en un momento difícil? Da un argumento basado en la historia." },
+      { id: 13, tipo: "Argumentativa", pregunta: "Si pudieras ponerle otro título a esta historia en lugar de ´El Abrazo De 250 Millones De Años´, ¿cuál elegirías y por qué?" },
+      { id: 14, tipo: "Argumentativa", pregunta: "Imagina que un compañero dice que el Thrinaxodon ya estaba muerto cuando el anfibio llegó. ¿Cómo podrías debatir o responder a esa idea usando la información de la lectura?" },
+      { id: 15, tipo: "Argumentativa", pregunta: "¿Por qué crees que es importante que los paleontólogos sigan buscando y estudiando restos fosilizados hoy en día?" },
+      { id: 16, tipo: "Argumentativa", pregunta: "¿Consideras que esta lectura nos deja alguna enseñanza sobre cómo actuar frente a un desastre natural o una emergencia? Argumenta tu respuesta." }
+    ];
+
+     // Banco 4: 5 Preguntas de Razonamiento Matemático (Añade tus preguntas aquí)
+    const bancoMatematicas = [
+      { id: 17, tipo: "Razonamiento matemático", pregunta: "Los científicos encontraron los fósiles en el año 2013. Si consideramos el año actual, ¿cuántos años han pasado exactamente desde que se hizo este gran descubrimiento en Sudáfrica?" },
+      { id: 18, tipo: "Razonamiento matemático", pregunta: "Los restos estuvieron ocultos bajo la tierra durante 250,000,000 de años. Si un período geológico de otra especie hubiera durado la mitad de ese tiempo, ¿cuántos años habría durado?" },
+      { id: 19, tipo: "Razonamiento matemático", pregunta: "El anfibio tenía varias costillas fracturadas. Si un animal similar tuviera 24 costillas en total y se fracturara 1/4 de ellas durante una caída, ¿cuántas costillas sanas le quedarían?" },
+      { id: 20, tipo: "Razonamiento matemático", pregunta: "Si el lodo de la inundación subía 15 centímetros cada minuto dentro de la madriguera, ¿cuántos centímetros subió después de un cuarto de hora (15 minutos)?" },
+      { id: 21, tipo: "Razonamiento matemático", pregunta: "Para limpiar la roca extraída, un científico utilizó un cepillo especial que cuesta $125.50 pesos. Si el museo compró 4 de estos cepillos para todo el equipo de investigación, ¿cuánto pagó en total?" }
+    ];
+    let seleccionadas = [];
+
+    function iniciarPágina() {
+      // 📌 NUEVA DISTRIBUCIÓN DE PREGUNTAS (10 EN TOTAL)
+      const directas2 = [...bancoDirectas].sort(() => 0.5 - Math.random()).slice(0, 2);
+      const inferencia3 = [...bancoInferencia].sort(() => 0.5 - Math.random()).slice(0, 3);
+      const argumentativas3 = [...bancoArgumentativas].sort(() => 0.5 - Math.random()).slice(0, 3);
+      const matematicas2 = [...bancoMatematicas].sort(() => 0.5 - Math.random()).slice(0, 2); // Asegúrate de tener este banco definido
+      
+      // Combinar las 10 preguntas seleccionadas
+      seleccionadas = [...directas2, ...inferencia3, ...argumentativas3, ...matematicas2].sort(() => 0.5 - Math.random());
+
+      const contenedor = document.getElementById('preguntasContainer');
+      if (!contenedor) return;
+      
+      contenedor.innerHTML = '';
+
+      // Omitimos la etiqueta tipo de pregunta para el estudiante
+      seleccionadas.forEach((q, index) => {
+        const tarjeta = document.createElement('div');
+        tarjeta.className = 'pregunta-card';
+        tarjeta.innerHTML = `
+          <div class="pregunta-num">Pregunta ${index + 1} de 10</div>
+          <div class="pregunta-texto">${q.pregunta}</div>
+          <textarea id="resp_${q.id}" placeholder="Escribe tu respuesta aquí..."></textarea>
+        `;
+        contenedor.appendChild(tarjeta);
+      });
+    }
+
+    iniciarPágina();
+
+  async function calificarExamen() {
+  const respuestasUsuario = [];
+  seleccionadas.forEach(q => {
+    const txt = document.getElementById(`resp_${q.id}`).value.trim();
+    respuestasUsuario.push({ 
+      id: q.id, 
+      tipo: q.tipo, 
+      pregunta: q.pregunta, 
+      respuesta: txt 
+    });
+  });
+
+  document.getElementById('btnCalificar').disabled = true;
+  document.getElementById('loading').style.display = 'block';
+  document.getElementById('resultadosCard').style.display = 'none';
+
+  const textoLectura = document.getElementById('textoLectura').innerText;
+
+// Define el grado en cada HTML (cambia el número a 3, 4, 5 o 6 según corresponda)
+  const gradoActual = 5; 
+
+  // ... (tu código para recolectar respuestasUsuario y textoLectura) ...
+
+  try {
+    const response = await fetch('/api/evaluar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        textoLectura: textoLectura,
+        respuestasUsuario: respuestasUsuario,
+        grado: gradoActual // Aquí enviamos el grado de forma transparente
+      })
+    });
+
+    const data = await response.json();
+    if (data.error) throw new Error(data.error);
+
+    mostrarResultados(data.evaluaciones, respuestasUsuario);
+
+  } catch (error) {
+    alert("Error al evaluar: " + error.message);
+  } finally {
+    document.getElementById('btnCalificar').disabled = false;
+    document.getElementById('loading').style.display = 'none';
+  }
+}
+
+
+    function mostrarResultados(evaluaciones, respuestasUsuario) {
+      const resultadosCard = document.getElementById('resultadosCard');
+      const detallesDiv = document.getElementById('detallesRetroalimentacion');
+      detallesDiv.innerHTML = '';
+
+      let correctas = 0;
+
+      evaluaciones.forEach((evalItem, index) => {
+        if (evalItem.esCorrecta) correctas++;
+        const preg = respuestasUsuario.find(p => p.id === evalItem.id);
+
+        let claseEstilo = evalItem.esCorrecta ? 'correcta' : 'incorrecta';
+        if (evalItem.nivelArgumento === 2) claseEstilo = 'parcial';
+        if (evalItem.nivelArgumento === 3 && evalItem.esCorrecta) claseEstilo = 'parcial';
+
+        const div = document.createElement('div');
+        div.className = `retro-pregunta ${claseEstilo}`;
+        
+        let html = `
+          <strong>Pregunta ${index + 1} (${preg.tipo}):</strong> ${preg.pregunta}<br>
+          <strong>Tu respuesta:</strong> <em>"${preg.respuesta || 'Sin respuesta'}"</em><br>
+          <strong>Calificación:</strong> ${evalItem.esCorrecta ? '✅ Correcta' : '❌ Incorrecta'}<br>
+        `;
+
+        if (preg.tipo === 'Argumentativa' && evalItem.nivelArgumento) {
+          if (evalItem.nivelArgumento === 1) {
+            html += `<span class="badge-nivel nivel-1">🌟 Nivel 1: Muy bien (Excelente argumento)</span><br>`;
+          } else if (evalItem.nivelArgumento === 2) {
+            html += `<span class="badge-nivel nivel-2">💡 Nivel 2: Bien (Le faltó argumento)</span><br>`;
+          } else if (evalItem.nivelArgumento === 3) {
+            html += `<span class="badge-nivel nivel-3">⚠️ Nivel 3: Bien (No está argumentando la respuesta)</span><br>`;
+          }
+        }
+
+        html += `<p style="margin-top:5px;"><strong>Retroalimentación:</strong> ${evalItem.retroalimentacion}</p>`;
+
+        if (evalItem.notaOrtografia) {
+          html += `<p style="margin-top:3px; color:#6B7280; font-size:0.9rem;">✏️ <em>Sugerencia de escritura: ${evalItem.notaOrtografia}</em></p>`;
+        }
+
+        div.innerHTML = html;
+        detallesDiv.appendChild(div);
+      });
+
+      document.getElementById('puntajeBadge').innerText = `${correctas} / 10`;
+      resultadosCard.style.display = 'block';
+      resultadosCard.scrollIntoView({ behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
