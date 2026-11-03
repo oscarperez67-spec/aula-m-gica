@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comprensión Lectora - Aula Mágica</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary: #4F46E5;
+      --primary-hover: #4338CA;
+      --bg-color: #F3F4F6;
+      --card-bg: #FFFFFF;
+      --text-color: #1F2937;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --error: #EF4444;
+      --border-radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      padding-bottom: 50px;
+    }
+
+    header {
+      background-color: var(--card-bg);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .btn-regresar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: transform 0.2s;
+    }
+
+    .btn-regresar:hover {
+      transform: translateX(-4px);
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    .config-card {
+      background: #FEF3C7;
+      border: 2px dashed #F59E0B;
+      padding: 1.2rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 2rem;
+    }
+
+    .config-card input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      border: 1px solid #CBD5E1;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    .lectura-card {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 2rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      margin-bottom: 2rem;
+    }
+
+    .lectura-imagen {
+      width: 100%;
+      max-height: 380px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+    }
+
+    .lectura-titulo {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .lectura-texto {
+      font-size: 1.2rem;
+      color: #374151;
+      text-align: justify;
+      white-space: pre-line;
+    }
+
+    .preguntas-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .pregunta-card {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    }
+
+    .pregunta-num {
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .pregunta-texto {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: 12px;
+      border: 2px solid #E2E8F0;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 1rem;
+      resize: vertical;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .btn-enviar {
+      display: block;
+      width: 100%;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 1rem;
+      font-size: 1.2rem;
+      font-weight: 700;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      margin-top: 2rem;
+    }
+
+    .btn-enviar:disabled {
+      background-color: #9CA3AF;
+      cursor: not-allowed;
+    }
+
+    .resultados-card {
+      display: none;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 2rem;
+      margin-top: 2rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+
+    .puntaje-badge {
+      display: inline-block;
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 1rem 0;
+    }
+
+    .retro-pregunta {
+      text-align: left;
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 10px;
+      border-left: 5px solid #CBD5E1;
+    }
+
+    .retro-pregunta.correcta {
+      background-color: #ECFDF5;
+      border-left-color: var(--success);
+    }
+
+    .retro-pregunta.parcial {
+      background-color: #FEF3C7;
+      border-left-color: var(--warning);
+    }
+
+    .retro-pregunta.incorrecta {
+      background-color: #FEF2F2;
+      border-left-color: var(--error);
+    }
+
+    .badge-nivel {
+      display: inline-block;
+      font-size: 0.85rem;
+      font-weight: bold;
+      padding: 2px 8px;
+      border-radius: 6px;
+      margin-top: 4px;
+    }
+    .badge-nivel.nivel-1 { background: #D1FAE5; color: #065F46; }
+    .badge-nivel.nivel-2 { background: #FEF3C7; color: #92400E; }
+    .badge-nivel.nivel-3 { background: #FEE2E2; color: #991B1B; }
+
+    .loading-spinner {
+      display: none;
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 1.2rem;
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Flecha a Aula Mágica -->
+  <header>
+    <a href="../lenguaje.html" class="btn-regresar">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+      Volver a Aula Mágica
+    </a>
+  </header>
+
+  <div class="container">
+
+    <!-- Lectura e Imagen -->
+    <div class="lectura-card">
+      <img id="imagenLectura" src="imagenes/cuernos.png" alt="Dibujo ilustrativo" class="lectura-imagen">
+      <h1 id="tituloLectura" class="lectura-titulo">Les Cortan Cuernos a 700 Rinocerontes</h1>
+      
+      <div id="textoLectura" class="lectura-texto">
+En 2016, una noticia sorprendió al mundo de la conservación animal: Zimbabue anunció un ambicioso plan para retirarles los cuernos a los aproximadamente 700 rinocerontes que vivían en el país.
+Durante años, estos animales habían sido perseguidos y asesinados por sus cuernos, que se venden en el mercado ilegal por enormes cantidades de dinero. Algunas personas incluso les atribuyen propiedades medicinales que no han sido demostradas científicamente. La situación se había vuelto tan grave que, solamente en 2015, alrededor de 50 rinocerontes fueron asesinados ilegalmente en Zimbabue.
+Ante esta amenaza, las autoridades y organizaciones de conservación decidieron tomar una medida extrema: quitarles aquello por lo que los cazadores los perseguían.
+El procedimiento no consistía en capturarlos y cortarles los cuernos sin más. Los veterinarios primero los sedaban, vigilaban sus signos vitales y después retiraban cuidadosamente la mayor parte del cuerno, dejando una pequeña base para no dañar el tejido sensible.
+Aunque las imágenes pueden parecer dolorosas, hay un detalle sorprendente: el cuerno del rinoceronte está compuesto principalmente de queratina, la misma proteína que forma nuestras uñas y cabello. Por eso, cuando se realiza correctamente, el corte de la parte externa no provoca el dolor que muchos imaginan.
+Y todavía hay algo más curioso: ¡los cuernos vuelven a crecer! Por eso, los animales necesitan revisiones y nuevos recortes periódicos para evitar que vuelvan a convertirse en objetivos atractivos para los cazadores.
+La estrategia no quedó solamente como una idea. Años después, un estudio científico publicado en 2025, que analizó 11 reservas del entorno del Parque Nacional Kruger, en Sudáfrica, encontró que retirar los cuernos a 2,284 rinocerontes estuvo asociado con una reducción cercana al 78 % de la caza furtiva.
+Sin embargo, esta medida también tiene sus limitaciones: los rinocerontes utilizan sus cuernos para defenderse, competir por territorio, buscar alimento y relacionarse con otros individuos. Además, algunos cazadores siguen atacando animales descornados para llevarse incluso los pequeños restos de cuerno.
+Una decisión difícil, pero con un propósito desesperado: que los rinocerontes puedan seguir caminando libres, aunque tengan que renunciar temporalmente a aquello que los caracteriza, para no perder la vida por ello.
+      </div>
+    </div>
+
+    <!-- Preguntas -->
+    <form id="quizForm">
+      <div id="preguntasContainer" class="preguntas-container"></div>
+      <button type="button" id="btnCalificar" class="btn-enviar" onclick="calificarExamen()">Enviar Respuestas</button>
+    </form>
+
+    <div id="loading" class="loading-spinner">
+      ⏳ La IA está leyendo y evaluando tus respuestas... ¡Espere un momento!
+    </div>
+
+    <!-- Calificación y Retroalimentación -->
+    <div id="resultadosCard" class="resultados-card">
+      <h2>Resultados de la Evaluación 🎉</h2>
+      <div id="puntajeBadge" class="puntaje-badge">0 / 10</div>
+      <div id="detallesRetroalimentacion"></div>
+    </div>
+
+  </div>
+
+  <script>
+    // 📌 3. PEGA O EDITA TUS 4 BANCOS DE PREGUNTAS AQUÍ
+
+    // Banco 1: 3 Preguntas Directas (Búsqueda textual)
+    const bancoDirectas = [
+      { id: 1, tipo: "Directa", pregunta: "Según el texto, ¿cuáles son los pasos exactos que siguen los veterinarios para retirar el cuerno de los rinocerontes de manera segura y sin causarles dolor?" },
+      { id: 2, tipo: "Directa", pregunta: "¿Cuál es el motivo principal por el que los cazadores furtivos persiguen y asesinan a los rinocerontes en su hábitat natural?" },
+      { id: 3, tipo: "Directa", pregunta: "¿Qué sucede naturalmente con la base del cuerno del rinoceronte tiempo después de que los veterinarios realizan el recorte?" }
+    ];
+
+    // Banco 2: 5 Preguntas de Inferencia (Conclusión breve)
+    const bancoInferencia = [
+      { id: 4, tipo: "Inferencia", pregunta: "¿Qué nos indica sobre el valor del mercado ilegal el hecho de que los cazadores sigan atacando a animales que ya fueron descornados para robarse los pequeños restos?" },
+      { id: 5, tipo: "Inferencia", pregunta: "Considerando las limitaciones que enfrentan al perder su cuerno, ¿cómo crees que cambia el comportamiento diario de un rinoceronte al momento de relacionarse con otros de su especie?" },
+      { id: 6, tipo: "Inferencia", pregunta: "Si el cuerno está compuesto de queratina, la misma proteína de nuestras uñas y cabello, ¿qué conclusión podemos sacar sobre el conocimiento científico de las personas que compran estos cuernos como medicina?" },
+      { id: 7, tipo: "Inferencia", pregunta: "¿Por qué la estrategia de cortar los cuernos exige que las autoridades de las reservas naturales mantengan un registro constante y un seguimiento de por vida de cada animal?" },
+      { id: 8, tipo: "Inferencia", pregunta: "A partir de la lectura, ¿qué relación crees que existe entre la cantidad de rinocerontes asesinados en 2015 y la decisión de implementar una medida tan extrema al año siguiente?" }
+    ];
+
+    // Banco 3: 5 Preguntas Argumentativas (Explicación y opinión con justificación)
+    const bancoArgumentativas = [
+      { id: 9, tipo: "Argumentativa", pregunta: "Sabiendo que los rinocerontes usan sus cuernos para defenderse y buscar alimento, ¿crees que es éticamente correcto quitarles esta herramienta natural para evitar que los cacen? Defiende tu respuesta." },
+      { id: 10, tipo: "Argumentativa", pregunta: "El texto afirma que la decisión tiene un propósito desesperado: que los rinocerontes sigan caminando libres aunque renuncien temporalmente a lo que los caracteriza. ¿Consideras que esta vida en libertad sin cuernos es mejor que mantenerlos encerrados para protegerlos? Argumenta por qué." },
+      { id: 11, tipo: "Argumentativa", pregunta: "¿Qué opinas de la responsabilidad que tienen las personas que compran los cuernos por enormes cantidades de dinero, si la comparas con la responsabilidad de los cazadores que atacan a los animales?" },
+      { id: 12, tipo: "Argumentativa", pregunta: "Puesto que las propiedades medicinales de los cuernos no han sido demostradas científicamente, ¿qué acciones o campañas propondrías para educar a los compradores y detener el mercado ilegal?" },
+      { id: 13, tipo: "Argumentativa", pregunta: "¿Consideras que los esfuerzos de los veterinarios descritos en la lectura son suficientes para salvar a la especie, o crees que los gobiernos deberían tomar otro tipo de acciones? Justifica tu opinión." }
+    ];
+
+     // Banco 4: 5 Preguntas de Razonamiento Matemático (Añade tus preguntas aquí)
+    const bancoMatematicas = [
+      { id: 14, tipo: "Razonamiento matemático", pregunta: "En el año 2015, fueron asesinados 50 rinocerontes en Zimbabue. Si esa misma cantidad de rinocerontes fuera cazada cada año de manera constante, ¿cuántos rinocerontes perderían la vida en un periodo de 12 años?" },
+      { id: 15, tipo: "Razonamiento matemático", pregunta: "El estudio científico en Sudáfrica analizó a 2,284 rinocerontes descornados. Si los equipos de veterinarios logran revisar y atender a 4 animales cada día, ¿cuántos días exactos tardarán en revisar a todos los rinocerontes de ese grupo?" },
+      { id: 16, tipo: "Razonamiento matemático", pregunta: "Zimbabue anunció el plan para retirar los cuernos a 700 rinocerontes. Si el equipo médico divide a los animales en 5 zonas de trabajo para atenderlos, colocando la misma cantidad de rinocerontes en cada zona, ¿cuántos rinocerontes habrá en cada zona?" },
+      { id: 17, tipo: "Razonamiento matemático", pregunta: "Si cada procedimiento médico para sedar al animal y cortarle el cuerno de forma segura tiene un costo aproximado de 350 pesos en insumos veterinarios, ¿cuánto dinero gastará la organización para atender a un grupo de 25 rinocerontes?" },
+      { id: 18, tipo: "Razonamiento matemático", pregunta: "El texto menciona que se analizaron 11 reservas en el entorno del Parque Nacional Kruger. Si el gobierno decide asignar a 15 guardias de seguridad para vigilar cada una de esas reservas día y noche, ¿cuántos guardias se necesitan contratar en total?" }
+    ];
+    let seleccionadas = [];
+
+    function iniciarPágina() {
+      // 📌 NUEVA DISTRIBUCIÓN DE PREGUNTAS (10 EN TOTAL)
+      const directas1 = [...bancoDirectas].sort(() => 0.5 - Math.random()).slice(0, 1);
+      const inferencia3 = [...bancoInferencia].sort(() => 0.5 - Math.random()).slice(0, 3);
+      const argumentativas3 = [...bancoArgumentativas].sort(() => 0.5 - Math.random()).slice(0, 3);
+      const matematicas3 = [...bancoMatematicas].sort(() => 0.5 - Math.random()).slice(0, 3); // Asegúrate de tener este banco definido
+      
+      // Combinar las 10 preguntas seleccionadas
+      seleccionadas = [...directas1, ...inferencia3, ...argumentativas3, ...matematicas3].sort(() => 0.5 - Math.random());
+
+      const contenedor = document.getElementById('preguntasContainer');
+      if (!contenedor) return;
+      
+      contenedor.innerHTML = '';
+
+      // Omitimos la etiqueta tipo de pregunta para el estudiante
+      seleccionadas.forEach((q, index) => {
+        const tarjeta = document.createElement('div');
+        tarjeta.className = 'pregunta-card';
+        tarjeta.innerHTML = `
+          <div class="pregunta-num">Pregunta ${index + 1} de 10</div>
+          <div class="pregunta-texto">${q.pregunta}</div>
+          <textarea id="resp_${q.id}" placeholder="Escribe tu respuesta aquí..."></textarea>
+        `;
+        contenedor.appendChild(tarjeta);
+      });
+    }
+
+    iniciarPágina();
+
+  async function calificarExamen() {
+  const respuestasUsuario = [];
+  seleccionadas.forEach(q => {
+    const txt = document.getElementById(`resp_${q.id}`).value.trim();
+    respuestasUsuario.push({ 
+      id: q.id, 
+      tipo: q.tipo, 
+      pregunta: q.pregunta, 
+      respuesta: txt 
+    });
+  });
+
+  document.getElementById('btnCalificar').disabled = true;
+  document.getElementById('loading').style.display = 'block';
+  document.getElementById('resultadosCard').style.display = 'none';
+
+  const textoLectura = document.getElementById('textoLectura').innerText;
+
+// Define el grado en cada HTML (cambia el número a 3, 4, 5 o 6 según corresponda)
+
+  const gradoActual = 5; 
+
+  // ... (tu código para recolectar respuestasUsuario y textoLectura) ...
+
+  try {
+    const response = await fetch('/api/evaluar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        textoLectura: textoLectura,
+        respuestasUsuario: respuestasUsuario,
+        grado: gradoActual // Aquí enviamos el grado de forma transparente
+      })
+    });
+
+    const data = await response.json();
+    if (data.error) throw new Error(data.error);
+
+    mostrarResultados(data.evaluaciones, respuestasUsuario);
+
+  } catch (error) {
+    alert("Error al evaluar: " + error.message);
+  } finally {
+    document.getElementById('btnCalificar').disabled = false;
+    document.getElementById('loading').style.display = 'none';
+  }
+}
+
+
+    function mostrarResultados(evaluaciones, respuestasUsuario) {
+      const resultadosCard = document.getElementById('resultadosCard');
+      const detallesDiv = document.getElementById('detallesRetroalimentacion');
+      detallesDiv.innerHTML = '';
+
+      let correctas = 0;
+
+      evaluaciones.forEach((evalItem, index) => {
+        if (evalItem.esCorrecta) correctas++;
+        const preg = respuestasUsuario.find(p => p.id === evalItem.id);
+
+        let claseEstilo = evalItem.esCorrecta ? 'correcta' : 'incorrecta';
+        if (evalItem.nivelArgumento === 2) claseEstilo = 'parcial';
+        if (evalItem.nivelArgumento === 3 && evalItem.esCorrecta) claseEstilo = 'parcial';
+
+        const div = document.createElement('div');
+        div.className = `retro-pregunta ${claseEstilo}`;
+        
+        let html = `
+          <strong>Pregunta ${index + 1} (${preg.tipo}):</strong> ${preg.pregunta}<br>
+          <strong>Tu respuesta:</strong> <em>"${preg.respuesta || 'Sin respuesta'}"</em><br>
+          <strong>Calificación:</strong> ${evalItem.esCorrecta ? '✅ Correcta' : '❌ Incorrecta'}<br>
+        `;
+
+        if (preg.tipo === 'Argumentativa' && evalItem.nivelArgumento) {
+          if (evalItem.nivelArgumento === 1) {
+            html += `<span class="badge-nivel nivel-1">🌟 Nivel 1: Muy bien (Excelente argumento)</span><br>`;
+          } else if (evalItem.nivelArgumento === 2) {
+            html += `<span class="badge-nivel nivel-2">💡 Nivel 2: Bien (Le faltó argumento)</span><br>`;
+          } else if (evalItem.nivelArgumento === 3) {
+            html += `<span class="badge-nivel nivel-3">⚠️ Nivel 3: Bien (No está argumentando la respuesta)</span><br>`;
+          }
+        }
+
+        html += `<p style="margin-top:5px;"><strong>Retroalimentación:</strong> ${evalItem.retroalimentacion}</p>`;
+
+        if (evalItem.notaOrtografia) {
+          html += `<p style="margin-top:3px; color:#6B7280; font-size:0.9rem;">✏️ <em>Sugerencia de escritura: ${evalItem.notaOrtografia}</em></p>`;
+        }
+
+        div.innerHTML = html;
+        detallesDiv.appendChild(div);
+      });
+
+      document.getElementById('puntajeBadge').innerText = `${correctas} / 10`;
+      resultadosCard.style.display = 'block';
+      resultadosCard.scrollIntoView({ behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
