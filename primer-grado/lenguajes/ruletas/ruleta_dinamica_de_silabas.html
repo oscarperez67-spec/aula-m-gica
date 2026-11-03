@@ -504,6 +504,36 @@
 
         let audioCtx = null;
 
+	let audioDesbloqueado = false;
+
+	function desbloquearAudioSilk() {
+    	if (audioDesbloqueado) return;
+    
+   	 // Desbloquear motor de efectos (AudioContext)
+    	if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    	if (audioCtx.state === 'suspended') audioCtx.resume();
+    
+    	const osc = audioCtx.createOscillator();
+    	const gain = audioCtx.createGain();
+    	gain.gain.value = 0; // Volumen en 0
+    	osc.connect(gain);
+    	gain.connect(audioCtx.destination);
+    	osc.start();
+    	osc.stop(audioCtx.currentTime + 0.1);
+
+	    // Desbloquear motor de voz (SpeechSynthesis)
+	    const silenciador = new SpeechSynthesisUtterance('');
+	    silenciador.volume = 0;
+	    window.speechSynthesis.speak(silenciador);
+
+    	audioDesbloqueado = true;
+    	document.removeEventListener('touchstart', desbloquearAudioSilk);
+    	document.removeEventListener('click', desbloquearAudioSilk);
+	}
+
+	document.addEventListener('touchstart', desbloquearAudioSilk);
+	document.addEventListener('click', desbloquearAudioSilk);
+
         function playTickSound() {
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -552,12 +582,13 @@
         const synth = window.speechSynthesis;
         let spanishVoice = null;
 
-        function initVoice() {
-            const voices = synth.getVoices();
-            spanishVoice = voices.find(voice => voice.lang.includes('es-MX')) || 
-                           voices.find(voice => voice.lang.includes('es-ES')) ||
-                           voices.find(voice => voice.lang.includes('es'));
-        }
+	function initVoice() {
+  	 	 const voices = synth.getVoices();
+    		 spanishVoice = voices.find(voice => voice.lang.includes('es-MX')) || 
+                   voices.find(voice => voice.lang.includes('es-ES')) ||
+                   voices.find(voice => voice.lang.includes('es')) ||
+                   voices[0]; // Fuerza a usar la voz por defecto si Silk no detecta español
+	}
         if (speechSynthesis.onvoiceschanged !== undefined) {
             speechSynthesis.onvoiceschanged = initVoice;
         } else {
