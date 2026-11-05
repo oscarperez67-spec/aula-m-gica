@@ -34,8 +34,8 @@ export default async function handler(req, res) {
        - Si es incoherente, marca esCorrecta: false y nivelArgumento: 3.
 
     3. Preguntas "Razonamiento matemático":
-       - Evalúa si el alumno identificó la operación lógica, deductiva o el patrón correcto. 
-       - Si el razonamiento lógico es sólido y adecuado para ${grado}º grado, marca esCorrecta: true, tolerando errores aritméticos simples.
+       - Marca esCorrecta: true SOLO SI el resultado final numérico es totalmente correcto.
+       - Si el alumno hizo la operación o razonamiento adecuado pero el resultado final está mal, marca esCorrecta: false. En este caso, usa la "retroalimentación" para felicitarlo por haber elegido el procedimiento correcto, pero explícale amablemente que hubo un error de cálculo al sacar la cuenta.
        - nivelArgumento debe ser null.
 
     4. Ortografía: NO restes puntos. Agrégalos en "notaOrtografia" como sugerencia.
