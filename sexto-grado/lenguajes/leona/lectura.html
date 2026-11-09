@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comprensión Lectora - Aula Mágica</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Librería para generar el PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  
+  <style>
+    :root {
+      --primary: #4F46E5;
+      --primary-hover: #4338CA;
+      --bg-color: #F3F4F6;
+      --card-bg: #FFFFFF;
+      --text-color: #1F2937;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --error: #EF4444;
+      --border-radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      padding-bottom: 50px;
+    }
+
+    header {
+      background-color: var(--card-bg);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .btn-regresar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: transform 0.2s;
+    }
+
+    .btn-regresar:hover {
+      transform: translateX(-4px);
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    /* Estilos del botón de descargar PDF */
+    .btn-descargar {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background-color: var(--success);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.2rem;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.2s;
+    }
+
+    .btn-descargar:hover {
+      background-color: #059669;
+      transform: translateY(-2px);
+    }
+
+    .btn-descargar:disabled {
+      background-color: #9CA3AF;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .header-acciones {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 1rem;
+    }
+
+    .config-card {
+      background: #FEF3C7;
+      border: 2px dashed #F59E0B;
+      padding: 1.2rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 2rem;
+    }
+
+    .config-card input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      border: 1px solid #CBD5E1;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    .lectura-card {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 2rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      margin-bottom: 2rem;
+    }
+
+    .lectura-imagen {
+      width: 100%;
+      max-height: 380px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+    }
+
+    .lectura-titulo {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .lectura-texto {
+      font-size: 1.2rem;
+      color: #374151;
+      text-align: justify;
+      white-space: pre-line;
+    }
+
+    .preguntas-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .pregunta-card {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    }
+
+    .pregunta-num {
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .pregunta-texto {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: 12px;
+      border: 2px solid #E2E8F0;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 1rem;
+      resize: vertical;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .btn-enviar {
+      display: block;
+      width: 100%;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 1rem;
+      font-size: 1.2rem;
+      font-weight: 700;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      margin-top: 2rem;
+    }
+
+    .btn-enviar:disabled {
+      background-color: #9CA3AF;
+      cursor: not-allowed;
+    }
+
+    .resultados-card {
+      display: none;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 2rem;
+      margin-top: 2rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+
+    .puntaje-badge {
+      display: inline-block;
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 1rem 0;
+    }
+
+    .retro-pregunta {
+      text-align: left;
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 10px;
+      border-left: 5px solid #CBD5E1;
+    }
+
+    .retro-pregunta.correcta {
+      background-color: #ECFDF5;
+      border-left-color: var(--success);
+    }
+
+    .retro-pregunta.parcial {
+      background-color: #FEF3C7;
+      border-left-color: var(--warning);
+    }
+
+    .retro-pregunta.incorrecta {
+      background-color: #FEF2F2;
+      border-left-color: var(--error);
+    }
+
+    .badge-nivel {
+      display: inline-block;
+      font-size: 0.85rem;
+      font-weight: bold;
+      padding: 2px 8px;
+      border-radius: 6px;
+      margin-top: 4px;
+    }
+    .badge-nivel.nivel-1 { background: #D1FAE5; color: #065F46; }
+    .badge-nivel.nivel-2 { background: #FEF3C7; color: #92400E; }
+    .badge-nivel.nivel-3 { background: #FEE2E2; color: #991B1B; }
+
+    .loading-spinner {
+      display: none;
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 1.2rem;
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Flecha a Aula Mágica -->
+  <header>
+    <a href="../lenguaje.html" class="btn-regresar">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+      Volver a Aula Mágica
+    </a>
+  </header>
+
+  <div class="container">
+    
+    <!-- Botón Descargar PDF -->
+    <div class="header-acciones">
+      <button type="button" id="btnDescargarPDF" class="btn-descargar" onclick="descargarPDF()">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Descargar en PDF
+      </button>
+    </div>
+
+    <!-- Lectura e Imagen -->
+    <div class="lectura-card">
+      <img id="imagenLectura" src="imagenes/leona.png" alt="Dibujo ilustrativo" class="lectura-imagen">
+      <h1 id="tituloLectura" class="lectura-titulo">Anna Y La Leona Con El Hueso Atorado</h1>
+      
+      <div id="textoLectura" class="lectura-texto">
+En medio de la sabana, una leona llevaba varios días sin poder alimentarse ni beber agua. El motivo era tan extraño como peligroso: tenía un hueso atorado en la parte superior de la boca que le impedía cerrar las mandíbulas con normalidad.
+Su condición era cada vez más delicada. Después de aproximadamente 21 días sin comer ni beber, el animal estaba perdiendo fuerzas y necesitaba ayuda antes de que su estado empeorara. Ya que los leones en ese tipo de condiciones sólo pueden pasar de 14-25 dias sin beber y sin tomar agua.
+Fue entonces cuando Ana decidió intervenir. Sabía que acercarse a una leona en esas condiciones podía ser peligroso, por lo que primero utilizó un dardo tranquilizante para dormirla y poder examinar su mandíbula sin exponerse a un ataque.
+Una vez que el animal quedó inmovilizado, Ana se acercó y descubrió el hueso que llevaba atorado. Con mucho cuidado, utilizó una herramienta para sujetarlo y comenzó a tirar de él hasta conseguir liberarlo.
+El objeto finalmente salió de su boca. Sin embargo, todavía quedaba un problema: la leona estaba extremadamente debilitada después de tantos días sin poder alimentarse.
+Ana permaneció pendiente de ella mientras esperaba que despertara, ya que había hienas que se acercaba a ella para aprovecharse de la situación. Le acercó agua y buscó mantenerla fresca, pues el calor podía complicar todavía más su recuperación.
+Poco a poco, la felina comenzó a reaccionar. Primero consiguió beber agua, después empezó a mover su cuerpo y finalmente logró levantarse sobre sus cuatro patas.
+Aunque todavía caminaba con cierta dificultad, había recuperado la posibilidad de abrir la boca y beber sin aquel obstáculo que la había mantenido sin alimentarse.
+La leona terminó alejándose del lugar y acercándose a un pequeño charco para beber agua.
+Después de días sin poder alimentarse, aquel hueso que tenía atorado finalmente había sido retirado. Y la leona, que apenas podía mantenerse en pie, comenzaba nuevamente a caminar por la sabana. 
+      </div>
+    </div>
+
+    <!-- Preguntas -->
+    <form id="quizForm">
+      <div id="preguntasContainer" class="preguntas-container"></div>
+      <button type="button" id="btnCalificar" class="btn-enviar" onclick="calificarExamen()">Enviar Respuestas</button>
+    </form>
+
+    <div id="loading" class="loading-spinner">
+      ⏳ La IA está leyendo y evaluando tus respuestas... ¡Espere un momento!
+    </div>
+
+    <!-- Calificación y Retroalimentación -->
+    <div id="resultadosCard" class="resultados-card">
+      <h2>Resultados de la Evaluación 🎉</h2>
+      <div id="puntajeBadge" class="puntaje-badge">0 / 10</div>
+      <div id="detallesRetroalimentacion"></div>
+    </div>
+
+  </div>
+
+  <script>
+    // 📌 3. PEGA O EDITA TUS 4 BANCOS DE PREGUNTAS AQUÍ
+
+    // Banco 1: 3 Preguntas Directas (Búsqueda textual)
+    const bancoDirectas = [
+      { id: 1, tipo: "Directa", pregunta: "¿Cuál fue el motivo exacto por el que la leona no podía cerrar sus mandíbulas ni alimentarse con normalidad en medio de la sabana?" },
+      { id: 2, tipo: "Directa", pregunta: "Según la lectura, ¿cuántos días como mínimo y como máximo pueden pasar los leones sin beber agua en ese tipo de condiciones?" },
+      { id: 3, tipo: "Directa", pregunta: "¿Cuáles fueron las tres acciones físicas consecutivas que realizó la felina al comenzar a reaccionar tras el efecto del tranquilizante?" }
+    ];
+
+    // Banco 2: 5 Preguntas de Inferencia (Conclusión breve)
+    const bancoInferencia = [
+      { id: 4, tipo: "Inferencia", pregunta: "Ana usó un dardo tranquilizante para dormirla y luego una herramienta especializada para liberar la mandíbula. ¿Qué puedes deducir sobre los conocimientos profesionales o científicos que tiene Ana para realizar este tipo de rescate?" },
+      { id: 5, tipo: "Inferencia", pregunta: "El texto menciona que el calor podía complicar la recuperación de la leona. Fisiológicamente o por lógica, ¿por qué crees que las altas temperaturas son tan peligrosas para un animal que se encuentra severamente deshidratado?" },
+      { id: 6, tipo: "Inferencia", pregunta: "Al saber que las hienas se acercaban para aprovecharse de la debilidad de la leona, ¿qué nos dice esto sobre el comportamiento y las estrategias de supervivencia de estos depredadores en la sabana?" },
+      { id: 7, tipo: "Inferencia", pregunta: "A pesar de estar debilitada y caminar con cierta dificultad, el texto narra que la leona se dirigió directamente a un pequeño charco. ¿Qué nos demuestra esta acción sobre el instinto primario de supervivencia de los seres vivos?" },
+      { id: 8, tipo: "Inferencia", pregunta: "¿Por qué deduces que sacar el hueso no era suficiente y que era vital que Ana se quedara a proteger y refrescar a la leona hasta que pudiera sostenerse sobre sus cuatro patas?" }
+    ];
+
+    // Banco 3: 5 Preguntas Argumentativas (Explicación y opinión con justificación)
+    const bancoArgumentativas = [
+      { id: 9, tipo: "Argumentativa", pregunta: "¿Consideras que es éticamente correcto que los humanos intervengan en la vida de los animales salvajes con dardos tranquilizantes para salvarles la vida? Argumenta tu respuesta a profundidad." },
+      { id: 10, tipo: "Argumentativa", pregunta: "¿Qué opinas del nivel de riesgo, responsabilidad y compromiso que asumió Ana al acercarse a un depredador de ese tamaño para examinar su boca?" },
+      { id: 11, tipo: "Argumentativa", pregunta: "Si las autoridades ambientales de la sabana tuvieran una regla estricta de "no intervenir en el curso natural de la vida animal", ¿estarías a favor de esa regla o a favor de la acción que tomó Ana? Defiende tu postura con argumentos sólidos." },
+      { id: 12, tipo: "Argumentativa", pregunta: "Basándote en la paciencia y compasión de Ana al quedarse haciendo guardia frente a las hienas, ¿qué valores cívicos o morales crees que transmite esta historia para los seres humanos?" },
+      { id: 13, tipo: "Argumentativa", pregunta: "¿De qué manera crees que este texto nos hace reflexionar sobre la fragilidad y vulnerabilidad que pueden tener incluso las especies más fuertes e imponentes del planeta?" }
+    ];
+
+     // Banco 4: 5 Preguntas de Razonamiento Matemático (Añade tus preguntas aquí)
+    const bancoMatematicas = [
+      { id: 14, tipo: "Razonamiento matemático", pregunta: "La leona llevaba aproximadamente 21 días sin poder comer ni beber. Si sabemos que un día tiene 24 horas y cada hora tiene 60 minutos, ¿cuántos minutos en total estuvo la leona sufriendo con ese problema?" },
+      { id: 15, tipo: "Razonamiento matemático", pregunta: "Los leones en esas condiciones extremas pueden resistir un máximo de 25 días sin agua. Si existiera una gran reserva natural con 64 leones y todos llegaran a ese límite máximo de supervivencia, ¿cuántos días sumarían en total al multiplicar los días límite por la cantidad total de felinos?" },
+      { id: 16, tipo: "Razonamiento matemático", pregunta: "Imagina que tras llegar al charco, los veterinarios determinan que la leona requiere tomar 18 litros de agua diarios para reponerse por completo. Si mantiene este nivel de consumo durante 145 días seguidos, ¿cuántos litros de agua consumirá en total durante toda su recuperación?" },
+      { id: 17, tipo: "Razonamiento matemático", pregunta: "Mientras Ana cuidaba a la leona, notó que se acercaban 16 grupos de hienas diferentes. Si cada grupo tenía 34 hienas y luego se sumaron a la zona otras 58 hienas solitarias, ¿cuál fue la cantidad total de hienas que acechaban el lugar?" },
+      { id: 18, tipo: "Razonamiento matemático", pregunta: "El rescate, desde que Ana le disparó el dardo hasta que le retiró el hueso, duró 4 horas en total. Si Ana y su equipo de conservacionistas realizaran exactamente el mismo rescate con 325 animales diferentes a lo largo de un año, ¿cuántas horas en total dedicarían a salvar sus vidas?" }
+    ];
+    
+    let seleccionadas = [];
+
+    function iniciarPágina() {
+      // 📌 NUEVA DISTRIBUCIÓN DE PREGUNTAS (10 EN TOTAL)
+      const directas1 = [...bancoDirectas].sort(() => 0.5 - Math.random()).slice(0, 1);
+      const inferencia3 = [...bancoInferencia].sort(() => 0.5 - Math.random()).slice(0, 3);
+      const argumentativas3 = [...bancoArgumentativas].sort(() => 0.5 - Math.random()).slice(0, 3);
+      const matematicas3 = [...bancoMatematicas].sort(() => 0.5 - Math.random()).slice(0, 3); 
+      
+      // Combinar las 10 preguntas seleccionadas
+      seleccionadas = [...directas1, ...inferencia3, ...argumentativas3, ...matematicas3].sort(() => 0.5 - Math.random());
+
+      const contenedor = document.getElementById('preguntasContainer');
+      if (!contenedor) return;
+      
+      contenedor.innerHTML = '';
+
+      seleccionadas.forEach((q, index) => {
+        const tarjeta = document.createElement('div');
+        tarjeta.className = 'pregunta-card';
+        tarjeta.innerHTML = `
+          <div class="pregunta-num">Pregunta ${index + 1} de 10</div>
+          <div class="pregunta-texto">${q.pregunta}</div>
+          <textarea id="resp_${q.id}" placeholder="Escribe tu respuesta aquí..."></textarea>
+        `;
+        contenedor.appendChild(tarjeta);
+      });
+    }
+
+    iniciarPágina();
+
+    // ----------------------------------------------------------------
+    // 📌 NUEVA FUNCIÓN: Descargar PDF sin alterar lo demás
+    // ----------------------------------------------------------------
+    function descargarPDF() {
+      const btn = document.getElementById('btnDescargarPDF');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '⏳ Generando PDF...';
+      btn.disabled = true;
+
+      // Creamos un contenedor temporal en memoria (invisible en la web)
+      const elementoPDF = document.createElement('div');
+      elementoPDF.style.padding = '20px';
+      elementoPDF.style.fontFamily = "'Outfit', Arial, sans-serif";
+      elementoPDF.style.color = '#1F2937';
+
+      const titulo = document.getElementById('tituloLectura').innerText;
+      const texto = document.getElementById('textoLectura').innerText;
+
+      // Construimos el HTML para el PDF (Lectura + Preguntas sin la imagen)
+      let htmlContenido = `
+        <h1 style="text-align: center; color: #4F46E5; font-size: 24px; margin-bottom: 20px;">${titulo}</h1>
+        <div style="font-size: 14px; text-align: justify; margin-bottom: 30px; white-space: pre-line; line-height: 1.6;">${texto}</div>
+        <h2 style="font-size: 18px; margin-bottom: 20px; color: #4F46E5;">Responde las siguientes preguntas:</h2>
+      `;
+
+      seleccionadas.forEach((q, index) => {
+        htmlContenido += `
+          <div style="margin-bottom: 25px; page-break-inside: avoid;">
+            <p style="font-weight: 600; margin-bottom: 10px; font-size: 14px;">${index + 1}. ${q.pregunta}</p>
+            <div style="border: 1px solid #CBD5E1; border-radius: 8px; height: 80px; width: 100%;"></div>
+          </div>
+        `;
+      });
+
+      elementoPDF.innerHTML = htmlContenido;
+
+      // Configuración estricta para tamaño carta
+      const opt = {
+        margin:       15, // Márgenes en milímetros
+        filename:     'Actividad_Comprension_Lectora.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
+      };
+
+      // Generar y descargar el PDF
+      html2pdf().set(opt).from(elementoPDF).save().then(() => {
+        // Restaurar botón al finalizar
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      });
+    }
+
+    // ----------------------------------------------------------------
+    // Función original de evaluación con IA (Sin modificaciones)
+    // ----------------------------------------------------------------
+    async function calificarExamen() {
+      const respuestasUsuario = [];
+      seleccionadas.forEach(q => {
+        const txt = document.getElementById(`resp_${q.id}`).value.trim();
+        respuestasUsuario.push({ 
+          id: q.id, 
+          tipo: q.tipo, 
+          pregunta: q.pregunta, 
+          respuesta: txt 
+        });
+      });
+
+      document.getElementById('btnCalificar').disabled = true;
+      document.getElementById('loading').style.display = 'block';
+      document.getElementById('resultadosCard').style.display = 'none';
+
+      const textoLectura = document.getElementById('textoLectura').innerText;
+      const gradoActual = 6; 
+
+      try {
+        const response = await fetch('/api/evaluar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            textoLectura: textoLectura,
+            respuestasUsuario: respuestasUsuario,
+            grado: gradoActual 
+          })
+        });
+
+        const data = await response.json();
+        if (data.error) throw new Error(data.error);
+
+        mostrarResultados(data.evaluaciones, respuestasUsuario);
+
+      } catch (error) {
+        alert("Error al evaluar: " + error.message);
+      } finally {
+        document.getElementById('btnCalificar').disabled = false;
+        document.getElementById('loading').style.display = 'none';
+      }
+    }
+
+    function mostrarResultados(evaluaciones, respuestasUsuario) {
+      const resultadosCard = document.getElementById('resultadosCard');
+      const detallesDiv = document.getElementById('detallesRetroalimentacion');
+      detallesDiv.innerHTML = '';
+
+      let correctas = 0;
+
+      evaluaciones.forEach((evalItem, index) => {
+        if (evalItem.esCorrecta) correctas++;
+        const preg = respuestasUsuario.find(p => p.id === evalItem.id);
+
+        let claseEstilo = evalItem.esCorrecta ? 'correcta' : 'incorrecta';
+        if (evalItem.nivelArgumento === 2) claseEstilo = 'parcial';
+        if (evalItem.nivelArgumento === 3 && evalItem.esCorrecta) claseEstilo = 'parcial';
+
+        const div = document.createElement('div');
+        div.className = `retro-pregunta ${claseEstilo}`;
+        
+        let html = `
+          <strong>Pregunta ${index + 1} (${preg.tipo}):</strong> ${preg.pregunta}<br>
+          <strong>Tu respuesta:</strong> <em>"${preg.respuesta || 'Sin respuesta'}"</em><br>
+          <strong>Calificación:</strong> ${evalItem.esCorrecta ? '✅ Correcta' : '❌ Incorrecta'}<br>
+        `;
+
+        if (preg.tipo === 'Argumentativa' && evalItem.nivelArgumento) {
+          if (evalItem.nivelArgumento === 1) {
+            html += `<span class="badge-nivel nivel-1">🌟 Nivel 1: Muy bien (Excelente argumento)</span><br>`;
+          } else if (evalItem.nivelArgumento === 2) {
+            html += `<span class="badge-nivel nivel-2">💡 Nivel 2: Bien (Le faltó argumento)</span><br>`;
+          } else if (evalItem.nivelArgumento === 3) {
+            html += `<span class="badge-nivel nivel-3">⚠️ Nivel 3: Bien (No está argumentando la respuesta)</span><br>`;
+          }
+        }
+
+        html += `<p style="margin-top:5px;"><strong>Retroalimentación:</strong> ${evalItem.retroalimentacion}</p>`;
+
+        if (evalItem.notaOrtografia) {
+          html += `<p style="margin-top:3px; color:#6B7280; font-size:0.9rem;">✏️ <em>Sugerencia de escritura: ${evalItem.notaOrtografia}</em></p>`;
+        }
+
+        div.innerHTML = html;
+        detallesDiv.appendChild(div);
+      });
+
+      document.getElementById('puntajeBadge').innerText = `${correctas} / 10`;
+      resultadosCard.style.display = 'block';
+      resultadosCard.scrollIntoView({ behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
