@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula Mágica - Sopa de Letras</title>
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-light: #A5B4FC;
+            --success: #22C55E;
+            --bg: #F8FAFC;
+            --text: #1E293B;
+            --card-bg: #FFFFFF;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px 10px; overflow-x: hidden; }
+        
+        h1 { font-size: 2rem; margin-bottom: 15px; text-align: center; color: var(--primary); }
+        .subtitle { font-size: 1rem; color: #64748B; margin-bottom: 20px; text-align: center; }
+
+        /* --- PANTALLAS --- */
+        #pantalla-menu { width: 100%; max-width: 600px; display: flex; flex-direction: column; align-items: center; }
+        /* La pantalla de juego ahora puede crecer más a lo ancho para acomodar la lista lateral en PC */
+        #pantalla-juego { width: 100%; max-width: 900px; display: none; flex-direction: column; align-items: center; }
+
+        /* --- MENÚ DE CONFIGURACIÓN --- */
+        .config-card { background: var(--card-bg); padding: 25px; border-radius: 15px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); width: 100%; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 5px; color: var(--text); font-size: 0.95rem; }
+        select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #CBD5E1; font-size: 1rem; background: #F1F5F9; color: var(--text); outline: none; }
+        
+        .btn-magico { background-color: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; margin-top: 10px; }
+        .btn-magico:active { transform: scale(0.98); }
+        .btn-secundario { background-color: #94A3B8; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; margin-top: 10px; }
+        .btn-secundario:active { transform: scale(0.98); background-color: #64748B; }
+
+        /* --- JUEGO (UI SUPERIOR) --- */
+        .stats { display: flex; gap: 20px; font-weight: bold; font-size: 1.1rem; background: white; padding: 10px 20px; border-radius: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 15px; width: 100%; max-width: 600px; justify-content: center; }
+        
+        .visor-container { display: flex; gap: 10px; margin-bottom: 15px; align-items: center; width: 100%; max-width: 600px; justify-content: space-between; }
+        .visor { flex-grow: 1; background: white; border: 2px dashed var(--primary-light); border-radius: 10px; height: 45px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: bold; color: var(--primary); letter-spacing: 4px; position: relative; }
+        .visor-placeholder { color: #94A3B8; font-size: 0.9rem; letter-spacing: normal; position: absolute; pointer-events: none; }
+        .btn-limpiar { background-color: #F43F5E; color: white; border: none; padding: 0 15px; height: 45px; border-radius: 8px; font-size: 0.9rem; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-limpiar:active { transform: scale(0.95); background-color: #E11D48; }
+
+        /* --- LAYOUT RESPONSIVE (TABLERO + LISTA) --- */
+        .juego-layout {
+            display: flex;
+            flex-direction: column; /* Apilado en Celular */
+            align-items: center;
+            width: 100%;
+            gap: 20px;
+        }
+
+        #tablero {
+            display: grid;
+            gap: 2px;
+            background-color: #E2E8F0;
+            padding: 4px;
+            border-radius: 8px;
+            user-select: none;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+        
+        .celda { background-color: white; display: flex; justify-content: center; align-items: center; font-weight: bold; cursor: pointer; border-radius: 4px; transition: transform 0.1s; }
+        .celda.seleccionada { background-color: var(--primary-light) !important; color: white !important; transform: scale(1.05) !important; }
+        .celda.encontrada { color: white; transform: scale(0.95); }
+
+        .lista-palabras { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 10px; 
+            width: 100%; 
+            max-width: 600px;
+            justify-content: center; 
+            min-height: 30px; 
+        }
+        
+        .palabra-item { background: white; padding: 5px 15px; border-radius: 15px; font-size: 0.9rem; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: all 0.4s; animation: popIn 0.3s ease-out; text-align: center; }
+        .palabra-item.tachada { text-decoration: line-through; color: white !important; transform: scale(1.05); }
+        
+        /* 🚀 MAGIA RESPONSIVE PARA PCS Y TABLETS 🚀 */
+        @media (min-width: 800px) {
+            .juego-layout {
+                flex-direction: row; /* Lado a lado en PC */
+                justify-content: center;
+                align-items: flex-start;
+                gap: 40px;
+            }
+            .lista-palabras {
+                flex-direction: column; /* Lista vertical en PC */
+                align-items: center;
+                width: 200px;
+            }
+            .palabra-item {
+                width: 100%; /* Las píldoras ocupan el ancho de la columna */
+            }
+        }
+
+        .botones-juego { display: flex; gap: 10px; width: 100%; max-width: 600px; margin-top: 20px; justify-content: center; }
+
+        /* --- MODALES Y MENSAJES --- */
+        #modal-victoria { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 90%; animation: popIn 0.5s; }
+        .modal-content h2 { margin-bottom: 10px; font-size: 2rem; color: #22C55E; }
+        
+        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: #334155; color: white; padding: 10px 20px; border-radius: 20px; font-weight: bold; opacity: 0; transition: all 0.3s; z-index: 1000; pointer-events: none; text-align: center; }
+        #toast.mostrar { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        @keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <h1>✨ Aula Mágica ✨</h1>
+
+    <!-- PANTALLA 1: MENÚ -->
+    <div id="pantalla-menu">
+        <p class="subtitle">Configuración de Sopa de Letras</p>
+        <div class="config-card">
+            <div class="form-group">
+                <label>Grado Escolar:</label>
+                <!-- Selector limpio como solicitaste -->
+                <select id="sel-grado">
+                    <option value="2">2do Grado (10x10)</option>
+                    <option value="3">3er Grado (10x10)</option>
+                    <option value="4">4to Grado (12x12)</option>
+                    <option value="5">5to Grado (12x12)</option>
+                    <option value="6">6to Grado (12x12)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Temporizador:</label>
+                <select id="sel-tiempo">
+                    <option value="con">Con Tiempo ⏳</option>
+                    <option value="sin">Sin Tiempo (Libre) 🎈</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Tema (10 palabras):</label>
+                <select id="sel-tema">
+                    <option value="escuela">Escuela 🏫</option>
+                    <option value="cuerpo">Cuerpo Humano 🏃</option>
+                    <option value="alimentos">Alimentos 🍎</option>
+                    <option value="figuras">Figuras Geométricas 🔺</option>
+                    <option value="universo">Universo 🪐</option>
+                    <option value="animales">Animales 🦁</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Lista de palabras:</label>
+                <select id="sel-lista">
+                    <option value="visible">Mostrar lista desde el inicio 👀</option>
+                    <option value="oculta">Ocultar y mostrar al encontrar 🕵️‍♂️</option>
+                </select>
+            </div>
+            
+            <button class="btn-magico" onclick="configurarYEmpezar()">¡Jugar Ahora! 🚀</button>
+            <button class="btn-secundario" onclick="regresarAula()">Regresar al Aula Mágica 🚪</button>
+        </div>
+    </div>
+
+    <!-- PANTALLA 2: JUEGO -->
+    <div id="pantalla-juego">
+        <p class="subtitle" id="titulo-juego">Sopa de Letras</p>
+        
+        <div class="stats">
+            <div id="reloj-container">⏳ <span id="tiempo">00:00</span></div>
+            <div>🏆 <span id="contador">0</span>/10</div>
+        </div>
+
+        <div class="visor-container">
+            <div class="visor">
+                <span id="palabra-actual"></span>
+                <span class="visor-placeholder" id="placeholder">Toca las letras...</span>
+            </div>
+            <button class="btn-limpiar" onclick="limpiarSeleccion()">🧹</button>
+        </div>
+
+        <!-- NUEVO CONTENEDOR RESPONSIVE -->
+        <div class="juego-layout">
+            <div id="tablero"></div>
+            <div class="lista-palabras" id="lista"></div>
+        </div>
+        
+        <div class="botones-juego">
+            <button class="btn-secundario" onclick="mostrarMenu()">Regresar a Menú</button>
+            <button class="btn-secundario" onclick="regresarAula()">Regresar al Aula</button>
+        </div>
+    </div>
+
+    <!-- MODAL DE VICTORIA -->
+    <div id="modal-victoria">
+        <div class="modal-content">
+            <h2>¡Misión Cumplida! 🎉</h2>
+            <p id="mensaje-victoria"></p>
+            <button class="btn-magico" onclick="mostrarMenu()">Volver al Menú</button>
+        </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+        const URL_AULA_MAGICA = "../lenguajes.html"; 
+        
+        const BANCO_PALABRAS = {
+            escuela: ["LAPIZ", "LIBRO", "MAESTRA", "RECREO", "PIZARRON", "MOCHILA", "CUADERNO", "BORRADOR", "ALUMNO", "ESCUELA", "TAREA", "EXAMEN", "COLORES", "TIJERAS", "PEGAMENTO"],
+            cuerpo: ["CABEZA", "BRAZO", "PIERNA", "MANO", "PIE", "OJO", "OREJA", "BOCA", "NARIZ", "DEDO", "RODILLA", "CUELLO", "ESPALDA", "HOMBRO", "CABELLO"],
+            alimentos: ["MANZANA", "PLATANO", "LECHE", "PAN", "QUESO", "HUEVO", "POLLO", "CARNE", "AGUA", "ARROZ", "FRIJOL", "TOMATE", "CEBOLLA", "PAPA", "ZANAHORIA"],
+            figuras: ["CIRCULO", "CUADRADO", "TRIANGULO", "RECTANGULO", "ROMBO", "OVALO", "TRAPECIO", "PENTAGONO", "HEXAGONO", "ESFERA", "CUBO", "CILINDRO", "PRISMA", "CONO", "PIRAMIDE"],
+            universo: ["SOL", "LUNA", "ESTRELLA", "PLANETA", "TIERRA", "MARTE", "COMETA", "METEORO", "GALAXIA", "ORBITA", "SATELITE", "JUPITER", "SATURNO", "VENUS", "URANO"],
+            animales: ["PERRO", "GATO", "LEON", "TIGRE", "ELEFANTE", "JIRAFA", "MONO", "CABALLO", "VACA", "CERDO", "OVEJA", "PATO", "RANA", "PEZ", "PAJARO"]
+        };
+
+        const COLORES_MAGICOS = ['#EF4444', '#F97316', '#D97706', '#10B981', '#06B6D4', '#3B82F6', '#6366F1', '#8B5CF6', '#D946EF', '#F43F5E'];
+
+        let TAMANO = 10; 
+        let DIRECCIONES_PERMITIDAS = [];
+        let mostrarTiempo = true;
+        let mostrarLista = true;
+        
+        let tablero = [];
+        let palabrasAEncontrar = [];
+        let encontradas = [];
+        let celdasSeleccionadas = [];
+        let paletaMezclada = [];
+        let colorIndex = 0;
+        let timerInterval;
+        let segundos = 0;
+
+        const contenedorTablero = document.getElementById('tablero');
+        const contenedorLista = document.getElementById('lista');
+        const spanActual = document.getElementById('palabra-actual');
+        const placeholder = document.getElementById('placeholder');
+        const toast = document.getElementById('toast');
+        const pMenu = document.getElementById('pantalla-menu');
+        const pJuego = document.getElementById('pantalla-juego');
+
+        function regresarAula() {
+            window.location.href = URL_AULA_MAGICA; 
+        }
+
+        function mostrarMenu() {
+            clearInterval(timerInterval);
+            document.getElementById('modal-victoria').style.display = 'none';
+            pJuego.style.display = 'none';
+            pMenu.style.display = 'flex';
+        }
+
+        function configurarYEmpezar() {
+            let grado = parseInt(document.getElementById('sel-grado').value);
+            let tiempoOpt = document.getElementById('sel-tiempo').value;
+            let temaSel = document.getElementById('sel-tema').value;
+            let listaOpt = document.getElementById('sel-lista').value;
+            let nombreTema = document.getElementById('sel-tema').options[document.getElementById('sel-tema').selectedIndex].text;
+
+            if (grado <= 3) {
+                TAMANO = 10;
+                DIRECCIONES_PERMITIDAS = [[0, 1], [1, 0]]; 
+            } else {
+                TAMANO = 12;
+                DIRECCIONES_PERMITIDAS = [[0, 1], [1, 0], [1, 1], [-1, 1]]; 
+            }
+
+            mostrarTiempo = tiempoOpt === 'con';
+            document.getElementById('reloj-container').style.display = mostrarTiempo ? 'block' : 'none';
+            
+            mostrarLista = listaOpt === 'visible';
+
+            let palabrasTema = [...BANCO_PALABRAS[temaSel]];
+            palabrasTema.sort(() => Math.random() - 0.5);
+            palabrasAEncontrar = palabrasTema.slice(0, 10);
+
+            document.getElementById('titulo-juego').innerText = `Tema: ${nombreTema}`;
+            pMenu.style.display = 'none';
+            pJuego.style.display = 'flex';
+
+            prepararTablero();
+        }
+
+        function prepararTablero() {
+            clearInterval(timerInterval);
+            segundos = 0;
+            if(mostrarTiempo) {
+                actualizarTiempo();
+                timerInterval = setInterval(() => { segundos++; actualizarTiempo(); }, 1000);
+            }
+            
+            encontradas = [];
+            colorIndex = 0;
+            paletaMezclada = [...COLORES_MAGICOS].sort(() => Math.random() - 0.5);
+
+            document.getElementById('contador').innerText = 0;
+            contenedorTablero.innerHTML = '';
+            contenedorLista.innerHTML = '';
+            limpiarSeleccion();
+            
+            tablero = Array(TAMANO).fill(null).map(() => Array(TAMANO).fill(''));
+            
+            let cellSize = TAMANO === 10 ? 'min(9vw, 45px)' : 'min(7.5vw, 38px)';
+            let fontSize = TAMANO === 10 ? 'min(5vw, 24px)' : 'min(4vw, 20px)';
+            contenedorTablero.style.gridTemplateColumns = `repeat(${TAMANO}, ${cellSize})`;
+            contenedorTablero.style.gridTemplateRows = `repeat(${TAMANO}, ${cellSize})`;
+
+            colocarPalabras();
+            llenarVacias();
+            renderizarTablero(fontSize);
+            
+            if(mostrarLista) {
+                renderizarLista();
+            }
+        }
+
+        function colocarPalabras() {
+            palabrasAEncontrar.forEach(palabra => {
+                let colocada = false;
+                let intentos = 0;
+                while (!colocada && intentos < 300) {
+                    intentos++;
+                    let dir = DIRECCIONES_PERMITIDAS[Math.floor(Math.random() * DIRECCIONES_PERMITIDAS.length)];
+                    let filaInicial = Math.floor(Math.random() * TAMANO);
+                    let colInicial = Math.floor(Math.random() * TAMANO);
+                    
+                    if (puedeColocar(palabra, filaInicial, colInicial, dir)) {
+                        for (let i = 0; i < palabra.length; i++) {
+                            tablero[filaInicial + (dir[0] * i)][colInicial + (dir[1] * i)] = palabra[i];
+                        }
+                        colocada = true;
+                    }
+                }
+            });
+        }
+
+        function puedeColocar(palabra, f, c, dir) {
+            let fFinal = f + (dir[0] * (palabra.length - 1));
+            let cFinal = c + (dir[1] * (palabra.length - 1));
+            
+            if (fFinal < 0 || fFinal >= TAMANO || cFinal < 0 || cFinal >= TAMANO) return false;
+            
+            for (let i = 0; i < palabra.length; i++) {
+                let letraActual = tablero[f + (dir[0] * i)][c + (dir[1] * i)];
+                if (letraActual !== '' && letraActual !== palabra[i]) return false;
+            }
+            return true;
+        }
+
+        function llenarVacias() {
+            const letras = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
+            for (let f = 0; f < TAMANO; f++) {
+                for (let c = 0; c < TAMANO; c++) {
+                    if (tablero[f][c] === '') tablero[f][c] = letras[Math.floor(Math.random() * letras.length)];
+                }
+            }
+        }
+
+        function renderizarTablero(fontSize) {
+            for (let f = 0; f < TAMANO; f++) {
+                for (let c = 0; c < TAMANO; c++) {
+                    let div = document.createElement('div');
+                    div.className = 'celda';
+                    div.style.fontSize = fontSize;
+                    div.innerText = tablero[f][c];
+                    div.dataset.f = f;
+                    div.dataset.c = c;
+                    div.addEventListener('click', clickCelda);
+                    contenedorTablero.appendChild(div);
+                }
+            }
+        }
+
+        function renderizarLista() {
+            palabrasAEncontrar.forEach(palabra => {
+                let div = document.createElement('div');
+                div.className = 'palabra-item';
+                div.id = `palabra-${palabra}`;
+                div.innerText = palabra;
+                contenedorLista.appendChild(div);
+            });
+        }
+
+        function clickCelda(e) {
+            let celda = e.target;
+            
+            if (celdasSeleccionadas.includes(celda)) {
+                celda.classList.remove('seleccionada');
+                celdasSeleccionadas = celdasSeleccionadas.filter(c => c !== celda);
+            } else {
+                celda.classList.add('seleccionada');
+                celdasSeleccionadas.push(celda);
+            }
+            actualizarVisor();
+            verificarPalabra();
+        }
+
+        function actualizarVisor() {
+            const texto = celdasSeleccionadas.map(c => c.innerText).join('');
+            spanActual.innerText = texto;
+            placeholder.style.display = texto.length > 0 ? 'none' : 'block';
+        }
+
+        function limpiarSeleccion() {
+            celdasSeleccionadas.forEach(c => c.classList.remove('seleccionada'));
+            celdasSeleccionadas = [];
+            actualizarVisor();
+        }
+
+        function sonContiguasYLineales(celdas) {
+            if (celdas.length <= 1) return true;
+            let dF = parseInt(celdas[1].dataset.f) - parseInt(celdas[0].dataset.f);
+            let dC = parseInt(celdas[1].dataset.c) - parseInt(celdas[0].dataset.c);
+            if (Math.abs(dF) > 1 || Math.abs(dC) > 1) return false;
+            for (let i = 1; i < celdas.length - 1; i++) {
+                let actualDF = parseInt(celdas[i+1].dataset.f) - parseInt(celdas[i].dataset.f);
+                let actualDC = parseInt(celdas[i+1].dataset.c) - parseInt(celdas[i].dataset.c);
+                if (actualDF !== dF || actualDC !== dC) return false;
+            }
+            return true;
+        }
+
+        function verificarPalabra() {
+            let palabraFormada = celdasSeleccionadas.map(c => c.innerText).join('');
+            let palabraInvertida = palabraFormada.split('').reverse().join('');
+            
+            let palabraCorrecta = palabrasAEncontrar.find(p => p === palabraFormada || p === palabraInvertida);
+            
+            if (palabraCorrecta && !encontradas.includes(palabraCorrecta)) {
+                if (sonContiguasYLineales(celdasSeleccionadas)) {
+                    let colorTurno = paletaMezclada[colorIndex];
+                    colorIndex++;
+
+                    encontradas.push(palabraCorrecta);
+                    celdasSeleccionadas.forEach(c => {
+                        c.classList.remove('seleccionada');
+                        c.classList.add('encontrada');
+                        c.style.backgroundColor = colorTurno; 
+                    });
+                    
+                    limpiarSeleccion();
+                    mostrarMensaje("¡Súper! 🌟");
+                    
+                    if(mostrarLista) {
+                        let itemLista = document.getElementById(`palabra-${palabraCorrecta}`);
+                        itemLista.classList.add('tachada');
+                        itemLista.style.backgroundColor = colorTurno;
+                    } else {
+                        let divPalabra = document.createElement('div');
+                        divPalabra.className = 'palabra-item tachada';
+                        divPalabra.innerText = palabraCorrecta;
+                        divPalabra.style.backgroundColor = colorTurno;
+                        contenedorLista.appendChild(divPalabra);
+                    }
+                    
+                    document.getElementById('contador').innerText = encontradas.length;
+                    
+                    if (encontradas.length === palabrasAEncontrar.length) ganar();
+                } else {
+                    mostrarMensaje("¡Las letras deben estar seguidas! 📏");
+                }
+            } else if (celdasSeleccionadas.length >= 10) {
+                mostrarMensaje("Demasiadas letras, intenta de nuevo 🧹");
+                setTimeout(limpiarSeleccion, 1000);
+            }
+        }
+
+        function mostrarMensaje(texto) {
+            toast.innerText = texto;
+            toast.classList.add('mostrar');
+            setTimeout(() => toast.classList.remove('mostrar'), 2500);
+        }
+
+        function actualizarTiempo() {
+            let m = Math.floor(segundos / 60).toString().padStart(2, '0');
+            let s = (segundos % 60).toString().padStart(2, '0');
+            document.getElementById('tiempo').innerText = `${m}:${s}`;
+        }
+
+        function ganar() {
+            clearInterval(timerInterval);
+            let msj = mostrarTiempo 
+                ? `Encontraste todas las palabras en <b>${document.getElementById('tiempo').innerText}</b>.` 
+                : `¡Encontraste todas las palabras con éxito!`;
+            
+            document.getElementById('mensaje-victoria').innerHTML = msj;
+            document.getElementById('modal-victoria').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
