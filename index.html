@@ -2,104 +2,702 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Aula Mágica</title>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+ <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Lilita+One&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --font-main: 'Fredoka', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background-color: #bce6ff;
+      background-image:
+        linear-gradient(180deg, rgba(169, 224, 255, 0.82) 0%, rgba(224, 245, 255, 0.90) 100%),
+        url('img/fondo-estrellas.png');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: #1f2937;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* ================= ENCABEZADO CURVO MÁGICO ================= */
+    .hero-header {
+      position: relative;
+      background: linear-gradient(135deg, #5e35b1 0%, #3949ab 55%, #1e88e5 100%);
+      padding: 26px 20px 34px;
+      text-align: center;
+      border-bottom-left-radius: 48px;
+      border-bottom-right-radius: 48px;
+      border-bottom: 8px solid #283593;
+      box-shadow: 0 10px 25px rgba(30, 58, 138, 0.28);
+      overflow: hidden;
+    }
+
+    .header-inner {
+      max-width: 1050px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .personaje {
+      width: clamp(100px, 16vw, 150px); /* Tamaño más grande y adaptable */
+      height: auto;
+      filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25));
+      transition: transform 0.3s ease;
+    }
+
+    .personaje:hover {
+      transform: scale(1.08) rotate(-3deg);
+    }
+
+    .titulo-bloque {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      max-width: 600px;
+    }
+
+    .logo-svg {
+      width: clamp(270px, 50vw, 560px);
+      height: auto;
+      display: block;
+      overflow: visible;
+      filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.35));
+      transition: transform 0.25s ease;
+    }
+
+    .logo-svg:hover {
+      transform: scale(1.03);
+    }
+
+    .texto-arco {
+      font-family: 'Lilita One', 'Fredoka', sans-serif;
+      font-size: 76px;
+      letter-spacing: 3px;
+      paint-order: stroke fill;
+      stroke-linejoin: round;
+    }
+
+    .titulo-bloque .subtitulo {
+      margin-top: -10px;
+      display: inline-block;
+      background: rgba(24, 28, 92, 0.55);
+      border: 3px solid #ffeb3b;
+      border-radius: 999px;
+      padding: 7px 24px;
+      font-size: clamp(1rem, 2.2vw, 1.4rem);
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+      box-shadow: 0 5px 0 rgba(0, 0, 0, 0.25);
+      text-shadow:
+        0 2px 0 #1a237e,
+        0 3px 6px rgba(0, 0, 0, 0.35);
+    }
+
+    /* Estrellitas vectoriales decorativas del encabezado */
+    .estrella-deco {
+      position: absolute;
+      opacity: 0.9;
+      pointer-events: none;
+      z-index: 1;
+      animation: flotar 4s ease-in-out infinite;
+    }
+    .est-1 { top: 18px; left: 8%; width: 28px; animation-delay: 0s; }
+    .est-2 { bottom: 20px; left: 16%; width: 20px; animation-delay: 1s; }
+    .est-3 { top: 22px; right: 10%; width: 32px; animation-delay: 0.5s; }
+    .est-4 { bottom: 22px; right: 18%; width: 22px; animation-delay: 1.5s; }
+
+    @keyframes flotar {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-7px) rotate(8deg); }
+    }
+
+    /* ================= CONTENEDOR PRINCIPAL ================= */
+    main {
+      flex: 1;
+      width: 100%;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 28px 20px 50px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Decoraciones laterales (lápiz y borrador) */
+    .deco-flotante {
+      position: fixed;
+      width: 78px;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.9;
+      filter: drop-shadow(0 6px 8px rgba(0,0,0,0.15));
+    }
+    .deco-lapiz { bottom: 24px; left: 22px; transform: rotate(-12deg); }
+    .deco-borrador { bottom: 165px; right: 24px; transform: rotate(10deg); }
+
+    .seccion-titulo {
+      text-align: center;
+      font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+      font-weight: 700;
+      color: #1e293b;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin: 8px 0 20px;
+      text-shadow: 0 2px 0 rgba(255, 255, 255, 0.85);
+    }
+
+    .seccion-titulo.retos {
+      margin-top: 38px;
+    }
+
+    /* ================= CUADRÍCULA DE GRADOS (3x2) ================= */
+    .grid-grados {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+
+    .tarjeta-grado {
+      border-radius: 24px;
+      padding: 20px 18px 18px;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 16px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+    }
+
+    .tarjeta-grado:hover {
+      transform: translateY(-5px);
+    }
+
+    .grado-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    .icono-caja {
+      width: 54px;
+      height: 54px;
+      background: rgba(255, 255, 255, 0.22);
+      border: 2px solid rgba(255, 255, 255, 0.45);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .icono-caja svg {
+      width: 34px;
+      height: 34px;
+    }
+
+    .grado-nombre {
+      font-size: 1.75rem;
+      font-weight: 700;
+      text-shadow: 0 3px 0 rgba(0, 0, 0, 0.2);
+      line-height: 1.1;
+    }
+
+    /* Botones tipo píldora dentro de cada tarjeta */
+    .botones-materias {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-pill {
+      flex: 1;
+      min-width: 112px;
+      text-align: center;
+      text-decoration: none;
+      background: #ffffff;
+      color: #1e293b;
+      font-weight: 700;
+      font-size: 0.98rem;
+      padding: 10px 12px;
+      border-radius: 999px;
+      box-shadow: 0 4px 0 rgba(0, 0, 0, 0.18);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+    }
+
+    .btn-pill:hover {
+      background: #fffde7;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-pill:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    /* Colores 3D únicos por grado */
+    .grado-1 {
+      background: linear-gradient(180deg, #ff6b6b 0%, #ee4242 100%);
+      border-bottom: 7px solid #c62828;
+      box-shadow: 0 10px 18px rgba(198, 40, 40, 0.25);
+    }
+    .grado-2 {
+      background: linear-gradient(180deg, #ffab40 0%, #fb8c00 100%);
+      border-bottom: 7px solid #d84315;
+      box-shadow: 0 10px 18px rgba(216, 67, 21, 0.25);
+    }
+    .grado-3 {
+      background: linear-gradient(180deg, #4ade80 0%, #22c55e 100%);
+      border-bottom: 7px solid #15803d;
+      box-shadow: 0 10px 18px rgba(21, 128, 61, 0.25);
+    }
+    .grado-4 {
+      background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+      border-bottom: 7px solid #0369a1;
+      box-shadow: 0 10px 18px rgba(3, 105, 161, 0.25);
+    }
+    .grado-5 {
+      background: linear-gradient(180deg, #c084fc 0%, #9333ea 100%);
+      border-bottom: 7px solid #6b21a8;
+      box-shadow: 0 10px 18px rgba(107, 33, 168, 0.25);
+    }
+    .grado-6 {
+      background: linear-gradient(180deg, #f472b6 0%, #db2777 100%);
+      border-bottom: 7px solid #9d174d;
+      box-shadow: 0 10px 18px rgba(157, 23, 77, 0.25);
+    }
+
+    /* ================= ZONA DE JUEGOS Y RETOS ================= */
+    .grid-retos {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+
+    .tarjeta-reto {
+      background: linear-gradient(180deg, #ffe066 0%, #ffb703 100%);
+      border-bottom: 7px solid #d97706;
+      box-shadow: 0 10px 18px rgba(217, 119, 6, 0.25);
+      border-radius: 24px;
+      padding: 18px;
+      color: #1e293b;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+      transition: transform 0.2s ease;
+    }
+
+    .tarjeta-reto:hover {
+      transform: translateY(-5px);
+    }
+
+    .reto-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .reto-titulo {
+      font-size: 1.45rem;
+      font-weight: 700;
+      line-height: 1.15;
+      color: #1f2937;
+    }
+
+    .reto-icono {
+      width: 52px;
+      height: 52px;
+      background: rgba(255, 255, 255, 0.55);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .reto-icono svg {
+      width: 34px;
+      height: 34px;
+    }
+
+    /* ================= TARJETA QR FLOTANTE (ESQUINA INFERIOR DERECHA) ================= */
+    .qr-flotante {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 50;
+      background: #ffffff;
+      border: 4px solid #3949ab;
+      border-radius: 20px;
+      padding: 10px 12px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.22);
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      width: 132px;
+    }
+
+    .qr-flotante:hover {
+      transform: scale(1.06);
+    }
+
+    .qr-flotante span {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 6px;
+    }
+
+    .qr-flotante img {
+      width: 96px;
+      height: 96px;
+      display: block;
+      margin: 0 auto;
+      border-radius: 8px;
+    }
+
+    /* Modal para ver el QR en grande (ideal para proyectar en el salón) */
+    .modal-qr {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.75);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-qr.activo {
+      display: flex;
+    }
+
+    .modal-contenido {
+      background: #ffffff;
+      border-radius: 28px;
+      padding: 28px;
+      text-align: center;
+      max-width: 340px;
+      width: 100%;
+      border: 6px solid #3949ab;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    .modal-contenido h3 {
+      font-size: 1.5rem;
+      color: #1e293b;
+      margin-bottom: 14px;
+    }
+
+    .modal-contenido img {
+      width: 240px;
+      max-width: 100%;
+      height: auto;
+      border-radius: 14px;
+      margin-bottom: 16px;
+    }
+
+    .btn-cerrar {
+      background: #3949ab;
+      color: #ffffff;
+      border: none;
+      padding: 10px 26px;
+      border-radius: 999px;
+      font-family: var(--font-main);
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* ================= PIE DE PÁGINA ================= */
+    footer {
+      background: #312e81;
+      color: #e0e7ff;
+      text-align: center;
+      padding: 16px 20px;
+      font-size: 0.98rem;
+      font-weight: 500;
+      border-top: 5px solid #4f46e5;
+    }
+
+    /* ================= ADAPTABLE A TABLETS Y CELULARES ================= */
+    @media (max-width: 960px) {
+      .grid-grados,
+      .grid-retos {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .deco-flotante {
+        display: none;
+      }
+      .qr-flotante {
+        position: static;
+        margin: 28px auto 0;
+        width: 170px;
+      }
+      .qr-flotante img {
+        width: 130px;
+        height: 130px;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .grid-grados,
+      .grid-retos {
+        grid-template-columns: 1fr;
+      }
+      .personaje {
+        width: 72px;
+      }
+      .header-inner {
+        gap: 10px;
+      }
+      .hero-header {
+        border-bottom-left-radius: 30px;
+        border-bottom-right-radius: 30px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>AULA MÁGICA</h1>
-    <p class="descripcion">Ejercicios escolares de diferentes materias para niños de primaria</p>
+
+  <!-- ENCABEZADO MÁGICO -->
+  <header class="hero-header">
+    <!-- Estrellas vectoriales SVG -->
+    <svg class="estrella-deco est-1" viewBox="0 0 24 24" fill="#ffeb3b"><path d="M12 2l2.9 6.6L22 9.3l-5.4 4.7 1.6 7L12 17.3 5.8 21l1.6-7L2 9.3l7.1-.7z"/></svg>
+    <svg class="estrella-deco est-2" viewBox="0 0 24 24" fill="#ffffff"><path d="M12 2l2.9 6.6L22 9.3l-5.4 4.7 1.6 7L12 17.3 5.8 21l1.6-7L2 9.3l7.1-.7z"/></svg>
+    <svg class="estrella-deco est-3" viewBox="0 0 24 24" fill="#4fc3f7"><path d="M12 2l2.9 6.6L22 9.3l-5.4 4.7 1.6 7L12 17.3 5.8 21l1.6-7L2 9.3l7.1-.7z"/></svg>
+    <svg class="estrella-deco est-4" viewBox="0 0 24 24" fill="#ffeb3b"><path d="M12 2l2.9 6.6L22 9.3l-5.4 4.7 1.6 7L12 17.3 5.8 21l1.6-7L2 9.3l7.1-.7z"/></svg>
+
+    <div class="header-inner">
+      <img src="img/nino-mago.png" class="personaje" alt="Niño mago">
+      <div class="titulo-bloque">
+        <svg class="logo-svg" viewBox="0 0 620 140" role="img" aria-label="AULA MÁGICA">
+          <defs>
+            <!-- Curva suave hacia arriba -->
+            <path id="arco-titulo" d="M 25,122 Q 310,42 595,122" />
+            <!-- Degradado amarillo brillante a dorado -->
+            <linearGradient id="grad-amarillo" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#fff9c4" />
+              <stop offset="45%" stop-color="#ffeb3b" />
+              <stop offset="100%" stop-color="#ff9800" />
+            </linearGradient>
+          </defs>
+
+          <!-- Capa trasera (efecto 3D profundo) -->
+          <text class="texto-arco" dy="8" fill="#8d2300" stroke="#8d2300" stroke-width="14">
+            <textPath href="#arco-titulo" startOffset="50%" text-anchor="middle">
+              AULA MÁGICA
+            </textPath>
+          </text>
+
+          <!-- Capa frontal (amarillo degradado con contorno naranja) -->
+          <text class="texto-arco" fill="url(#grad-amarillo)" stroke="#c63f00" stroke-width="10">
+            <textPath href="#arco-titulo" startOffset="50%" text-anchor="middle">
+              AULA MÁGICA
+            </textPath>
+          </text>
+        </svg>
+
+        <p class="subtitulo">¡Aprende jugando todos los días!</p>
+      </div>
+      <img src="img/nina-maga.png" class="personaje" alt="Niña maga">
+    </div>
   </header>
 
-  <!-- Imágenes decorativas mágicas -->
-  <img src="img/nino-mago.png" class="decoracion mago-nino" alt="Niño mago">
-  <img src="img/nina-maga.png" class="decoracion maga-nina" alt="Niña maga">
-  <img src="img/lapiz.png" class="decoracion lapiz" alt="Lápiz decorativo">
-  <img src="img/borrador.png" class="decoracion borrador" alt="Borrador decorativo">
+  <!-- DECORACIONES QUE YA TIENES -->
+  <img src="img/lapiz.png" class="deco-flotante deco-lapiz" alt="Lápiz decorativo">
+  <img src="img/borrador.png" class="deco-flotante deco-borrador" alt="Borrador decorativo">
 
-  <div class="grados">
-    <div class="grado-container">
-      <div class="grado">Primer Grado</div>
-      <div class="submenu">
-        <a href="primer-grado/matematicas/matematicas.html">Matemáticas</a>
-        <a href="primer-grado/lenguajes/lenguaje.html">Lenguajes</a>
-      </div>
+  <main>
+<!-- SECCIÓN 1: GRADOS ESCOLARES -->
+    <h2 class="seccion-titulo">Grados Escolares</h2>
+
+    <section class="grid-grados">
+      <!-- 1° GRADO -->
+      <article class="tarjeta-grado grado-1">
+        <div class="grado-header">
+          <div class="icono-caja" style="background: #ffffff; padding: 4px;" aria-hidden="true">
+            <img src="img/grado1.png" alt="Primer Grado" style="width: 100%; height: 100%; object-fit: contain;">
+          </div>
+          <div class="grado-nombre">1° Grado</div>
+        </div>
+        <div class="botones-materias">
+          <a class="btn-pill" href="primer-grado/matematicas/matematicas.html">Matemáticas</a>
+          <a class="btn-pill" href="primer-grado/lenguajes/lenguaje.html">Lenguajes</a>
+        </div>
+      </article>
+
+      <!-- 2° GRADO -->
+      <article class="tarjeta-grado grado-2">
+        <div class="grado-header">
+          <div class="icono-caja" style="background: #ffffff; padding: 4px;" aria-hidden="true">
+            <img src="img/grado2.png" alt="Segundo Grado" style="width: 100%; height: 100%; object-fit: contain;">
+          </div>
+          <div class="grado-nombre">2° Grado</div>
+        </div>
+        <div class="botones-materias">
+          <a class="btn-pill" href="segundo-grado/matematicas.html">Matemáticas</a>
+          <a class="btn-pill" href="segundo-grado/lectura/lectura.html">Lectura</a>
+        </div>
+      </article>
+
+      <!-- 3° GRADO -->
+      <article class="tarjeta-grado grado-3">
+        <div class="grado-header">
+          <div class="icono-caja" style="background: #ffffff; padding: 4px;" aria-hidden="true">
+            <img src="img/grado3.png" alt="Tercer Grado" style="width: 100%; height: 100%; object-fit: contain;">
+          </div>
+          <div class="grado-nombre">3° Grado</div>
+        </div>
+        <div class="botones-materias">
+          <a class="btn-pill" href="tercer-grado/matematicas/matematicas.html">Matemáticas</a>
+          <a class="btn-pill" href="tercer-grado/lenguajes/lenguaje.html">Lectura</a>
+        </div>
+      </article>
+
+      <!-- 4° GRADO -->
+      <article class="tarjeta-grado grado-4">
+        <div class="grado-header">
+          <div class="icono-caja" style="background: #ffffff; padding: 4px;" aria-hidden="true">
+            <img src="img/grado4.png" alt="Cuarto Grado" style="width: 100%; height: 100%; object-fit: contain;">
+          </div>
+          <div class="grado-nombre">4° Grado</div>
+        </div>
+        <div class="botones-materias">
+          <a class="btn-pill" href="cuarto-grado/matematicas/matematicas.html">Matemáticas</a>
+          <a class="btn-pill" href="cuarto-grado/lenguajes/lenguaje.html">Lectura</a>
+        </div>
+      </article>
+
+      <!-- 5° GRADO -->
+      <article class="tarjeta-grado grado-5">
+        <div class="grado-header">
+          <div class="icono-caja" style="background: #ffffff; padding: 4px;" aria-hidden="true">
+            <img src="img/grado5.png" alt="Quinto Grado" style="width: 100%; height: 100%; object-fit: contain;">
+          </div>
+          <div class="grado-nombre">5° Grado</div>
+        </div>
+        <div class="botones-materias">
+          <a class="btn-pill" href="quinto-grado/matematicas/matematicas.html">Matemáticas</a>
+          <a class="btn-pill" href="quinto-grado/lenguajes/lenguaje.html">Lectura</a>
+        </div>
+      </article>
+
+      <!-- 6° GRADO -->
+      <article class="tarjeta-grado grado-6">
+        <div class="grado-header">
+          <div class="icono-caja" style="background: #ffffff; padding: 4px;" aria-hidden="true">
+            <img src="img/grado6.png" alt="Sexto Grado" style="width: 100%; height: 100%; object-fit: contain;">
+          </div>
+          <div class="grado-nombre">6° Grado</div>
+        </div>
+        <div class="botones-materias">
+          <a class="btn-pill" href="sexto-grado/matematicas/matematicas.html">Matemáticas</a>
+          <a class="btn-pill" href="sexto-grado/lenguajes/lenguaje.html">Lectura</a>
+        </div>
+      </article>
+    </section>
+
+    <!-- SECCIÓN 2: ZONA DE JUEGOS Y RETOS -->
+<!-- SECCIÓN 2: ZONA DE JUEGOS Y RETOS -->
+    <h2 class="seccion-titulo retos">Zona de Juegos y Retos</h2>
+
+    <section class="grid-retos">
+      <!-- TABLAS DE MULTIPLICAR -->
+      <article class="tarjeta-reto">
+        <div class="reto-header">
+          <div class="reto-titulo">Tablas de Multiplicar</div>
+          <div class="reto-icono" style="background: #ffffff; padding: 4px;" aria-hidden="true">
+            <img src="img/tablas.png" alt="Tablas de multiplicar" style="width: 100%; height: 100%; object-fit: contain;">
+          </div>
+        </div>
+        <div class="botones-materias">
+          <a class="btn-pill" href="tablas/tablas.html">Practicar Tablas</a>
+        </div>
+      </article>
+
+      <!-- PASATIEMPOS -->
+      <article class="tarjeta-reto">
+        <div class="reto-header">
+          <div class="reto-titulo">Pasatiempos</div>
+          <div class="reto-icono" style="background: #ffffff; padding: 4px;" aria-hidden="true">
+            <img src="img/pasatiempos.png" alt="Pasatiempos" style="width: 100%; height: 100%; object-fit: contain;">
+          </div>
+        </div>
+        <div class="botones-materias">
+          <a class="btn-pill" href="Juegos/matematicas/matematicas.html">Matemáticas</a>
+          <a class="btn-pill" href="Juegos/lenguajes/lenguajes.html">Lenguajes</a>
+        </div>
+      </article>
+
+      <!-- TAM APRENDE -->
+      <article class="tarjeta-reto">
+        <div class="reto-header">
+          <div class="reto-titulo">Tam Aprende</div>
+          <div class="reto-icono" style="background: #ffffff; padding: 4px;" aria-hidden="true">
+            <img src="img/tamaulipas.png" alt="Mapa de Tamaulipas" style="width: 100%; height: 100%; object-fit: contain;">
+          </div>
+        </div>
+        <div class="botones-materias">
+          <a class="btn-pill" href="examenes/3ro/index.html">3er Grado</a>
+          <a class="btn-pill" href="examenes/6to/index.html">6to Grado</a>
+        </div>
+      </article>
+    </section>
+
+    <!-- CÓDIGO QR (esquina inferior derecha en PC, centrado abajo en tablet/celular) -->
+    <div class="qr-flotante" onclick="abrirQR()" title="Haz clic para ampliar el código QR">
+      <span>¡Escanea para jugar!</span>
+      <img src="imagenes/qr.png" alt="Código QR para acceder al juego">
     </div>
+  </main>
 
-    <div class="grado-container">
-      <div class="grado">Segundo Grado</div>
-      <div class="submenu">
-        <a href="segundo-grado/matematicas.html">Matemáticas</a>
-        <a href="segundo-grado/lectura/lectura.html">Lectura</a>
-      </div>
+  <!-- MODAL PARA VER EL QR GRANDE -->
+  <div class="modal-qr" id="modalQR" onclick="cerrarQR()">
+    <div class="modal-contenido" onclick="event.stopPropagation()">
+      <h3>¡Escanea para jugar!</h3>
+      <img src="imagenes/qr.png" alt="Código QR ampliado">
+      <br>
+      <button class="btn-cerrar" onclick="cerrarQR()">Cerrar</button>
     </div>
+  </div>
 
-    <div class="grado-container">
-      <div class="grado">Tercer Grado</div>
-      <div class="submenu">
-        <a href="tercer-grado/matematicas/matematicas.html">Matemáticas</a>
-        <a href="tercer-grado/lenguajes/lenguaje.html">Lectura</a>
-      </div>
-    </div>
-
-    <div class="grado-container">
-      <div class="grado">Cuarto Grado</div>
-      <div class="submenu">
-        <a href="cuarto-grado/matematicas/matematicas.html">Matemáticas</a>
-        <a href="cuarto-grado/lenguajes/lenguaje.html">Lectura</a>
-      </div>
-    </div>
-
-    <div class="grado-container">
-      <div class="grado">Quinto Grado</div>
-      <div class="submenu">
-        <a href="quinto-grado/matematicas/matematicas.html">Matemáticas</a>
-        <a href="quinto-grado/lenguajes/lenguaje.html">Lectura</a>
-      </div>
-    </div>
-
-    <div class="grado-container">
-      <div class="grado">Sexto Grado</div>
-      <div class="submenu">
-        <a href="sexto-grado/matematicas/matematicas.html">Matemáticas</a>
-        <a href="sexto-grado/lenguajes/lenguaje.html">Lectura</a>
-      </div>
-    </div>
-
-    <div class="grado-container">
-      <div class="grado">Tablas de Multiplicar</div>
-      <div class="submenu">
-        <a href="tablas/tablas.html">Tablas de Multiplicar</a>
-      </div>
-    </div>
-
-     <div class="grado-container">
-      <div class="grado">Pasatiempos</div>
-      <div class="submenu">
-        <a href="Juegos/matematicas/matematicas.html">Matemáticas</a>
-        <a href="Juegos/lenguajes/lenguajes.html">Lenguajes</a>
-      </div>
-    </div>
-
-  <div class="grado-container">
-      <div class="grado">Tam Aprende</div>
-      <div class="submenu">
-        <a href="examenes/3ro/index.html">3er Grado</a>
-        <a href="examenes/6to/index.html">6to Grado</a>
-      </div>
-    </div>
-
-<div class="grado-container">
-      <div class="grado">Enlace</div>
-      <div class="submenu" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px;">
-        <h3 style="font-size: 1.5rem; text-align: center; margin-bottom: 15px; color: #333;">¡Escanea para jugar!</h3>
-        <img src="imagenes/qr.png" alt="Código QR para acceder al juego" style="width: 120px; max-width: 100%; height: auto; border-radius: 10px;">
-      </div>
-    </div>
-
-  </div> <footer>
-    &copy; 2025 Aula Mágica. Diseñado para niños curiosos ✨
+  <footer>
+    &copy; 2026 Aula Mágica. Diseñado para niños curiosos
   </footer>
+
+  <script>
+    function abrirQR() {
+      document.getElementById('modalQR').classList.add('activo');
+    }
+    function cerrarQR() {
+      document.getElementById('modalQR').classList.remove('activo');
+    }
+  </script>
 </body>
 </html>
