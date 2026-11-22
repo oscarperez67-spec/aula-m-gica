@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lenguajes 2do · Aula Mágica</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Colores de 2° Grado (naranja) */
+    :root {
+      --color-arriba: #ffab40;
+      --color-abajo: #fb8c00;
+      --color-borde: #d84315;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: linear-gradient(180deg, #a9e0ff 0%, #e0f5ff 100%);
+      font-family: 'Fredoka', sans-serif;
+      text-align: center;
+      padding: 24px 16px 40px;
+      min-height: 100vh;
+      color: #1e293b;
+    }
+
+    h1 {
+      color: #ffffff;
+      background: linear-gradient(180deg, var(--color-arriba) 0%, var(--color-abajo) 100%);
+      border-bottom: 6px solid var(--color-borde);
+      display: inline-block;
+      padding: 12px 34px;
+      border-radius: 999px;
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      margin-bottom: 32px;
+      text-shadow: 0 3px 0 rgba(0, 0, 0, 0.2);
+      box-shadow: 0 8px 18px rgba(216, 67, 21, 0.2);
+    }
+
+    .enlaces {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 310px));
+      justify-content: center;
+      gap: 24px;
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: linear-gradient(180deg, var(--color-arriba) 0%, var(--color-abajo) 100%);
+      border-bottom: 8px solid var(--color-borde);
+      border-radius: 24px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+      text-decoration: none;
+      box-shadow: 0 10px 18px rgba(216, 67, 21, 0.22);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 14px 24px rgba(216, 67, 21, 0.3);
+    }
+
+    .card:active {
+      transform: translateY(2px);
+      box-shadow: 0 4px 10px rgba(216, 67, 21, 0.25);
+    }
+
+    .card img {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: contain;
+      padding: 6px;
+      background: #ffffff;
+      border-radius: 16px;
+      border: 3px solid rgba(255, 255, 255, 0.85);
+      display: block;
+    }
+
+    .titulo {
+      background: #ffffff;
+      color: #1e293b;
+      font-size: 1.15rem;
+      font-weight: 700;
+      line-height: 1.25;
+      padding: 12px 14px;
+      border-radius: 18px;
+      box-shadow: 0 4px 0 rgba(0, 0, 0, 0.16);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 62px;
+    }
+
+    .contenedor-regresar {
+      margin-top: 38px;
+    }
+
+    .btn-regresar {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: linear-gradient(180deg, #5e35b1 0%, #3949ab 100%);
+      color: #ffffff;
+      border-bottom: 6px solid #283593;
+      padding: 14px 28px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.15rem;
+      box-shadow: 0 8px 16px rgba(40, 53, 147, 0.28);
+      transition: transform 0.15s ease;
+    }
+
+    .btn-regresar:hover {
+      transform: translateY(-3px);
+    }
+
+    .btn-regresar:active {
+      transform: translateY(2px);
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 0.95rem;
+      color: #475569;
+      font-weight: 500;
+    }
+
+    @media (max-width: 600px) {
+      .enlaces {
+        grid-template-columns: 1fr;
+        max-width: 380px;
+        gap: 20px;
+      }
+
+      .titulo {
+        font-size: 1.2rem;
+      }
+
+      .btn-regresar {
+        width: 100%;
+        max-width: 340px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Lenguajes 2do</h1>
+
+  <div class="enlaces">
+    <!-- Constructor de Oraciones -->
+    <a class="card" href="constructor/index.html">
+      <img src="imagenes/constructor.png" alt="Constructor de Oraciones">
+      <div class="titulo">Constructor de Oraciones</div>
+    </a>
+
+    <!-- Detective de Ortografía -->
+    <a class="card" href="detective/index.html">
+      <img src="imagenes/detective.png" alt="Detective de Ortografía">
+      <div class="titulo">Detective de Ortografía</div>
+    </a>
+
+  </div>
+
+  <!-- Botón para regresar al menú principal -->
+  <div class="contenedor-regresar">
+    <a class="btn-regresar" href="../../index.html">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+      Regresar al Menú Principal
+    </a>
+  </div>
+
+  <footer>
+    &copy; 2026 Lenguajes 2do · Aula Mágica
+  </footer>
+
+</body>
+</html>
