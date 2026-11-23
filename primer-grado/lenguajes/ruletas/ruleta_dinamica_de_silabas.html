@@ -579,50 +579,91 @@
             tick();
         }
 
-        const synth = window.speechSynthesis;
+const synth = window.speechSynthesis;
         let spanishVoice = null;
 
-	function initVoice() {
-  	 	 const voices = synth.getVoices();
-    		 spanishVoice = voices.find(voice => voice.lang.includes('es-MX')) || 
-                   voices.find(voice => voice.lang.includes('es-ES')) ||
-                   voices.find(voice => voice.lang.includes('es')) ||
-                   voices[0]; // Fuerza a usar la voz por defecto si Silk no detecta español
-	}
-        if (speechSynthesis.onvoiceschanged !== undefined) {
-            speechSynthesis.onvoiceschanged = initVoice;
-        } else {
-            initVoice();
+        function initVoice() {
+            const voices = synth.getVoices();
+            if (!voices.length) return;
+            spanishVoice = voices.find(voice => voice.lang === 'es-MX') ||
+                           voices.find(voice => voice.lang.includes('es-MX')) ||
+                           voices.find(voice => voice.lang.includes('es-US')) ||
+                           voices.find(voice => voice.lang.includes('es-ES')) ||
+                           voices.find(voice => voice.lang.startsWith('es')) ||
+                           voices[0];
         }
 
-        function speak(text) {
-            synth.cancel(); 
-            
-            // --- INICIO DE LA TRAMPA PARA EL NAVEGADOR ---
-            let textoHablar = text.toLowerCase();
-            
-            // Si la palabra es exactamente la sílaba, le ponemos acento para que no lea días de la semana
-            if (textoHablar === 'lu') textoHablar = 'lú';
-            if (textoHablar === 'ma') textoHablar = 'má';
-            if (textoHablar === 'mi') textoHablar = 'mí'; // (Por si acaso lee "miércoles" o nota musical)
-            if (textoHablar === 'ju') textoHablar = 'jú';
-            if (textoHablar === 'vi') textoHablar = 'ví';
-            if (textoHablar === 'sa') textoHablar = 'sá';
-            if (textoHablar === 'do') textoHablar = 'dó';
+        // Cargar voces de inmediato Y también cuando el navegador avise que ya están listas
+        initVoice();
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = initVoice;
+        }
 
-            // Puntos cardinales (Noreste, Noroeste, Sureste, Suroeste)
-            if (textoHablar === 'ne') textoHablar = 'né';
-            if (textoHablar === 'no') textoHablar = 'nó';
-            if (textoHablar === 'se') textoHablar = 'sé';
-            if (textoHablar === 'so') textoHablar = 'só';
-            if (textoHablar === 'vo') textoHablar = 'vó';
-            if (textoHablar === 'ye') textoHablar = 'llé';
-            if (textoHablar === 'yi') textoHablar = 'llí';
-            if (textoHablar === 'yu') textoHablar = 'llú';
-            if (textoHablar === 'yoyo') textoHablar = 'llollo';
+        // Diccionario fonético completo para evitar deletreos, siglas, días y números romanos
+        const diccionarioFonetico = {
+            // Vocales (evita que "i" suene como número romano o se corten muy rápido)
+            'a': 'á', 'e': 'é', 'i': 'í', 'o': 'ó', 'u': 'ú',
+
+            // R (evita "ere o" / "ere u" / "Reino Unido")
+            'ra': 'rá', 're': 'ré', 'ri': 'rí', 'ro': 'ró', 'ru': 'rú',
+
+            // P, M, T, L, N, D, V, F, B
+            'pa': 'pá', 'pe': 'pé', 'pi': 'pí', 'po': 'pó', 'pu': 'pú',
+            'ma': 'má', 'me': 'mé', 'mi': 'mí', 'mo': 'mó', 'mu': 'mú',
+            'ta': 'tá', 'te': 'té', 'ti': 'tí', 'to': 'tó', 'tu': 'tú',
+            'la': 'lá', 'le': 'lé', 'li': 'lí', 'lo': 'ló', 'lu': 'lú',
+            'na': 'ná', 'ne': 'né', 'ni': 'ní', 'no': 'nó', 'nu': 'nú',
+            'da': 'dá', 'de': 'dé', 'di': 'dí', 'do': 'dó', 'du': 'dú',
+            'va': 'vá', 've': 'vé', 'vi': 'ví', 'vo': 'vó', 'vu': 'vú',
+            'fa': 'fá', 'fe': 'fé', 'fi': 'fí', 'fo': 'fó', 'fu': 'fú',
+            'ba': 'bá', 'be': 'bé', 'bi': 'bí', 'bo': 'bó', 'bu': 'bú',
+
+            // Y (con "ll" para que suene uniforme en español de México)
+            'ya': 'llá', 'ye': 'llé', 'yi': 'llí', 'yo': 'lló', 'yu': 'llú',
+
+            // J, Ñ, CH, LL, S, Z
+            'ja': 'já', 'je': 'jé', 'ji': 'jí', 'jo': 'jó', 'ju': 'jú',
+            'ña': 'ñá', 'ñe': 'ñé', 'ñi': 'ñí', 'ño': 'ñó', 'ñu': 'ñú',
+            'cha': 'chá', 'che': 'ché', 'chi': 'chí', 'cho': 'chó', 'chu': 'chú',
+            'lla': 'llá', 'lle': 'llé', 'lli': 'llí', 'llo': 'lló', 'llu': 'llú',
+            'sa': 'sá', 'se': 'sé', 'si': 'sí', 'so': 'só', 'su': 'sú',
+            'za': 'zá', 'ze': 'zé', 'zi': 'zí', 'zo': 'zó', 'zu': 'zú',
+
+            // H muda (evita "hectárea" en ha, "helio" en he, o inglés en hi)
+            'ha': 'á', 'he': 'é', 'hi': 'í', 'ho': 'ó', 'hu': 'ú',
+
+            // K (evita "ka o" en ko o deletreo en Kindle)
+            'ka': 'cá', 'ke': 'qué', 'ki': 'quí', 'ko': 'có', 'ku': 'cú',
+
+            // C fuerte y suave (evita "ce o", "ce e" y "101" en ci)
+            'ca': 'cá', 'co': 'có', 'cu': 'cú',
+            'ce': 'cé', 'ci': 'cí',
+
+            // G (evita inglés en "go" y asegura sonido suave en ge/gi)
+            'ga': 'gá', 'go': 'gó', 'gu': 'gú',
+            'ge': 'jé', 'gi': 'jí',
+            'gue': 'gué', 'gui': 'guí',
+
+            // Palabras específicas que necesitan corrección de audio
+            'yoyo': 'llollo',
+            'avion': 'avión',
+            'iman': 'imán',
+            'iglu': 'iglú'
+        };
+
+        function speak(text) {
+            synth.cancel();
+
+            // Si aún no se cargaba la voz al abrir la página, intentar de nuevo
+            if (!spanishVoice) initVoice();
+
+            const clave = text.trim().toLowerCase();
+            const textoHablar = diccionarioFonetico[clave] || clave;
+
             const utterThis = new SpeechSynthesisUtterance(textoHablar);
+            utterThis.lang = 'es-MX'; // Obliga a Windows y Kindle a leer en español
             if (spanishVoice) utterThis.voice = spanishVoice;
-            utterThis.pitch = 1.2; 
+            utterThis.pitch = 1.2;
             utterThis.rate = 0.9;
             synth.speak(utterThis);
         }
