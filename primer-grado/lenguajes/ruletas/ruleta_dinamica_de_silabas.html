@@ -585,12 +585,25 @@ const synth = window.speechSynthesis;
         function initVoice() {
             const voices = synth.getVoices();
             if (!voices.length) return;
-            spanishVoice = voices.find(voice => voice.lang === 'es-MX') ||
-                           voices.find(voice => voice.lang.includes('es-MX')) ||
-                           voices.find(voice => voice.lang.includes('es-US')) ||
-                           voices.find(voice => voice.lang.includes('es-ES')) ||
-                           voices.find(voice => voice.lang.startsWith('es')) ||
-                           voices[0];
+
+            const vocesEspanol = voices.filter(v => v.lang.startsWith('es'));
+
+            // Nombres comunes de voces femeninas en Windows, Mac/Safari, Chrome y Android/Kindle
+            const nombresMujer = ['sabina', 'dalia', 'paulina', 'paloma', 'monica', 'mónica', 'helena', 'laura', 'lucia', 'lucía', 'elena', 'sofia', 'sofía', 'google español'];
+
+            // 1. Buscar primero una voz de mujer en español de México
+            spanishVoice = vocesEspanol.find(v =>
+                v.lang.includes('es-MX') &&
+                nombresMujer.some(nombre => v.name.toLowerCase().includes(nombre))
+            ) ||
+            // 2. Si no hay de México, cualquier voz de mujer en español
+            vocesEspanol.find(v =>
+                nombresMujer.some(nombre => v.name.toLowerCase().includes(nombre))
+            ) ||
+            // 3. Si el dispositivo no tiene ninguna de esas, usar cualquier es-MX o español
+            vocesEspanol.find(v => v.lang.includes('es-MX')) ||
+            vocesEspanol[0] ||
+            voices[0];
         }
 
         // Cargar voces de inmediato Y también cuando el navegador avise que ya están listas
@@ -605,7 +618,7 @@ const synth = window.speechSynthesis;
             'a': 'á', 'e': 'é', 'i': 'í', 'o': 'ó', 'u': 'ú',
 
             // R (evita "ere o" / "ere u" / "Reino Unido")
-            'ra': 'rá', 're': 'ré', 'ri': 'rí', 'ro': 'ró', 'ru': 'rú',
+            'ra': 'rá', 're': 're', 'ri': 'rí', 'ro': 'ró', 'ru': 'rú',
 
             // P, M, T, L, N, D, V, F, B
             'pa': 'pá', 'pe': 'pé', 'pi': 'pí', 'po': 'pó', 'pu': 'pú',
